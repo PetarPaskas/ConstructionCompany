@@ -9,4 +9,23 @@ ConstructionCompany.WebAPI.Test/bin/
 ConstructionCompany.WebAPI.Test/obj/
 ConstructionCompany.WebAPI/bin/
 ConstructionCompany.WebAPI/obj/
-cosntructioncompany.web.client/node-modules/
+constructioncompany.web.client/node_modules
+constructioncompany.web.client/.pnp
+constructioncompany.web.client/.pnp.js
+
+# testing
+constructioncompany.web.client/coverage
+
+# production
+constructioncompany.web.client/build
+
+# misc
+constructioncompany.web.client/.DS_Store
+constructioncompany.web.client/.env.local
+constructioncompany.web.client/.env.development.local
+constructioncompany.web.client/.env.test.local
+constructioncompany.web.client/.env.production.local
+
+constructioncompany.web.client/npm-debug.log*
+constructioncompany.web.client/yarn-debug.log*
+constructioncompany.web.client/yarn-error.log*
