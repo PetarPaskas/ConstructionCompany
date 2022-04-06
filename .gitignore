@@ -1,0 +1,12 @@
+.vs/
+ConstructionCompany.Common/bin/
+ConstructionCompany.Common/obj/
+ConstructionCompany.DataContext/bin/
+ConstructionCompany.DataContext/obj/
+ConstructionCompany.EntityModels/bin/
+ConstructionCompany.EntityModels/obj/
+ConstructionCompany.WebAPI.Test/bin/
+ConstructionCompany.WebAPI.Test/obj/
+ConstructionCompany.WebAPI/bin/
+ConstructionCompany.WebAPI/obj/
+cosntructioncompany.web.client/node-modules/
