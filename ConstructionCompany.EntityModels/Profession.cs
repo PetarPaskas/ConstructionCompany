@@ -8,5 +8,8 @@ namespace ConstructionCompany.EntityModels
 {
     public class Profession
     {
+        public int ProfessionId { get; set; }
+        public string ProfessionCode { get; set; }
+        public string DisplayName { get; set; }
     }
 }

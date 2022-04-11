@@ -8,5 +8,6 @@ namespace ConstructionCompany.EntityModels
 {
     public class Wage
     {
+        //Not sure if needed
     }
 }

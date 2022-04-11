@@ -8,5 +8,8 @@ namespace ConstructionCompany.EntityModels
 {
     public class PaymentType
     {
+        public int PaymentTypeId { get; set; }
+        public int PaymentTypeCode { get; set; }
+        public string DisplayName { get; set; }
     }
 }

@@ -8,5 +8,9 @@ namespace ConstructionCompany.EntityModels
 {
     public class Role
     {
+        public int RoleId { get; set; }
+        public string RoleCode { get; set; }
+        public string DisplayName { get; set; }
+        public IEnumerable<UserRole> UserRole { get; set; }
     }
 }
