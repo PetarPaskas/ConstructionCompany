@@ -23,4 +23,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ConstructionCompany.EntityModels\ConstructionCompany.EntityModels.csproj" />
+  </ItemGroup>
+
 </Project>
