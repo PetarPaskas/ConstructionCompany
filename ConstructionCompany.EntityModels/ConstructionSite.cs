@@ -19,6 +19,7 @@ namespace ConstructionCompany.EntityModels
         public City City { get; set; }
         public IEnumerable<Client> Clients { get; set; }
         public IEnumerable<Note> Notes { get; set; }
+        public IEnumerable<Wage> Wages { get; set; }
 
     }
 }

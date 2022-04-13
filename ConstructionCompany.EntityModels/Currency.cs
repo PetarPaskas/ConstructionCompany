@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.EntityModels
 {
-    public class Municipality
+    public class Currency
     {
-        public int MunicipalityId { get; set; }
+        public int CurrencyId { get; set; }
         public string DisplayName { get; set; }
-        public int MunicipalityCode { get; set; }
-        public IEnumerable<City> Cities { get; set; }
-
+        public int CurrencyCode { get; set; }
+        public IEnumerable<User> Users { get; set; }
     }
 }
