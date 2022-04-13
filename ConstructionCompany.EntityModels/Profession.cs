@@ -11,5 +11,6 @@ namespace ConstructionCompany.EntityModels
         public int ProfessionId { get; set; }
         public string ProfessionCode { get; set; }
         public string DisplayName { get; set; }
+        public IEnumerable<User> Users { get; set; }
     }
 }
