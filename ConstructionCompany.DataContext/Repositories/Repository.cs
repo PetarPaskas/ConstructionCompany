@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.DataContext.Repositories
 {
-    public class Repository<T> where T:class, IRepository<T>
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly DbContext _context;
         public Repository(DbContext context)

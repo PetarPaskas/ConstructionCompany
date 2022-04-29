@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.DataContext.Interfaces
 {
-    public interface IWageRepository : IRepository<IWageRepository>
+    public interface IWageRepository : IRepository<Wage>
     {
     }
 }

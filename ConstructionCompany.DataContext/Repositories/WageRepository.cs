@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.DataContext.Repositories
 {
-    public class WageRepository : IWageRepository
+    public class WageRepository : Repository<Wage>, IWageRepository
     {
+        public WageRepository(ConstructionCompanyContext ctx)
+            :base(ctx)
+        {
+
+        }
     }
 }

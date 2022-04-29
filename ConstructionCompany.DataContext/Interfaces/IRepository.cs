@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.DataContext.Interfaces
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<T> where T : class 
     {
         public T Add(T entity);
         public IEnumerable<T> AddRange(IEnumerable<T> entities);
