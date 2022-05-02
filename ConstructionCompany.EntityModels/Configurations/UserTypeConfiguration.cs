@@ -30,6 +30,9 @@ namespace ConstructionCompany.EntityModels.Configurations
             builder.Property(u => u.Name)
                 .IsRequired();
 
+            builder.Property(u => u.PhoneNumber)
+                .IsRequired();
+
             builder.Property(u => u.Surname)
                 .IsRequired();
 
