@@ -1,0 +1,196 @@
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+:root{
+    font-size:62.5%;
+    --green-color-base:rgb(49, 224, 43);
+    --green-color-dark:rgb(20, 109, 17);
+    --danger-color-base: rgb(236, 89, 20);
+}
+body{
+    background-color: black;
+}
+.center{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+/*---HOVER DROPDOWN---*/
+/*------------------*/
+
+.hover-dropdown{
+    font-size:1.6rem;
+}
+
+.hover-dropdown:hover .collapsible::before{
+    transform:rotate(-90deg);
+    background-color: var(--danger-color-base);
+}
+
+
+.hover-dropdown__main-option{
+    position:relative;
+}
+
+.hover-dropdown__options-container{
+    display:flex;
+    flex-direction: column;
+    position:relative;
+}
+
+.hover-dropdown__options-container{
+    visibility: hidden;
+    opacity: 0;
+    height:10px;
+}
+
+.hover-dropdown:hover .hover-dropdown__options-container{
+    visibility: visible;
+    opacity:1;
+    transition:all .2s;
+}
+
+.hover-dropdown:hover .tab-btn{
+    box-shadow:0px 1px 0px 0px rgb(194, 194, 194);
+}
+
+.hover-dropdown__options-container > .tab-btn{
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.hover-dropdown__main-option .tab-btn:hover,
+.hover-dropdown__main-option .tab-btn:active{
+    background-color: white;
+}
+
+/*------------------*/
+
+/*---TAB BUTTONS---*/
+/*------------------*/
+.tab-btn,
+.tab-btn:link,
+.tab-btn:visited{
+    display: block;
+    border:none;
+    outline:none;
+    background-color: white;
+    font-size:1.6rem;
+    padding:6rem 8rem;
+    border-radius:10px;
+    cursor: pointer;
+    width:25rem;
+}
+
+.tab-btn:active,
+.tab-btn:hover{
+    background-color: rgb(223, 223, 223);
+}
+
+.tab-btn--with-popout{
+    border-top-left-radius:0;
+}
+
+.tab-btn:focus{
+    outline:none;
+}
+
+
+.tab-btn--short{
+    padding:4rem 8rem;
+}
+
+.tab-btn--with-content{
+    padding:2rem 4rem;
+    width:auto;
+}
+
+/*------------------*/
+
+
+/*---EXPAND BUTTON---*/
+/*------------------*/
+
+.collapsible{
+    display:block;
+    text-align: center;
+    width:100%;
+    position:absolute;
+    bottom:-10%;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+}
+
+.collapsible::before{
+    font-size:1.6rem;
+    display:inline-block;
+    width:3rem;
+    height: 3rem;
+    border-radius:50%;
+    background-color: var(--green-color-base);
+    transform: rotate(90deg);
+    transition:transform .2s, background-color .15s;
+    content:"\27A4";
+    color:white;
+    padding-top:.2rem;
+}
+
+
+/*------------------*/
+
+
+/*---POPOUT BUTTON---*/
+/*------------------*/
+.popout-button,
+.popout-button:link,
+.popout-button:visited{
+    text-decoration: none;
+    display:inline-block;
+    position: absolute;
+    top:0;
+    left:0;
+    height:3rem;
+    z-index: -1;
+    background-color: var(--green-color-base);
+    font-weight: 600;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    transform:translateY(-100%);
+    padding:5px 10px 0px 10px;
+    transition:all .2s;
+    color:white;
+    font-size:1.6rem;
+}
+.popout-button:hover,
+.popout-button:active{
+ background-color: var(--green-color-dark);
+ text-decoration: none;
+}
+
+.popout-button:hover ~ .hover-dropdown__options-container{
+    visibility: hidden;
+    opacity: 0;
+}
+.popout-button:hover ~ .collapsible::before{
+    background-color: var(--green-color-base);
+    transform: rotate(90deg);
+} 
+
+.popout-button:hover + * > .collapsible::before{
+    transform:rotate(90deg);
+    background-color: var(--green-color-base);
+}
+
+.text-bold{
+    font-weight: 800;
+}
+
+/*------------------*/
+
+
