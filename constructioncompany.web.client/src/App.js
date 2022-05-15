@@ -1,10 +1,16 @@
 import logo from './logo.svg';
-import {Component} from 'react';
+import React, {Component} from 'react';
 import ConstructionCompanyRoutes from './components/Routing/ConstructionCompanyRoutes'
+import Navbar from './components/common/Navbar';
 
 class App extends Component{
   render(){
-    return <ConstructionCompanyRoutes />
+    return (
+      <React.Fragment>
+        <Navbar/>
+        <ConstructionCompanyRoutes />
+      </React.Fragment>
+    );
 
   }
 }

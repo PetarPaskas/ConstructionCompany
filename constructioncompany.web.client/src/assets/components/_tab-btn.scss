@@ -1,0 +1,40 @@
+/*---TAB BUTTONS---*/
+/*------------------*/
+
+.tab-btn{
+    &,
+    &:link,
+    &:visited{
+        display: block;
+        border:none;
+        outline:none;
+        background-color: $white-color;
+        font-size:1.6rem;
+        padding:6rem 8rem;
+        border-radius:10px;
+        cursor: pointer;
+        width:25rem;
+    }
+
+    &:active, 
+    &:hover{
+    background-color: $smoky-white-color-light;
+    }
+
+    &--with-popout{
+        border-top-left-radius:0;
+    }
+
+    &:focus{
+        outline:none;
+    }
+
+    &--short{
+        padding:4rem 8rem;
+    }
+
+    &--with-content{
+        padding:2rem 4rem;
+        width:auto;
+    }
+}

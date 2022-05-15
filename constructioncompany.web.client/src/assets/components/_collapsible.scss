@@ -1,0 +1,28 @@
+/*---EXPAND BUTTON---*/
+/*------------------*/
+
+.collapsible{
+    display:inline-block;
+    width:100%;
+    position:absolute;
+    bottom:-10%;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    text-align:center;
+
+    &::before{
+        font-size:1.6rem;
+        display:inline-block;
+        width:2.7rem;
+        height: 2.6rem;
+        border-radius:50%;
+        background-color: $green-color-base;
+        transform: rotate(90deg);
+        transition:transform .2s, background-color .15s;
+        content:"\27A4";
+        color:$white-color;
+        text-align: center;
+        padding-top:.2rem;
+    }
+}
