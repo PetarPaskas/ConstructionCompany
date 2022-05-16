@@ -174,13 +174,14 @@ body {
   border-collapse: separate;
   border-radius: 5px;
   background-color: transparent;
+  transform: translateY(-12px);
   /*---Heading---*/
   /*---Body---*/ }
   .users-table .table tr td:first-child,
-  .users-table .table tr th:last-child {
+  .users-table .table tr th:first-child {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px; }
-  .users-table .table tr td:first-child,
+  .users-table .table tr td:last-child,
   .users-table .table tr th:last-child {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px; }
@@ -196,7 +197,7 @@ body {
     background-color: #00987a2c; }
   .users-table .table tbody tr:nth-child(2n+2) {
     background-color: #68c07734; }
-  .users-table .table tbody trr:last-of-type td {
+  .users-table .table tbody tr:last-of-type td {
     border-bottom: 6px solid #009879; }
   .users-table .table tbody tr td {
     letter-spacing: 0.04rem;
@@ -240,7 +241,7 @@ body {
 
 .grid-container {
   grid-template-columns: repeat(12, [column-start] 1fr [column-end]);
-  grid-template-rows: repeat(12, [row-start] 5vh [row-end]); }
+  grid-template-rows: repeat(20, [row-start] 5vh [row-end]); }
   .grid-container .dashboard__menu {
     grid-column: column-start 2/ column-end 5;
     grid-row: row-start 2 / row-end 4;
@@ -248,6 +249,6 @@ body {
     justify-self: start; }
   .grid-container .dashboard__content {
     grid-column: column-start 5 / column-end 12;
-    grid-row: row-start 2 / row-end 4;
-    align-self: center;
-    justify-self: start; }
+    grid-row: row-start 2 / row-end -1;
+    align-self: start;
+    justify-self: center; }
