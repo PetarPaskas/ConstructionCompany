@@ -192,7 +192,23 @@ body {
       color: #fff;
       letter-spacing: 0.03rem;
       font-size: 1.4rem;
-      border: 1px solid #009879; }
+      border: 1px solid #009879;
+      cursor: pointer; }
+      .users-table .table thead tr th:hover {
+        background-color: #008469;
+        border-left: 1px solid #008469;
+        border-right: 1px solid #008469; }
+      .users-table .table thead tr th.active {
+        background-color: #006550;
+        border-left: 1px solid #006550;
+        border-right: 1px solid #006550; }
+      .users-table .table thead tr th .header-text {
+        display: inline-block;
+        padding-right: .5rem; }
+      .users-table .table thead tr th .header-arrow {
+        display: inline-block;
+        visibility: hidden;
+        transition: transform .07s; }
   .users-table .table tbody tr:nth-child(2n+1) {
     background-color: #00987a2c; }
   .users-table .table tbody tr:nth-child(2n+2) {
@@ -204,6 +220,36 @@ body {
     font-size: 1.2rem;
     padding: 1.7rem 1rem;
     border: hidden; }
+  .users-table .table tfoot .pagination-row {
+    border: none; }
+  .users-table .table tfoot .pagination-data {
+    position: relative;
+    border: none; }
+    .users-table .table tfoot .pagination-data .pagination {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: transform .2s, background-color .1s; }
+      .users-table .table tfoot .pagination-data .pagination .page-link, .users-table .table tfoot .pagination-data .pagination .page-link:link, .users-table .table tfoot .pagination-data .pagination .page-link:visited {
+        outline: none;
+        color: #009879; }
+      .users-table .table tfoot .pagination-data .pagination .page-link:hover, .users-table .table tfoot .pagination-data .pagination .page-link:active {
+        background-color: #68c07734;
+        outline: none;
+        box-shadow: none;
+        color: #4e4e4e; }
+      .users-table .table tfoot .pagination-data .pagination .page-link:active {
+        transform: translateY(1px); }
+        .users-table .table tfoot .pagination-data .pagination .page-link:active > .page-item {
+          transform: scale(0.8); }
+      .users-table .table tfoot .pagination-data .pagination .page-link:focus {
+        outline: none;
+        box-shadow: none; }
+      .users-table .table tfoot .pagination-data .pagination .page-link.active {
+        background-color: #009879;
+        color: #f7f7f7; }
+      .users-table .table tfoot .pagination-data .pagination .page-item {
+        transition: transform 0.2; }
 
 .hoverable {
   display: inline-block;

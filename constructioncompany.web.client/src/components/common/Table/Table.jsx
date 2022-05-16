@@ -1,13 +1,18 @@
 import React, {Component} from "react";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
+import TableFooter from "./TableFooter";
+import {orderByProperty} from "../utils";
 
 class Table extends Component{
     //             data:{
-    //                 header:[],
-    //                 body:[]
+    //                 header:[], //should have a name and an id
+    //                 body:[]  //can have anything
     //             }
-    state={
+    //              customTableBody <-- component  <customBodyComponent item={item} index={i} itemOrder={displayIndex}/>
+    //              withRowIndex <-- decides if rows should be numbered based on an index
+
+    state = {
         headerOptions:{
             ordering:{
                 id:null,
@@ -16,11 +21,26 @@ class Table extends Component{
         },
         bodyOptions:{
 
+        },
+        footerOptions:{
+                
+        },
+        pagination:{
+            itemsPerPage:4,
+            currentPage:1,
+        }
+    }
+
+    handlePaginate=(newPage)=>{
+        if(newPage !== this.state.pagination.currentPage){
+            let {pagination} = this.state;
+            pagination.currentPage = newPage;
+
+            this.setState({pagination});
         }
     }
 
     handleOrderBy=(headerId)=>{
-        console.log("Handling order by for header: "+ headerId);
         let {ordering} = this.state.headerOptions;
         if(ordering.id === headerId){
             ordering.direction = ordering.direction === 'asc' ? 'desc' : 'asc';
@@ -28,8 +48,23 @@ class Table extends Component{
             ordering.id = headerId;
             ordering.direction = 'asc';
         }
-        console.log("new ordering", ordering);
-        this.setState({headerOptions:{ordering}});
+
+        const {pagination} = this.state;
+        pagination.currentPage = 1;
+
+        this.setState({headerOptions:{ordering},pagination});
+    }
+
+    orderData=()=>{
+        let data = [];
+        if(this.state.headerOptions.ordering.id){
+            data = orderByProperty(
+                this.props.data.body, //data
+                this.props.data.header.find(h=>h.id == this.state.headerOptions.ordering.id).name, //order name
+                this.state.headerOptions.ordering.direction); //direction
+        }
+
+        return data.length > 0 ? data : this.props.data.body;
     }
 
     renderHeader(){
@@ -43,15 +78,35 @@ class Table extends Component{
             return null;
         }
     }
+
     renderBody(){
         if(this.props.data.body && this.props.data.body.length>0){
+
+           let data = this.orderData();
+           const withRowIndex = this.props.withRowIndex !== undefined && this.props.withRowIndex !== null ? this.props.withRowIndex : true;
+
             return (<TableBody
-                data={this.props.data.body}
-                options={this.state.bodyOptions}
+                data={data}
+                customBodyComponent={this.props.customBodyComponent}
+                withRowIndex={withRowIndex}
+                options={{...this.state.bodyOptions,pagination:{...this.state.pagination}}}
                 />);
         }else{
             return null;
         }
+    }
+
+    renderFooter(){
+        if(this.props.data.body.length >= this.state.pagination.itemsPerPage){
+            const {pagination} = this.state;
+            pagination.pageCount = Math.ceil(this.props.data.body.length / this.state.pagination.itemsPerPage);
+            return (
+                <TableFooter 
+                onPaginate={this.handlePaginate}
+                options={{...this.state.footerOptions,pagination}}
+                />);
+        }
+        return null;
     }
 
     render(){
@@ -59,6 +114,7 @@ class Table extends Component{
         <table className="table">
             {this.renderHeader()}
             {this.renderBody()}
+            {this.renderFooter()}
         </table>);
     }
 }

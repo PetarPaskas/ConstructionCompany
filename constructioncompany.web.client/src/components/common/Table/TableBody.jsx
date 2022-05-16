@@ -1,24 +1,49 @@
 import React, {Component} from "react";
 
 class TableBody extends Component{
-    renderHeaderData = ()=>{
+
+    basicRender=(object)=>{
+        let arr = [];
+        for(let property in object){
+            arr.push(
+                <td key={property}>{object[property] ?? ""}</td>
+            );
+        }
+        return arr;
+    }
+
+    renderBodyData = ()=>{
         if(this.props.data){
-            return this.props.data.map((item,index)=>{
-                return (<tr key={`table-body__${index}`}>
-                    <td>{index+1}</td>
-                    <td>{item.ime ?? ""}</td>
-                    <td>{item.prezime ?? ""}</td>
-                    <td>{item.profesija ?? ""}</td>
-                    <td>{item.radiOd ?? ""}</td>
-                    <td>{item.satnica ? `${item.satnica}din/hr` : ""}</td>
-                    <td>{item.trenutno ?? ""}</td>
-                </tr>);
-            })
+            let {data} = this.props;
+            let {pagination} = this.props.options;
+            let rows = [];
+            for(let i = 0; i<data.length;i++){
+                let displayIndex = i+1;
+                let endIndex = pagination.currentPage * pagination.itemsPerPage;
+                let startIndex = endIndex - pagination.itemsPerPage;
+
+                if(i < endIndex && i >= startIndex){
+                    let item = data[i];
+                    if(!this.props.customBodyComponent){
+                        rows.push(
+                            <tr key={`table-body__${i}`}>
+                            {this.props.withRowIndex && <td>{displayIndex}</td>}
+                            {this.basicRender(item)}
+                            </tr>
+                        );
+                    }else{
+                        let CustomBodyComponent = this.props.customBodyComponent;
+                        rows.push(<CustomBodyComponent key={`CustomBodyKey__${displayIndex}`} item={item} index={i} itemOrder={displayIndex} />);
+                    }
+
+                }
+            }
+            return rows;
         }
     }
     render(){
         return (<tbody>
-            {this.renderHeaderData()}
+            {this.renderBodyData()}
         </tbody>);
     }
 }
