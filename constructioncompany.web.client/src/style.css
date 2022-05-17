@@ -282,10 +282,9 @@ body {
     position: relative;
     border: none; }
     .users-table .table tfoot .pagination-data .pagination {
-      position: absolute;
-      top: 0;
-      left: 0;
       transition: transform .2s, background-color .1s; }
+      .users-table .table tfoot .pagination-data .pagination .page-item {
+        transition: transform 0.2; }
       .users-table .table tfoot .pagination-data .pagination .page-link, .users-table .table tfoot .pagination-data .pagination .page-link:link, .users-table .table tfoot .pagination-data .pagination .page-link:visited {
         outline: none;
         color: #009879; }
@@ -304,8 +303,10 @@ body {
       .users-table .table tfoot .pagination-data .pagination .page-link.active {
         background-color: #009879;
         color: #f7f7f7; }
-      .users-table .table tfoot .pagination-data .pagination .page-item {
-        transition: transform 0.2; }
+    .users-table .table tfoot .pagination-data .pagination {
+      position: absolute;
+      top: 0;
+      left: 0; }
 
 .hoverable {
   display: inline-block;
@@ -366,6 +367,28 @@ body {
   grid-template-columns: repeat(2, 1fr);
   grid-row-gap: 2rem;
   grid-column-gap: 1rem; }
+  .construction-site__content .pagination {
+    transition: transform .2s, background-color .1s; }
+    .construction-site__content .pagination .page-item {
+      transition: transform 0.2; }
+    .construction-site__content .pagination .page-link, .construction-site__content .pagination .page-link:link, .construction-site__content .pagination .page-link:visited {
+      outline: none;
+      color: #009879; }
+    .construction-site__content .pagination .page-link:hover, .construction-site__content .pagination .page-link:active {
+      background-color: #68c07734;
+      outline: none;
+      box-shadow: none;
+      color: #4e4e4e; }
+    .construction-site__content .pagination .page-link:active {
+      transform: translateY(1px); }
+      .construction-site__content .pagination .page-link:active > .page-item {
+        transform: scale(0.8); }
+    .construction-site__content .pagination .page-link:focus {
+      outline: none;
+      box-shadow: none; }
+    .construction-site__content .pagination .page-link.active {
+      background-color: #009879;
+      color: #f7f7f7; }
 
 .construction-site__filters {
   grid-column-start: filters-start;

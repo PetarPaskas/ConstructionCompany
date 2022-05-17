@@ -9,11 +9,11 @@
         border:none;
         outline:none;
         background-color: $white-color;
-        font-size:1.6rem;
-        padding:6rem 8rem;
+        font-size:1.2rem;
+        padding:3rem 4rem;
         border-radius:10px;
         cursor: pointer;
-        width:25rem;
+        width:15rem;
     }
 
     &:active, 
@@ -30,11 +30,11 @@
     }
 
     &--short{
-        padding:4rem 8rem;
+        padding:2rem 4rem;
     }
 
     &--with-content{
-        padding:2rem 4rem;
+        padding:1rem 2rem;
         width:auto;
     }
 }

@@ -1,12 +1,71 @@
-import { Component } from "react";
 import Form from '../common/Form';
+import GridContainer from '../common/GridContainer';
+import DashboardOptions from "./DashboardOptions";
+import {createDashboardOption} from "../common/utils";
+import DashboardBody from './DashboardBody';
 
 class DashboardForm extends Form
-{
+{   
 
+    state={
+        menuPosition:"left",
+        options:[
+            {...createDashboardOption(1,"Radnici","/Dashboard/Radnici","/New")},
+            {...createDashboardOption(2,"Gradilišta","/Dashboard/Gradilista","/New")}
+        ]
+    }
+
+    handleUpdateSelectedOption=(id)=>{
+        if(!this.state.options.find(opt=>opt.id === id).isSelected){
+            const newOptions = this.state.options.map(option=>{
+                if(option.id===id){
+                    return {...option,isSelected:true}
+                }
+                return {...option,isSelected:false}
+            });
+            this.setState({options:newOptions});
+        }
+    }
     
+    checkLocationPath=()=>{
+        const {pathname} = this.props.location;
+        let shouldUpdate = false;
+        let newOptions = this.state.options.map(option => {
+            if(pathname.includes(option.path) && !option.isSelected){
+                shouldUpdate = true;
+                return {...option, isSelected:true};
+            }
+            return {...option,isSelected:false};
+        });
+
+        shouldUpdate && this.setState({options:newOptions});
+    }
+
+    componentDidMount(){
+        this.checkLocationPath();
+    }
+
+    componentDidUpdate(){
+        this.checkLocationPath();
+    }
+
     render(){
-        return (<div>Hello</div>);
+
+        return (
+            <GridContainer
+            positioning={this.state.menuPosition}
+            >
+                <div className='dashboard__menu'>
+                    <DashboardOptions
+                        options={this.state.options}
+                        onUpdateSelectedOption={this.handleUpdateSelectedOption}
+                    />
+                </div>
+                <div className='dashboard__content'>
+                    <DashboardBody />
+                </div>
+            </GridContainer>
+            );
     }
 }
 

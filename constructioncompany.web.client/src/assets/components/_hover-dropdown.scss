@@ -4,6 +4,8 @@
 
 .hover-dropdown{
     font-size:1.6rem;
+    display:inline-block;
+    position:relative;
 
     &:hover{
         .collapsible::before{
@@ -24,6 +26,7 @@
     
     &__main-option{
         position:relative;
+        display:inline-block;
 
         .tab-btn:hover,
         .tab-btn:active{
@@ -39,6 +42,13 @@
         & > .tab-btn{
             border-top-right-radius: 0px;
             border-top-left-radius: 0px;
+            position:relative;
+            text-align:center;
+        }
+
+        & a{
+            text-decoration:none;
+            display:inline-block;
         }
     }
 

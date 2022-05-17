@@ -7,14 +7,14 @@ class Navbar extends Component{
         return(
         <nav className="navbar navbar-light bg-green">
             <ul className="navlist">
-            <li>
+                <li>
                     <NavLink className="nav-btn" to="/Notes">Beležnice</NavLink>
                 </li>
                 <li>
                     <NavLink className="nav-btn" to="/Dashboard">Glavna</NavLink>
                 </li>
                 <li>
-                    <NavLink className="nav-btn" to="/Export">XLS Export</NavLink>
+                <NavLink className="nav-btn" to="/Export">XLS Export</NavLink>
                 </li>
             </ul>
         </nav>

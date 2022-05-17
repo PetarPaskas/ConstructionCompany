@@ -15,7 +15,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "compile-sass":"node-sass src/assets/main.scss public/style.css -w",
+    "compile-sass":"node-sass src/assets/main.scss src/style.css -w",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

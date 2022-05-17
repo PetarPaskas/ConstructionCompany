@@ -1,0 +1,77 @@
+.construction-site-tab{
+
+    &,
+    &:link,
+    &:visited{
+        position:relative;
+        border-radius:20px 0px 20px 0px;
+        background-color: $gradiliste-tab-background-green;
+        border:2px solid $green-color-medium;
+        color: $gradiliste-tab-text-dark;
+    }
+
+    &:hover,
+    &:active{
+        background-color: $gradiliste-tab-background-green-hover;
+        color: $gradiliste-tab-text-dark-hover;
+    }
+
+    &__title{
+        padding-bottom:2rem;
+        letter-spacing:.12rem;
+        font-size:1.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    &__list{
+        padding-left:6rem;
+        list-style: none;
+    }
+
+    &__item{
+        text-align: right;
+        font-size:1.2rem;
+        letter-spacing: .05rem;
+        font-weight: 400;
+        &:not(:last-child){
+            padding-bottom:.5rem;
+        }
+    }
+
+    &__edit-btn{
+        &,
+        &:link,
+        &:visited{
+            position:absolute;
+            z-index:5;
+            bottom:1rem;
+            left:1rem;
+            display:inline-block;
+            width:3rem;
+            height:3rem;
+            border-radius:30%;
+            border:1px solid $gradiliste-tab-text-dark;
+            outline:none;
+            background-color: transparent;
+            text-align:center;
+            cursor:pointer;
+        }
+
+        &:hover,
+        &:active{
+            background-color: $gradiliste-tab-text-dark-transparent;
+            border:1px solid transparent;
+        }
+        &:focus,
+        &:active{
+            outline:none;
+        }
+
+        & > img{
+            width:100%;
+            height:auto;
+        }
+
+    }
+}

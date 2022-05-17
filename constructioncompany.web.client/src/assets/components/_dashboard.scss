@@ -1,0 +1,21 @@
+.dashboard{
+
+}
+.grid-container{
+    grid-template-columns: repeat(12,[column-start] 1fr [column-end]);
+    grid-template-rows: repeat(20, [row-start] 5vh [row-end]);
+        & .dashboard{
+            &__menu{
+                grid-column: column-start 2/ column-end 5;
+                grid-row: row-start 2 / row-end 4;
+                align-self:center;
+                justify-self: start;
+            }
+            &__content{
+                grid-column:column-start 5 / column-end 12;
+                grid-row: row-start 2 / row-end -1;
+                align-self:start;
+                justify-self: center;
+            }
+        }
+}
