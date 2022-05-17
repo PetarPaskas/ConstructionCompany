@@ -8,9 +8,9 @@ class DashboardBody extends Component{
     render(){
         return (
         <Switch>
-            <Route path="/Dashboard/Radnici" component={UsersLayout}/>
-            <Route path="/Dashboard/Gradilista/:id" component={ConstructionSiteForm}/>
-            <Route path="/Dashboard/Gradilista" component={ConstructionSiteSelectorLayout}/>
+            <Route path="/Dashboard/Radnici" render={(props)=><UsersLayout {...props}/>}/>
+            <Route path="/Dashboard/Gradilista/:id" render={(props)=><ConstructionSiteForm {...props}/>}/>
+            <Route path="/Dashboard/Gradilista" render={(props)=><ConstructionSiteSelectorLayout {...props}/>}/>
         </Switch>);
     }
 }

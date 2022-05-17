@@ -55,7 +55,7 @@ class ConstructionSiteSelectorLayout extends Component{
         {
             
             let returnData = pageData(filteredData,this.state.pagination).map((item,index)=>{
-                return <ConstructionSiteTab key={`ConstructionSiteTab__${index}`} data={item}/>
+                return <ConstructionSiteTab history={this.props.history} key={`ConstructionSiteTab__${index}`} data={item}/>
             });
 
             if(returnData.length % 2 !== 0){
