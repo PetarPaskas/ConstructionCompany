@@ -351,14 +351,15 @@ body {
     align-self: center;
     justify-self: start; }
   .grid-container .dashboard__content {
-    grid-column: column-start 5 / column-end 12;
+    grid-column: column-start 4 / column-end 12;
     grid-row: row-start 2 / row-end -1;
     align-self: start;
     justify-self: center; }
 
 .construction-site__layout {
   display: grid;
-  grid-template-columns: [filters-start] 1fr [filters-end] repeat(2, [content-start] 2fr [content-end]) [grid-end]; }
+  grid-template-columns: [filters-start] 1fr [filters-end] repeat(2, [content-start] 2fr [content-end]) [grid-end];
+  grid-column-gap: 1rem; }
 
 .construction-site__content {
   grid-column-start: filters-end;
@@ -389,11 +390,60 @@ body {
     .construction-site__content .pagination .page-link.active {
       background-color: #009879;
       color: #f7f7f7; }
+  .construction-site__content .pagination {
+    justify-self: center; }
 
 .construction-site__filters {
   grid-column-start: filters-start;
-  grid-column-end: filters-end; }
+  grid-column-end: filters-end;
+  display: flex;
+  flex-direction: column; }
+  .construction-site__filters .input-text:not(:last-child) {
+    margin-bottom: 2rem; }
 
 .construction-site__item {
   align-self: start;
   justify-self: center; }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  background-color: #DDF8D6; }
+  .dropdown__open {
+    display: none; }
+  .dropdown__label {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 1rem 3rem; }
+  .dropdown-menu {
+    display: block;
+    visibility: hidden;
+    width: 100%; }
+  .dropdown__open:checked + .dropdown-menu {
+    visibility: visible; }
+
+.input-text {
+  border: 1.5px solid #00B8FF;
+  padding: .7rem .7rem;
+  border-top-left-radius: 10px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start; }
+  .input-text__label {
+    padding: .2rem 0rem .2rem .5rem;
+    border-top-left-radius: 5px;
+    width: 100%;
+    display: block;
+    background-color: #D4F4FF;
+    font-weight: 500;
+    letter-spacing: .1rem;
+    color: #4e4e4e; }
+  .input-text__field {
+    display: inline-block;
+    padding: .2rem .5rem;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    color: #4e4e4e; }
+    .input-text__field:focus {
+      outline: 0.5px solid #00B8FF; }

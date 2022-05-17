@@ -2,7 +2,7 @@
     &__layout{
         display:grid;
         grid-template-columns: [filters-start] 1fr [filters-end] repeat(2,[content-start] 2fr [content-end]) [grid-end];
-
+        grid-column-gap:1rem;
     }
 
     &__content{
@@ -14,11 +14,21 @@
         grid-column-gap:1rem;
 
         @include standardPagination;
+
+        & .pagination{
+            justify-self: center;
+        }
     }
 
     &__filters{
         grid-column-start:filters-start;
         grid-column-end:filters-end;
+        display: flex;
+        flex-direction: column;
+        
+        & .input-text:not(:last-child){
+            margin-bottom:2rem;
+        }
     }
 
     &__item{
