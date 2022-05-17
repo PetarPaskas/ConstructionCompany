@@ -66,7 +66,6 @@ export function orderByProperty(data, name, direction){
     }
 }
 
-
 export function createFakeDataForTable(){
     return ({
         header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:4,name:"Radi Od"},{id:5,name:"Satnica"},{id:6,name:"Trenutno"}],

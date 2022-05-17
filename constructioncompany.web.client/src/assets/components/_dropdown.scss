@@ -1,0 +1,25 @@
+.dropdown{
+    position:relative;
+    display:inline-block;
+    background-color: #DDF8D6;
+
+    &__open{
+        display:none;
+    }
+
+    &__label{
+        box-sizing: border-box;
+        display:inline-block;
+        padding:1rem 3rem;
+    }
+
+    &-menu{
+        display: block;
+        visibility: hidden;
+        width:100%;
+    }
+
+    &__open:checked + &-menu{
+        visibility: visible;
+    }
+}
