@@ -1,7 +1,7 @@
 import React from 'react';
 import {formatDateFunction} from "../../common/utils";
 
-function CustomRadniciTableBody({item, index, itemOrder})
+function CustomUsersTableBody({item, index, itemOrder})
 {
     return (
          <tr key={`table-body__${index}`}>
@@ -15,4 +15,4 @@ function CustomRadniciTableBody({item, index, itemOrder})
         </tr>);
 }
 
-export default CustomRadniciTableBody;
+export default CustomUsersTableBody;

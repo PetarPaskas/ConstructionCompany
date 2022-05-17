@@ -1,14 +1,14 @@
 import { Component } from "react";
 import {Route, Switch} from 'react-router-dom'
-import RadniciLayout from './Radnici/RadniciLayout';
-import GradilisteLayout from './Gradilista/GradilisteLayout';
+import ConstructionSiteLayout from './ConstructionSites/ConstructionSiteLayout';
+import UsersLayout from "./Users/UsersLayout";
 
 class DashboardBody extends Component{
     render(){
         return (
         <Switch>
-            <Route path="/Dashboard/Radnici" component={RadniciLayout}/>
-            <Route path="/Dashboard/Gradilista" component={GradilisteLayout}/>
+            <Route path="/Dashboard/Radnici" component={UsersLayout}/>
+            <Route path="/Dashboard/Gradilista" component={ConstructionSiteLayout}/>
         </Switch>);
     }
 }

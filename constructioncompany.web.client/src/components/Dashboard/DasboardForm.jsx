@@ -27,7 +27,30 @@ class DashboardForm extends Form
         }
     }
     
+    checkLocationPath=()=>{
+        const {pathname} = this.props.location;
+        let shouldUpdate = false;
+        let newOptions = this.state.options.map(option => {
+            if(pathname.includes(option.path) && !option.isSelected){
+                shouldUpdate = true;
+                return {...option, isSelected:true};
+            }
+            return {...option,isSelected:false};
+        });
+
+        shouldUpdate && this.setState({options:newOptions});
+    }
+
+    componentDidMount(){
+        this.checkLocationPath();
+    }
+
+    componentDidUpdate(){
+        this.checkLocationPath();
+    }
+
     render(){
+
         return (
             <GridContainer
             positioning={this.state.menuPosition}

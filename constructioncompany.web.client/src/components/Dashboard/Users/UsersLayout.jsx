@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import Table from "../../common/Table/Table";
-import CustomRadniciTableBody from "./CustomRadniciTableBody";
+import CustomUsersTableBody from "./CustomUsersTableBody";
 import {createFakeDataForTable} from "../../common/utils";
 
-class RadniciLayout extends Component{
+class UsersLayout extends Component{
     state={
         data:{
             header:[],
@@ -22,11 +22,11 @@ class RadniciLayout extends Component{
                 <Table
                     data={this.state.data}
                     withRowIndex={false}
-                    customBodyComponent={CustomRadniciTableBody}
+                    customBodyComponent={CustomUsersTableBody}
                 />
             </div>
         );
     }
 }
 
-export default RadniciLayout;
+export default UsersLayout;

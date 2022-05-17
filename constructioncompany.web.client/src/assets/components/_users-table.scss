@@ -89,48 +89,12 @@
                 position: relative;
                 border:none;
                 
+                @include standardPagination;
+
                 .pagination{
                     position:absolute;
                     top:0;
                     left:0;
-                    transition: transform .2s, background-color .1s;
-
-                    .page-link{
-                        &,
-                        &:link,
-                        &:visited{
-                            outline:none;
-                            color:$table-color;
-                        }
-                        
-                        &:hover,
-                        &:active{
-                            background-color: $table-color-transparent-dark;
-                            outline:none;
-                            box-shadow: none;
-                            color:$text-gray;
-                        }
-
-                        &:active{
-                            transform:translateY(1px);
-                            & > .page-item{
-                                transform: scale(0.8);
-                            }
-                        }
-
-                        &:focus{
-                            outline:none;
-                            box-shadow: none;
-                        }
-
-                        &.active{
-                            background-color: $table-color;
-                            color:$text-light;
-                        }
-                    }
-                    .page-item{
-                        transition: transform 0.2;
-                    }
                 }
             }
         }

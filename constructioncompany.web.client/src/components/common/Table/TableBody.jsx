@@ -17,10 +17,11 @@ class TableBody extends Component{
             let {data} = this.props;
             let {pagination} = this.props.options;
             let rows = [];
+            let endIndex = pagination.currentPage * pagination.itemsPerPage;
+            let startIndex = endIndex - pagination.itemsPerPage;
+
             for(let i = 0; i<data.length;i++){
                 let displayIndex = i+1;
-                let endIndex = pagination.currentPage * pagination.itemsPerPage;
-                let startIndex = endIndex - pagination.itemsPerPage;
 
                 if(i < endIndex && i >= startIndex){
                     let item = data[i];
