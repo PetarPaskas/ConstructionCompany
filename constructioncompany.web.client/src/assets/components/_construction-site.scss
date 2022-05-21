@@ -34,7 +34,7 @@
     &.construction-site--view-form{
         display:grid;
         grid-template-columns: repeat(12,[start-col] 1fr [end-col]);
-        
+        grid-row-gap:5rem;
     }
 
     &__item{
@@ -44,6 +44,7 @@
 
     &__info{
         grid-column: start-col 2 / end-col 8;
+        grid-row:1/2;
 
         & h2{
             color:$mute-color-dark;
@@ -60,6 +61,7 @@
 
    &__side-options{
     grid-column: start-col 10 / end-col 12;
+    grid-row:1/2;
     display:flex;
     flex-direction: column;
 
@@ -92,12 +94,12 @@
         &:visited{
             background-color: darken($mute-color-light,8%) !important;
             box-shadow: none !important;
-            color:$smoky-white-color-light !important;
+            color:$white-color !important;
         }
         &:hover,
         &:active,
         &:focus{
-            color:$smoky-white-color-light !important;
+            color:$white-color !important;
             background-color: darken($mute-color-light,20%) !important;
             outline:none !important;  
             box-shadow: none !important;
@@ -105,7 +107,7 @@
     }
 
     & .btn-danger{
-        color:$smoky-white-color-light !important;
+        color:$white-color !important;
         background-color: $red-color-base;
         box-shadow: none;
             &:hover,
@@ -114,12 +116,12 @@
             background-color: darken($red-color-base,10%) !important; 
             outline:none !important;
             box-shadow: none !important; 
-            color:$smoky-white-color-light !important;
+            color:$white-color !important;
         }
     }
 
     & .btn-primary{
-        color:$smoky-white-color-light !important;
+        color:$white-color !important;
         background-color: $blue-color-base;
         box-shadow: none;
         padding-top:2rem;
@@ -130,9 +132,14 @@
             background-color: darken($blue-color-base,10%) !important;
             outline:none !important; 
             box-shadow: none !important;
-            color:$smoky-white-color-light !important;
+            color:$white-color !important;
         }
     }
+   }
+
+   &__table{
+       grid-column: start-col 2 / end-col 12;
+       grid-row-start:2;
    }
 
 }

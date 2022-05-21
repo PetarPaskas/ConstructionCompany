@@ -406,7 +406,8 @@ body {
 
 .construction-site.construction-site--view-form {
   display: grid;
-  grid-template-columns: repeat(12, [start-col] 1fr [end-col]); }
+  grid-template-columns: repeat(12, [start-col] 1fr [end-col]);
+  grid-row-gap: 5rem; }
 
 .construction-site__item {
   align-self: start;
@@ -414,6 +415,7 @@ body {
 
 .construction-site__info {
   grid-column: start-col 2 / end-col 8;
+  grid-row: 1/2;
   padding: 1rem 2rem;
   border: 0.5px solid #A2AF9F;
   box-shadow: 0px 2px 4px 0px #A2AF9F;
@@ -425,6 +427,7 @@ body {
 
 .construction-site__side-options {
   grid-column: start-col 10 / end-col 12;
+  grid-row: 1/2;
   display: flex;
   flex-direction: column; }
   .construction-site__side-options .btn:not(:first-child) {
@@ -446,23 +449,23 @@ body {
   .construction-site__side-options .btn-warning, .construction-site__side-options .btn-warning:link, .construction-site__side-options .btn-warning:visited {
     background-color: #8c9c89 !important;
     box-shadow: none !important;
-    color: #dfdfdf !important; }
+    color: #fff !important; }
   .construction-site__side-options .btn-warning:hover, .construction-site__side-options .btn-warning:active, .construction-site__side-options .btn-warning:focus {
-    color: #dfdfdf !important;
+    color: #fff !important;
     background-color: #6d7f69 !important;
     outline: none !important;
     box-shadow: none !important; }
   .construction-site__side-options .btn-danger {
-    color: #dfdfdf !important;
+    color: #fff !important;
     background-color: #ec5914;
     box-shadow: none; }
     .construction-site__side-options .btn-danger:hover, .construction-site__side-options .btn-danger:active, .construction-site__side-options .btn-danger:focus {
       background-color: #be470f !important;
       outline: none !important;
       box-shadow: none !important;
-      color: #dfdfdf !important; }
+      color: #fff !important; }
   .construction-site__side-options .btn-primary {
-    color: #dfdfdf !important;
+    color: #fff !important;
     background-color: #00B8FF;
     box-shadow: none;
     padding-top: 2rem;
@@ -471,7 +474,11 @@ body {
       background-color: #0093cc !important;
       outline: none !important;
       box-shadow: none !important;
-      color: #dfdfdf !important; }
+      color: #fff !important; }
+
+.construction-site__table {
+  grid-column: start-col 2 / end-col 12;
+  grid-row-start: 2; }
 
 .dropdown {
   position: relative;

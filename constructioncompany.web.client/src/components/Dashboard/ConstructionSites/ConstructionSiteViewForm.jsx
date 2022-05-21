@@ -1,6 +1,8 @@
-import { Component } from "react";
 import Form from '../../common/Form';
-import {Link} from "react-router-dom";
+import Table from "../../common/Table/Table";
+import { createFakeDataForTableConstructionSite } from "../../common/utils";
+import ConstructionSiteUsersTableCustomBody from "./ConstructionSiteUsersTableCustomBody";
+
 //renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text")
 class ConstructionSiteViewForm extends Form
 {
@@ -13,7 +15,11 @@ class ConstructionSiteViewForm extends Form
     }
 
     state={
-        shouldOpenForm:false
+        shouldOpenForm:false,
+        usersData:{
+            header:[],
+            body:[]
+        }
     }
 
     renderSideOptions(){
@@ -44,6 +50,10 @@ class ConstructionSiteViewForm extends Form
         console.log("Opening notes for "+id);
     }
 
+    componentDidMount(){
+        const data = createFakeDataForTableConstructionSite();
+        this.setState({usersData:data});
+    }
 
     render(){
         return (
@@ -62,6 +72,13 @@ class ConstructionSiteViewForm extends Form
                 </div>
             </div>
             {this.renderSideOptions()}
+            <div className="construction-site__table users-table">
+                <Table
+                 data={this.state.usersData}
+                 withRowIndex={false}
+                 customTableBody={<ConstructionSiteUsersTableCustomBody/>}
+                />
+            </div>
         </div>);
     }
 }
