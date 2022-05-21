@@ -407,7 +407,8 @@ body {
 .construction-site.construction-site--view-form {
   display: grid;
   grid-template-columns: repeat(12, [start-col] 1fr [end-col]);
-  grid-row-gap: 5rem; }
+  grid-row-gap: 5rem;
+  padding-bottom: 10rem; }
 
 .construction-site__item {
   align-self: start;

@@ -35,6 +35,7 @@
         display:grid;
         grid-template-columns: repeat(12,[start-col] 1fr [end-col]);
         grid-row-gap:5rem;
+        padding-bottom: 10rem;
     }
 
     &__item{
