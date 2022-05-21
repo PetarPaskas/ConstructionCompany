@@ -1,6 +1,7 @@
 import { Component } from "react";
+import Form from '../../common/Form';
 
-class ConstructionSiteForm extends Component
+class ConstructionSiteForm extends Form
 {
     constructor(props){
         super(props);
@@ -10,7 +11,10 @@ class ConstructionSiteForm extends Component
         }
     }
     render(){
-        return <div>AISHFHOIASHFOIAJSOFI</div>;
+        return (
+        <div className="construction-site">
+            {this.renderInputField("form-group", "proba", "", "Unesi penis", "")}
+        </div>);
     }
 }
 export default ConstructionSiteForm;

@@ -60,7 +60,7 @@ class Table extends Component{
         if(this.state.headerOptions.ordering.id){
             data = orderByProperty(
                 this.props.data.body, //data
-                this.props.data.header.find(h=>h.id == this.state.headerOptions.ordering.id).name, //order name
+                this.props.data.header.find(h=>h.id === this.state.headerOptions.ordering.id).name, //order name
                 this.state.headerOptions.ordering.direction); //direction
         }
 
