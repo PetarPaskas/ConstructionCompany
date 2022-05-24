@@ -20,9 +20,9 @@ class InputText extends Component{
         let elementId = this.props.id ?? `InputText_${Math.ceil(Math.random()*1000)}`;
         return (    
         <div className="input-text">
-        <label className="input-text__label" htmlFor={elementId}>{this.props.title ?? ""}</label>
-        <input className="input-text__field" onChange={this.customAction} type="text" id={elementId} name={this.props.name ?? elementId}/>
-    </div>);
+            <label className="input-text__label" htmlFor={elementId}>{this.props.title ?? ""}</label>
+            <input className="input-text__field" onChange={this.customAction} type="text" id={elementId} name={this.props.name ?? elementId}/>
+        </div>);
 
     }
 

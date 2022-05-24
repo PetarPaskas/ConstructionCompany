@@ -8,9 +8,8 @@ class ConstructionSiteViewForm extends Form
 {
     constructor(props){
         super(props);
-        console.log(props);
         if(props.match.params.id){
-            console.log(props.match.params.id);
+            console.log("ConstructionSiteViewForm id =>", props.match.params.id);
         }
     }
 
@@ -63,12 +62,14 @@ class ConstructionSiteViewForm extends Form
                         <h2 className="col">Gradilište 2</h2>
                     </div>
                 <div className="row">
-                    {this.renderInputField("form-group col-6", "proba", "asf", "Unesi penis", "")}
-                    {this.renderInputField("form-group col-6", "probaa", "asf", "Unesi penis", "")}
+                    {this.renderInputField("form-group col", "proba", "asf", "Unesi nešto lepo", "")}
+                    {this.renderInputField("form-group col", "probaa", "asf", "Unesi nešto lepo", "")}
+                    {this.renderInputField("form-group col", "probaa", "asf", "Unesi nešto lepo", "")}
                 </div>
                 <div className="row">
-                    {this.renderInputField("form-group col-6", "probaaa", "asf", "Unesi penis", "")}
-                    {this.renderInputField("form-group col-6", "probaaaa", "asf", "Unesi penis", "")}
+                    {this.renderInputField("form-group col", "probaaa", "asf", "Unesi nešto lepo", "")}
+                    {this.renderInputField("form-group col", "probaaaa", "asf", "Unesi nešto lepo", "")}
+                    {this.renderInputField("form-group col", "probaa", "asf", "Unesi nešto lepo", "")}
                 </div>
             </div>
             {this.renderSideOptions()}
@@ -76,7 +77,7 @@ class ConstructionSiteViewForm extends Form
                 <Table
                  data={this.state.usersData}
                  withRowIndex={false}
-                 customTableBody={<ConstructionSiteUsersTableCustomBody/>}
+                 customTableBody={ConstructionSiteUsersTableCustomBody}
                 />
             </div>
         </div>);
