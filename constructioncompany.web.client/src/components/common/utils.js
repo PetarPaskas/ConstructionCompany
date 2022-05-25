@@ -80,6 +80,24 @@ export function createFakeDataForTable(){
     });
 }
 
+function wrapInHourly(num){
+    return `${num}din/hr`;
+}
+
+export function createFakeDataForTableConstructionSite(){
+    return ({
+        header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],
+        body:[
+            {id:1,ime:"AJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(500)},
+            {id:2,ime:"BJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(600)},
+            {id:3,ime:"Janko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(700)},
+            {id:4,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(800)},
+            {id:5,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(900)},
+            {id:6,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(1000)}
+        ]
+    });
+}
+
 export function createFakeDataForConstructionSite(){
     return ([
         {

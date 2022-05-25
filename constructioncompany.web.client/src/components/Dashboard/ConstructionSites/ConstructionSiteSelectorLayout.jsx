@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {createFakeDataForConstructionSite, pageData, getFilter} from "../../common/utils";
+import {createFakeDataForConstructionSite, pageData } from "../../common/utils";
 import ConstructionSiteTab from "../../common/ConstructionSiteTab";
 import Pagination from "../../common/Pagination";
 import ConstructionSiteFilters from "./ConstructionSiteFilters";

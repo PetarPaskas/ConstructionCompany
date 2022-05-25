@@ -31,10 +31,116 @@
         }
     }
 
+    &.construction-site--view-form{
+        display:grid;
+        grid-template-columns: repeat(12,[start-col] 1fr [end-col]);
+        grid-row-gap:5rem;
+        padding-bottom: 10rem;
+    }
+
     &__item{
         align-self:start;
         justify-self:center;
     }
 
+    &__info{
+        grid-column: start-col 2 / end-col 8;
+        grid-row:1/2;
+
+        & h2{
+            color:$mute-color-dark;
+        }
+
+        padding:1rem 2rem;
+        border:.5px solid $mute-color-light;
+        box-shadow:0px 2px 4px 0px $mute-color-light;
+        border-radius:20px;        
+        &.container .row:not(:first-child) {
+            margin-top:2rem;
+        }
+    }
+
+   &__side-options{
+    grid-column: start-col 10 / end-col 12;
+    grid-row:1/2;
+    display:flex;
+    flex-direction: column;
+
+    & .btn:not(:first-child){
+        margin-top:1rem;
+    }
+
+    & .btn-warning,
+    & .btn-danger,
+    & .btn-primary{
+    color:$smoky-white-color-light;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    border:none; 
+    border-radius:5px;
+    }
+
+    & .btn-warning:active,
+    & .btn-danger:active,
+    & .btn-primary:active{
+        transform:translateY(2px);
+    }
+
+
+    & .btn-warning{
+        &,
+        &:link,
+        &:visited{
+            background-color: darken($mute-color-light,8%) !important;
+            box-shadow: none !important;
+            color:$white-color !important;
+        }
+        &:hover,
+        &:active,
+        &:focus{
+            color:$white-color !important;
+            background-color: darken($mute-color-light,20%) !important;
+            outline:none !important;  
+            box-shadow: none !important;
+        }
+    }
+
+    & .btn-danger{
+        color:$white-color !important;
+        background-color: $red-color-base;
+        box-shadow: none;
+            &:hover,
+            &:active,
+            &:focus{
+            background-color: darken($red-color-base,10%) !important; 
+            outline:none !important;
+            box-shadow: none !important; 
+            color:$white-color !important;
+        }
+    }
+
+    & .btn-primary{
+        color:$white-color !important;
+        background-color: $blue-color-base;
+        box-shadow: none;
+        padding-top:2rem;
+        padding-bottom:2rem;
+        &:hover,
+        &:active,
+        &:focus{
+            background-color: darken($blue-color-base,10%) !important;
+            outline:none !important; 
+            box-shadow: none !important;
+            color:$white-color !important;
+        }
+    }
+   }
+
+   &__table{
+       grid-column: start-col 2 / end-col 12;
+       grid-row-start:2;
+   }
 
 }
