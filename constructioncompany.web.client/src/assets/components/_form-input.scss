@@ -89,4 +89,17 @@
         }
     }
 
+    &__button{
+        border-radius:15px;
+        padding:.5rem 1rem;
+        color:$text-gray;
+
+        &--green{
+            @include createButtonColor($green-color-base);
+        }
+        &--yellow{
+            @include createButtonColor($mute-color-light);
+        }
+    }
+
 }

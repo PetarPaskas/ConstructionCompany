@@ -20,42 +20,29 @@ class Form extends Component{
         }
 
         let error = this.validate(elementName, newValue);
-        if(!error){
-            //if validation was a success
-            if(!this.state.data[elementName]){
-                console.error("Please provide a state data object for storing values.");
-                return;
-            }
-            const {data:newData} = this.state;
-            newData[elementName] = newValue;
-
-            this.setState({data:newData});
-        }else{
             //If validation didn't pass
-            if(!this.state.errors){
-                console.error("Please provide a state error object for storing errors.");
-                return;
-            }
-
-            let {errors:newErrors} = this.state;
-
-            if(error.length > 0){
-                newErrors[elementName] = error;
-            }else{
-                delete newErrors[elementName];
-            }
-
-            this.setState({errors:newErrors});
+        if(this.state.errors === undefined){
+            console.error("Please provide a state error object for storing errors.");
+            return;
         }
+        console.log("Error =>",error);
+        let {errors:newErrors} = this.state;
+        if(!error){
+            delete newErrors[elementName]
+        }
+        else{
+            newErrors[elementName] = error;
+        }
+
+        //setting data
+        const {data:newData} = this.state;
+        newData[elementName] = newValue;
+
+        this.setState({data:newData, errors:newErrors});
     }
 
     validate=(elementName, newValue)=>{
-        let result = this.schema[elementName](newValue)
-        if(!result || result.length === 0)
-        {
-            return false;
-        }
-        return result;
+        return this.schema[elementName](newValue);
     }
 
     renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text"){
@@ -67,7 +54,7 @@ class Form extends Component{
             name={name}
             value={value}
             labelPlaceholder={labelPlaceholder}
-            errorMessage={errorMessage}
+            errorMessage={this.state.errors[name] ?? ""}
             onChange={this.handleChange}
         />);
     }
