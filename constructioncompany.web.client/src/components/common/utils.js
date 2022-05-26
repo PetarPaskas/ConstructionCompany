@@ -66,6 +66,85 @@ export function orderByProperty(data, name, direction){
     }
 }
 
+export function getSelectedOption(options){
+    return options.find(el=>el.isSelected);
+}
+
+
+export function translateEngToSrb(name){
+    const translations={
+        name:"Ime",
+        surname:"Prezime",
+        nickname:"Nadimak",
+        phoneNumber:"Broj telefona",
+        employmentStartDate: "Začetak radnog odnosa",
+        employmentEndDate: "Kraj radnog odnosa"
+    }
+
+    return translations[name];
+}
+//////////////////////////////////    VALIDATION    //////////////////////////////////////
+
+function isLongerThan(val, length){
+    if(val.length > length)
+    return true;
+
+    return null;
+}
+
+function isShorterThan(val, length){
+    if(val.length < length)
+    return true;
+
+    return null;
+}
+
+function isNullOrEmpty(val){
+    if(val === null || val === undefined || val.length === 0){
+        return true;
+    }
+
+    return null;
+}
+
+function commonReqValidate(val, prop){
+    if(isNullOrEmpty(val))
+    return `${translateEngToSrb(prop)} ne sme biti prazno.`;
+
+    return commonValidate(val,prop);
+}
+
+function commonValidate(val, prop){
+    if(isLongerThan(val,30))
+    return `${translateEngToSrb(prop)} ne sme biti duže od 30 karaktera.`
+
+    if(isShorterThan(val,5))
+    return `${translateEngToSrb(prop)} ne sme biti kraće od 5 karaktera.`
+
+    return null;
+}
+
+function commonUnreqValidate(val, prop){
+    if(isNullOrEmpty(val))
+    return null;
+
+    return commonValidate(val,prop);
+}
+
+export function generateSchemaForAddEditUserForm(){
+    return {
+        name:(newVal)=>commonReqValidate(newVal,"name"),
+        surname:(newVal)=>commonReqValidate(newVal,"surname"),
+        nickname:(newVal)=>commonUnreqValidate(newVal,"nickname"),
+        phoneNumber:(newVal)=>commonUnreqValidate(newVal,"phoneNumber"),
+        employmentStartDate:(newVal)=>commonReqValidate(newVal,"employmentStartDate"),
+        employmentEndDate:(newVal)=>commonUnreqValidate(newVal,"employmentEndDate"),
+        hourlyRate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("hourlyRate")} ne sme biti prazno` : null)
+    }
+}
+
+//////////////////////////////////    VALIDATION    //////////////////////////////////////
+
 export function createFakeDataForTable(){
     return ({
         header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:4,name:"Radi Od"},{id:5,name:"Satnica"},{id:6,name:"Trenutno"}],

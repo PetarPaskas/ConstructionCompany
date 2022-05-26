@@ -1,13 +1,16 @@
 .dropdown{
     position:relative;
-    display:inline-block;
+    display:block;
     max-width: 20rem;
+    text-align:center;
 
     &__open{
         display:none;
     }
 
-    &__label{
+    &__label{ 
+        display:inline-block;
+        min-width: 80%;
         background-color: $white-color-transparent;
         border:1.5px solid $blue-color-medium;
         border-radius: 20px;
@@ -45,6 +48,10 @@
         width:100%;
         padding:.5rem 0rem;
 
+        &.active{
+            background:rgba($blue-color-light,.6%);
+        }
+
         &::before{
             content:'';
             display: inline-block;
@@ -64,6 +71,42 @@
             &::before{
                 visibility: visible;
                 opacity:1;
+            }
+        }
+
+        &--multiselect{
+            display:inline-grid;
+            grid-template-columns: repeat(2,1fr);
+            padding:0rem 0rem;
+            &::before{
+                display:none;
+            }
+
+            &:hover{
+                background-color: transparent;
+            }
+            
+            & span[data-type="confirm_selection"],
+            & span[data-type="reset_selection"]{
+                display: inline-block;
+                text-align: center;
+                width:100%;
+                height: 100%;
+                padding:0.2rem 0rem;
+                
+            }
+
+            & span[data-type="confirm_selection"]{
+                background-color: rgba($green-color-medium,.3%);
+                &:hover{
+                    background-color: rgba($green-color-medium,.7%);
+                }
+            }
+            & span[data-type="reset_selection"]{
+                background-color: rgba($red-color-base,.3%);
+                &:hover{
+                    background-color: rgba($red-color-base,.7%);
+                }
             }
         }
     }
