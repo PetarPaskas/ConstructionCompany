@@ -66,6 +66,10 @@ export function orderByProperty(data, name, direction){
     }
 }
 
+export function getSelectedOption(options){
+    return options.find(el=>el.isSelected);
+}
+
 
 export function translateEngToSrb(name){
     const translations={

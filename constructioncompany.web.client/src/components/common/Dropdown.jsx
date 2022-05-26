@@ -2,20 +2,84 @@ import { Component } from "react";
 
 class Dropdown extends Component{
 
-    constructor(props){
-        super(props);
-
-        if(props && props.length > 0){
-            this.defaultSelectedOption = props.options.find(el=>el.isSelected);
-        }
-        else{
-            this.defaultSelectedOption = false;
-        }
-
+    state={
+        shouldRenderOptions:false,
+        defaultSelectedOption:false,
+        isMultiselect:this.props.multiSelect,
+        selection: this.props.selection,
+        //multiselectBuffer:[]
     }
 
-    state={
-        shouldRenderOptions:false
+    updateDefaultSelectedOption=()=>{
+        const {options} = this.props;
+        const {defaultSelectedOption:currOption} = this.state;
+        let newOption = false;
+        if(options && options.length > 0){
+            newOption = options.find(el=>el.isSelected);
+        }
+
+        if(currOption !== newOption){
+            let prevUpdated = false;
+            if(typeof(currOption) === 'object' && typeof(newOption) === 'object'){
+                if(currOption.id !== newOption.id){
+                    prevUpdated = true;
+                    this.setState({defaultSelectedOption:newOption});
+                }
+            }
+            if(!prevUpdated){
+                this.setState({defaultSelectedOption:newOption});
+            }
+        }
+    }
+
+
+    handleDropdownClick=(e, isFromMultiSelect = false)=>{
+
+        !isFromMultiSelect && this.setState({shouldRenderOptions:false});
+
+        const data = {
+            id:e.target.dataset.optionId,
+            value: e.target.dataset.optionValue
+        };
+
+        const {selection} = e.target.dataset;
+
+        this.props.handleDropdownClick(data,selection);
+    }
+
+    componentDidMount(){
+        this.updateDefaultSelectedOption();
+    }
+    componentDidUpdate(){
+        this.updateDefaultSelectedOption();
+    }
+
+    handleMultiSelect=(e)=>{
+        // const {multiselectBuffer} = this.state;
+
+        // multiselectBuffer.push({
+        //     data:{
+        //         id:e.target.dataset.optionId, 
+        //         value: e.target.dataset.optionValue
+        //     },
+        //     selection:e.target.dataset.selection
+        // });
+
+        this.handleDropdownClick(e, true);
+    }
+
+    finishMultiSelect=(e)=>{
+        //let {multiselectBuffer} = this.state;
+        if(e.target.dataset.type === "confirm_selection"){
+            //multiselectBuffer = [];
+        }
+
+        if(e.target.dataset.type === "reset_selection"){
+           this.props.onResetSelection(this.state.selection);
+        }
+
+       // this.setState({shouldRenderOptions:false, multiselectBuffer: multiselectBuffer});
+       this.setState({shouldRenderOptions:false});
     }
 
     renderOptions(){
@@ -24,12 +88,16 @@ class Dropdown extends Component{
         {
             return options.map((option,index)=>(
             <li key={`Option_${index}`} 
-                className="dropdown__item"
+                className={`dropdown__item ${option.isSelected ? "active" : ""}`}
                 data-option-id={option.id} 
                 data-option-value={option.value} 
+                data-selection={this.state.selection}
                 onClick={(e)=>{
-                    this.setState({shouldRenderOptions:false})
-                    this.props.handleDropdownClick(e);
+                    if(this.state.isMultiselect){
+                       this.handleMultiSelect(e);
+                    }else{
+                        this.handleDropdownClick(e);
+                    }
                 }}
             >
                 {option.name}
@@ -38,14 +106,35 @@ class Dropdown extends Component{
         else return null;
     }
 
+    renderMultiSelectOptions(){
+        return (<li key="Option__multiselect"
+                className={`dropdown__item dropdown__item--multiselect`}
+            >
+               <span data-type="confirm_selection" onClick={this.finishMultiSelect}>&#10003;</span>
+               <span data-type="reset_selection" onClick={this.finishMultiSelect}>&#10008;</span>
+            </li>);
+    }
+
+    renderLabelText=()=>{
+        return this.state.isMultiselect ? this.props.name ? 
+                    `Izaberi ${this.props.name}` : 
+                    "Izaberi":
+        (this.state.defaultSelectedOption ?  
+                    `${this.state.defaultSelectedOption.name}` : 
+                    this.props.name ? 
+                        `Izaberi ${this.props.name}` : 
+                        "Izaberi");
+    }
+
     renderDropdown(){
         const elementId = this.props.id ?? `Dropdown_${Math.floor(Math.random()*1000)}`;
         return (    
         <div className="dropdown">
-            <label className="dropdown__label" htmlFor={elementId}>{this.defaultSelectedOption ?  `${this.defaultSelectedOption.name}` : this.props.name ? `Izaberi ${this.props.name}` : "Izaberi"}</label>
+            <label className="dropdown__label" htmlFor={elementId}>{this.renderLabelText()}</label>
             <input type="checkbox" onChange={()=>{this.setState({shouldRenderOptions:!this.state.shouldRenderOptions})}} checked={this.state.shouldRenderOptions} className="dropdown__open" id={elementId} name={elementId}/>
             <ul className="dropdown__menu">
             {this.state.shouldRenderOptions && this.renderOptions()}
+            {this.state.isMultiselect && this.renderMultiSelectOptions()}
             </ul>
     </div>);
     }

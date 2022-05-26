@@ -25,7 +25,7 @@ class Form extends Component{
             console.error("Please provide a state error object for storing errors.");
             return;
         }
-        console.log("Error =>",error);
+        console.log("Form.jsx:handleChange Error =>",error);
         let {errors:newErrors} = this.state;
         if(!error){
             delete newErrors[elementName]
@@ -60,17 +60,34 @@ class Form extends Component{
     }
 
     //IF USING DROPDOWNS, CREATE A CUSTOM onDropdownClick METHOD WHICH HANDLES THE CLICK
-    handleDropdownClick=(e)=>{
+    handleDropdownClick=(data, selection)=>{
 
-        const data = {
-            id:e.target.dataset.optionId,
-            value: e.target.dataset.optionValue
-        };
-
-        this.onDropdownClick(e, data);
+        this.onDropdownClick(data, selection);
     }
 
-    renderDropdown(options, name, stylingOptions){
+    submitNewOptionsSelection=(paramData,selection, keepOriginal = false)=>{
+        const {data:newData} = this.state;
+        const options = newData[selection].map(el=>{
+            if(paramData.id === el.id && paramData.value === el.value)
+                return ({...el, isSelected:!el.isSelected});
+            else
+                return keepOriginal ? ({...el}) : ({...el, isSelected:false});
+        });
+        newData[selection] = options;
+        this.setState({data:newData});
+    }
+
+    handleResetSelection=(selection)=>{
+       let resetData = [...this.state.data[selection]].map(el=>({...el,isSelected:false}));
+    
+       const {data} = this.state;
+       data[selection]= resetData;
+
+       this.setState({data});
+    
+    }
+
+    renderDropdown(options, name, stylingOptions, selection, multiSelect = false){
         const {wrapperStyle, wrapperClassName} = stylingOptions;
         
         return(
@@ -78,7 +95,10 @@ class Form extends Component{
             <Dropdown
             options={options}
             name={name}
+            selection={selection}
+            multiSelect={multiSelect}
             handleDropdownClick={this.handleDropdownClick}
+            onResetSelection={this.handleResetSelection}
             />
         </div>);
     }
