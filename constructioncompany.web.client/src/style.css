@@ -601,7 +601,8 @@ body {
     border: 1px solid #0082C7;
     border-radius: 10px;
     padding: .5rem 1rem;
-    order: 2; }
+    order: 2;
+    color: #353535; }
     .form-input__input:focus {
       outline: none;
       box-shadow: 0px 0px 0.7rem #00B8FF; }
@@ -609,6 +610,9 @@ body {
       color: #3F4A3C;
       font-weight: 400;
       letter-spacing: .1rem; }
+    .form-input__input:disabled {
+      background-color: white;
+      color: #353535; }
   .form-input__input:not(:placeholder-shown) + .form-input__label {
     transform: translateY(0rem);
     visibility: visible;

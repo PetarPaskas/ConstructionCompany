@@ -5,7 +5,7 @@ class ConstructionSiteTab extends Component{
     handleConstructionSiteEdit=()=>{
         if(this.props.data){
             let {data} = this.props;
-            console.log(`Editing ${data.ConstructionSiteId}`);
+            this.props.history.push(`/Dashboard/Gradilista/Edit/${data.ConstructionSiteId}`);
         }
     }
 

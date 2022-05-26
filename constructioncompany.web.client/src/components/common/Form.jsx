@@ -45,8 +45,7 @@ class Form extends Component{
         return this.schema[elementName](newValue);
     }
 
-    renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text"){
-        // utils.formatInputLabel('name') => `Unesi ${translations[`form_${name}`]}`
+    renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text", disabled = false){
         return (
         <FormInput 
             containerClassNameAppender={containerClassNameAppender}
@@ -56,6 +55,7 @@ class Form extends Component{
             labelPlaceholder={labelPlaceholder}
             errorMessage={this.state.errors[name] ?? ""}
             onChange={this.handleChange}
+            isDisabled={disabled}
         />);
     }
 

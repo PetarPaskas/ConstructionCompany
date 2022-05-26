@@ -1,6 +1,6 @@
 import React from "react";
 
-function FormInput({onChange, containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type}){
+function FormInput({onChange, containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type, isDisabled}){
     const idGen = `${Math.ceil(Math.random()*1000)}-${name}`;
     return(
     <div className={`form-input ${containerClassNameAppender ?? ""}`}>
@@ -12,6 +12,7 @@ function FormInput({onChange, containerClassNameAppender, name, value, labelPlac
             name={name} 
             id={idGen}
             value={value ?? ""}
+            disabled={isDisabled}
             />
         <label 
             className="form-input__label" 

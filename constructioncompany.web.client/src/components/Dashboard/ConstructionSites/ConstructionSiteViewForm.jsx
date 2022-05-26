@@ -18,12 +18,21 @@ class ConstructionSiteViewForm extends Form
         usersData:{
             header:[],
             body:[]
+        },
+        data:{
+            name:"testData",
+            address:"testData",
+            cityName:"testData",
+            dateStarted:"testData",
+            expectedEndDate:"testData"
+        },
+        errors:{
+
         }
     }
 
     renderSideOptions(){
         const currentId = this.props.match.params.id;
-        console.log("CurrentId => " + currentId);
         return (
         <div className="construction-site__side-options">
             <button onClick={()=>{this.openAddEditForm(currentId)}}className="btn btn-warning">Menjaj</button>
@@ -32,8 +41,9 @@ class ConstructionSiteViewForm extends Form
         </div>);
     }
     openAddEditForm=(id)=>{
-        console.log("Opening form for "+id);
-        this.setState({shouldOpenForm:true});
+        const loaction = "/Dashboard/Gradilista/Edit/" + id;
+        this.props.history.push(loaction)
+        //this.setState({shouldOpenForm:true});
     }
 
     closeAddEditForm=(id)=>{
@@ -55,21 +65,21 @@ class ConstructionSiteViewForm extends Form
     }
 
     render(){
+        const {data} = this.state;
         return (
         <div className="construction-site construction-site--view-form">
             <div className="construction-site__info container">
                 <div className="row">
-                        <h2 className="col">Gradilište 2</h2>
+                        <h2 className="col">{data.name}</h2>
                     </div>
                 <div className="row">
-                    {this.renderInputField("form-group col", "proba", "asf", "Unesi nešto lepo", "")}
-                    {this.renderInputField("form-group col", "probaa", "asf", "Unesi nešto lepo", "")}
-                    {this.renderInputField("form-group col", "probaa", "asf", "Unesi nešto lepo", "")}
+                    {this.renderInputField("form-group col", "address", data.address, "Adresa", "", "text", true)}
+                    {this.renderInputField("form-group col", "cityName", data.cityName, "Grad", "", "text", true)}
                 </div>
                 <div className="row">
-                    {this.renderInputField("form-group col", "probaaa", "asf", "Unesi nešto lepo", "")}
-                    {this.renderInputField("form-group col", "probaaaa", "asf", "Unesi nešto lepo", "")}
-                    {this.renderInputField("form-group col", "probaa", "asf", "Unesi nešto lepo", "")}
+                {/*renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text", disabled) */}
+                    {this.renderInputField("form-group col", "dateStarted", data.dateStarted, "Datum začetka", "", "text", true)}
+                    {this.renderInputField("form-group col", "expectedEndDate", data.expectedEndDate, "Datum roka", "", "text", true)}
                 </div>
             </div>
             {this.renderSideOptions()}
@@ -77,7 +87,7 @@ class ConstructionSiteViewForm extends Form
                 <Table
                  data={this.state.usersData}
                  withRowIndex={false}
-                 customTableBody={ConstructionSiteUsersTableCustomBody}
+                 customBodyComponent={ConstructionSiteUsersTableCustomBody}
                 />
             </div>
         </div>);
