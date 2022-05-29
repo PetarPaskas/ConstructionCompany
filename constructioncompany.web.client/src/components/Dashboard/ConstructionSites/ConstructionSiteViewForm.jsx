@@ -15,10 +15,15 @@ class ConstructionSiteViewForm extends Form
         }
     }
 
+    decideView=()=>{
+        return (this.props.match.path === "/Dashboard/Gradilista/Edit/:id" ? 
+                true : 
+                (this.props.match.params.id === 'New' ? true : false));
+    }
+
     state={
         currentId:this.props.match.params.id,
-        shouldOpenForm:false,
-        isEditView:(this.props.match.params.id === 'New' ? true : false),
+        isEditView: this.decideView(),
         usersData:{
             header:[],
             body:[]
@@ -33,6 +38,9 @@ class ConstructionSiteViewForm extends Form
             citiesOptions:[
                 {id:"1",name:'Beograd',value:'b-g', isSelected:false},
                 {id:"2",name:"Slankamen",value:'skmn', isSelected:false}
+            ],
+            workerList:[
+
             ]
         },
         errors:{
@@ -151,7 +159,15 @@ class ConstructionSiteViewForm extends Form
     }
 
     chooseWorkerOnClick=(id)=>{
-        console.log("Selected worker => "+id);
+       const data = {...this.state.data};
+       let newList = [];
+       if(data.workerList.find(el=>el === id)){
+           newList = data.workerList.filter(el=>el !== id);
+       }else{
+           newList = [...data.workerList, id];
+       }
+        data.workerList = newList;        
+       this.setState({data});
     }
 
     onDropdownClick=(data, selection)=>{

@@ -11,6 +11,7 @@ class DashboardBody extends Component{
         <Switch>
             <Route path="/Dashboard/Radnici/:id" render={(props)=><AddEditUserForm {...props}/>} />
             <Route path="/Dashboard/Radnici" render={(props)=><UsersLayout {...props}/>}/>
+            <Route path="/Dashboard/Gradilista/Edit/:id" render={(props)=><ConstructionSiteViewForm {...props}/>} />
             <Route path="/Dashboard/Gradilista/:id" render={(props)=><ConstructionSiteViewForm {...props}/>} />
             <Route path="/Dashboard/Gradilista" render={(props)=><ConstructionSiteSelectorLayout {...props}/>} />
         </Switch>);

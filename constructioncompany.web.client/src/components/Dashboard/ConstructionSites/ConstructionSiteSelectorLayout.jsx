@@ -113,7 +113,6 @@ class ConstructionSiteSelectorLayout extends Component{
             );
         }
         return filters;
-        
     }
 
     renderInitialLayout(){
