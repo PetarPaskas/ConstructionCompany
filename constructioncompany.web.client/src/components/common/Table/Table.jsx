@@ -9,7 +9,7 @@ class Table extends Component{
     //                 header:[], //should have a name and an id
     //                 body:[]  //can have anything
     //             }
-    //              customTableBody <-- component  <customBodyComponent item={item} index={i} itemOrder={displayIndex}/>
+    //              customBodyComponent <-- component  <customBodyComponent item={item} index={i} itemOrder={displayIndex}/>
     //              withRowIndex <-- decides if rows should be numbered based on an index
 
     state = {
@@ -79,6 +79,13 @@ class Table extends Component{
         }
     }
 
+    handleCustomBodyAction=(data)=>{
+        if(this.props.customBodyAction){
+            this.props.customBodyAction(data);
+        }
+    }
+
+
     renderBody(){
         if(this.props.data.body && this.props.data.body.length>0){
 
@@ -90,6 +97,7 @@ class Table extends Component{
                 customBodyComponent={this.props.customBodyComponent}
                 withRowIndex={withRowIndex}
                 options={{...this.state.bodyOptions,pagination:{...this.state.pagination}}}
+                onCustomChange={this.handleCustomBodyAction}
                 />);
         }else{
             return null;

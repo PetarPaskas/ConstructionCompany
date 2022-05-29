@@ -78,7 +78,8 @@ export function translateEngToSrb(name){
         nickname:"Nadimak",
         phoneNumber:"Broj telefona",
         employmentStartDate: "Začetak radnog odnosa",
-        employmentEndDate: "Kraj radnog odnosa"
+        employmentEndDate: "Kraj radnog odnosa",
+        hourlyRate: "Satnica"
     }
 
     return translations[name];
@@ -139,7 +140,7 @@ export function generateSchemaForAddEditUserForm(){
         phoneNumber:(newVal)=>commonUnreqValidate(newVal,"phoneNumber"),
         employmentStartDate:(newVal)=>commonReqValidate(newVal,"employmentStartDate"),
         employmentEndDate:(newVal)=>commonUnreqValidate(newVal,"employmentEndDate"),
-        hourlyRate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("hourlyRate")} ne sme biti prazno` : null)
+        hourlyRate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("hourlyRate")} ne sme biti prazna` : null)
     }
 }
 

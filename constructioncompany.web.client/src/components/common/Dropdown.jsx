@@ -116,9 +116,9 @@ class Dropdown extends Component{
     }
 
     renderLabelText=()=>{
-        return this.state.isMultiselect ? this.props.name ? 
+        return this.state.isMultiselect ? (this.props.name ? 
                     `Izaberi ${this.props.name}` : 
-                    "Izaberi":
+                    "Izaberi") :
         (this.state.defaultSelectedOption ?  
                     `${this.state.defaultSelectedOption.name}` : 
                     this.props.name ? 

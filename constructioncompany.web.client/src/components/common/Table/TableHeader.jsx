@@ -8,6 +8,11 @@ class TableHeader extends Component{
 
         if(this.props.data){
             return this.props.data.map((item,index)=>{
+                if(item.id === "empty")
+                {
+                    return <th key={`Empty_${index}`}></th>;
+                }
+
                 const isActive = ordering.id && ordering.id === item.id;
                 const arrowStyle = {
                     transform:`rotate(${ordering.direction === 'asc' ? '-90deg':"90deg"})`,

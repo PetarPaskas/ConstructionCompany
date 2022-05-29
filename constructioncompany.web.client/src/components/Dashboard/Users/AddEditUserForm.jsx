@@ -1,5 +1,5 @@
 import Form from "../../common/Form";
-import {generateSchemaForAddEditUserForm, getSelectedOption} from "../../common/utils";
+import {generateSchemaForAddEditUserForm} from "../../common/utils";
 
 class AddEditUserForm extends Form{
     constructor(props){
@@ -42,39 +42,7 @@ class AddEditUserForm extends Form{
         },
     }
 
-    updateSelection(selection){
-        const {data} = this.state;
-        let newId = 0;
-        switch(selection){
-            case "valutaOptions":
-                  const valutaOption = getSelectedOption(data[selection]);
-                  if(valutaOption){
-                    if(data.currencyId !== valutaOption.id){
-                        newId = valutaOption.id;
-                    }
-                  }
-                  data.currencyId = newId;
-                break;
-            case "profesijeOptions":
-                 const profesijeOption = getSelectedOption(data[selection]);
-                 if(profesijeOption){
-                    if(profesijeOption.id !== data.professionId){
-                        newId = profesijeOption.id;
-                    }
-                 }
-                 data.professionId = newId;
-                break;
-            case "gradilisteOptions":
-                newId = [];
-                const constructionSites = data[selection].filter(el=>el.isSelected);
-                if(constructionSites.length > 0){
-                    newId = constructionSites;
-                }
-                data.constructionSitesId = newId;
-                break;
-        }
-        this.setState({data});
-    }
+
 
     onDropdownClick=(data, selection)=>{
         // console.log(e.target);

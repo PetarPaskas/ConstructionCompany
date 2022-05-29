@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import FormInput from "./FormInput";
 import Dropdown from "./Dropdown";
 import FormDate from "./FormDate";
+import { getSelectedOption} from "./utils";
 
 class Form extends Component{
 
@@ -45,8 +46,7 @@ class Form extends Component{
         return this.schema[elementName](newValue);
     }
 
-    renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text"){
-        // utils.formatInputLabel('name') => `Unesi ${translations[`form_${name}`]}`
+    renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text", disabled = false){
         return (
         <FormInput 
             containerClassNameAppender={containerClassNameAppender}
@@ -56,6 +56,7 @@ class Form extends Component{
             labelPlaceholder={labelPlaceholder}
             errorMessage={this.state.errors[name] ?? ""}
             onChange={this.handleChange}
+            isDisabled={disabled}
         />);
     }
 
@@ -63,6 +64,50 @@ class Form extends Component{
     handleDropdownClick=(data, selection)=>{
 
         this.onDropdownClick(data, selection);
+    }
+
+    updateSelection=(selection)=>{
+        const {data} = this.state;
+        let newId = 0;
+        switch(selection){
+            case "valutaOptions":
+                  const valutaOption = getSelectedOption(data[selection]);
+                  if(valutaOption){
+                    if(data.currencyId !== valutaOption.id){
+                        newId = valutaOption.id;
+                    }
+                  }
+                  data.currencyId = newId;
+                break;
+            case "profesijeOptions":
+                 const profesijeOption = getSelectedOption(data[selection]);
+                 if(profesijeOption){
+                    if(profesijeOption.id !== data.professionId){
+                        newId = profesijeOption.id;
+                    }
+                 }
+                 data.professionId = newId;
+                break;
+            case "gradilisteOptions":
+                newId = [];
+                const constructionSites = data[selection].filter(el=>el.isSelected);
+                if(constructionSites.length > 0){
+                    newId = constructionSites;
+                }
+                data.constructionSitesId = newId;
+                break;
+            case "citiesOptions":
+                const citiesOption = getSelectedOption(data[selection]);
+                 if(citiesOption){
+                    if(citiesOption.id !== data.cityId){
+                        newId = citiesOption.id;
+                        console.log("New cities option => ",citiesOption);
+                    }
+                 }
+                 data.cityId = newId;
+                break;
+        }
+        this.setState({data});
     }
 
     submitNewOptionsSelection=(paramData,selection, keepOriginal = false)=>{
