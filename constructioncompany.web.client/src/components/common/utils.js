@@ -1,3 +1,8 @@
+export function shortenText(text,maxLength){
+    return text.slice(0,maxLength-3)+"...";
+}
+
+
 export function createDashboardOption(id,name,path,popoutPath=""){
     return {
         id,
@@ -79,7 +84,9 @@ export function translateEngToSrb(name){
         phoneNumber:"Broj telefona",
         employmentStartDate: "Začetak radnog odnosa",
         employmentEndDate: "Kraj radnog odnosa",
-        hourlyRate: "Satnica"
+        hourlyRate: "Satnica",
+        title: "Naslov",
+        description:"Opis"
     }
 
     return translations[name];
@@ -115,6 +122,17 @@ function commonReqValidate(val, prop){
     return commonValidate(val,prop);
 }
 
+function longReqValidate(val, prop){
+    if(isNullOrEmpty(val))
+    return `${translateEngToSrb(prop)} ne sme biti prazno.`;
+
+    if(isLongerThan(val,1000))
+    return `${translateEngToSrb(prop)} ne sme biti duže od 1000 karaktera.`
+
+    if(isShorterThan(val,5))
+    return `${translateEngToSrb(prop)} ne sme biti kraće od 5 karaktera.`
+}
+
 function commonValidate(val, prop){
     if(isLongerThan(val,30))
     return `${translateEngToSrb(prop)} ne sme biti duže od 30 karaktera.`
@@ -141,6 +159,13 @@ export function generateSchemaForAddEditUserForm(){
         employmentStartDate:(newVal)=>commonReqValidate(newVal,"employmentStartDate"),
         employmentEndDate:(newVal)=>commonUnreqValidate(newVal,"employmentEndDate"),
         hourlyRate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("hourlyRate")} ne sme biti prazna` : null)
+    }
+}
+
+export function generateSchemaForNoteForm(){
+    return {
+        title:(newVal)=>longReqValidate(newVal,"title"),
+        description:(newVal)=>longReqValidate(newVal,"description")
     }
 }
 
@@ -231,4 +256,48 @@ export function createFakeDataForConstructionSite(){
             }
         }
     ]);
+}
+
+
+export function createFakeDataForNotes(){
+    return [{
+        noteId:1,
+        dateCreated:"2020-08-08",
+        description:"Njansjfnajksnf",
+        title:"Naslov",
+        user:{userId:1,name:"John"},
+        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+    },
+    {
+        noteId:2,
+        dateCreated:"2020-08-08",
+        description:"Lalalala",
+        title:"Naslov",
+        user:{userId:1,name:"Mike"},
+        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+    },
+    {
+        noteId:3,
+        dateCreated:"2020-08-08",
+        description:"Lalalala",
+        title:"Naslov",
+        user:{userId:1,name:"Mike"},
+        constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
+    },
+    {
+        noteId:4,
+        dateCreated:"2020-08-08",
+        description:"Lalalala",
+        title:"Naslov",
+        user:{userId:1,name:"John"},
+        constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
+    },
+    {
+        noteId:5,
+        dateCreated:"2020-08-08",
+        description:"Lalalala",
+        title:"Naslov",
+        user:{userId:1,name:"John"},
+        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+    }]
 }

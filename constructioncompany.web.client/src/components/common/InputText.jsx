@@ -21,7 +21,13 @@ class InputText extends Component{
         return (    
         <div className="input-text">
             <label className="input-text__label" htmlFor={elementId}>{this.props.title ?? ""}</label>
-            <input className="input-text__field" onChange={this.customAction} type="text" id={elementId} name={this.props.name ?? elementId}/>
+            <input className="input-text__field" 
+            onChange={this.customAction} 
+            type="text" 
+            id={elementId} 
+            name={this.props.name ?? elementId}
+            value={this.props.value}
+            />
         </div>);
 
     }

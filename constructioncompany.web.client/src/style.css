@@ -435,7 +435,8 @@ body {
     margin-top: 1rem; }
   .construction-site__side-options .btn-warning,
   .construction-site__side-options .btn-danger,
-  .construction-site__side-options .btn-primary {
+  .construction-site__side-options .btn-primary,
+  .construction-site__side-options .btn-success {
     color: #dfdfdf;
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -443,9 +444,15 @@ body {
     font-weight: 600;
     border: none;
     border-radius: 5px; }
+  .construction-site__side-options .btn-success {
+    color: #fff; }
+    .construction-site__side-options .btn-success:active, .construction-site__side-options .btn-success:focus {
+      outline: none !important;
+      box-shadow: none !important; }
   .construction-site__side-options .btn-warning:active,
   .construction-site__side-options .btn-danger:active,
-  .construction-site__side-options .btn-primary:active {
+  .construction-site__side-options .btn-primary:active,
+  .construction-site__side-options .btn-success:active {
     transform: translateY(2px); }
   .construction-site__side-options .btn-warning, .construction-site__side-options .btn-warning:link, .construction-site__side-options .btn-warning:visited {
     background-color: #8c9c89 !important;
@@ -629,6 +636,11 @@ body {
     transform: translateY(2.5rem);
     transition: all .2s;
     order: 1; }
+    .form-input__label--visible {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0rem);
+      order: 0; }
   .form-input__error {
     color: #ec5914;
     padding-top: .1rem;
@@ -673,6 +685,18 @@ body {
       .form-input__button--yellow:hover {
         border: 1px solid #A2AF9F;
         background-color: rgba(162, 175, 159, 0.1); }
+  .form-input__text-area {
+    border: none;
+    box-shadow: none;
+    border-radius: 10px;
+    color: #4e4e4e;
+    padding: .5rem 1rem;
+    border: 0.5px solid #0082C7;
+    min-width: 30rem;
+    min-height: 10rem; }
+    .form-input__text-area:focus {
+      outline: none;
+      box-shadow: 0px 0px 0.7rem #00B8FF; }
 
 .user-form {
   padding: 1rem 2rem;
@@ -702,13 +726,26 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start; }
+    .notes-wrapper .notes-list .pagination {
+      margin-left: 2rem; }
+      .notes-wrapper .notes-list .pagination .page-link.active {
+        background-color: #00B8FF;
+        color: #fff; }
+      .notes-wrapper .notes-list .pagination .page-link {
+        box-shadow: none; }
+        .notes-wrapper .notes-list .pagination .page-link:active {
+          transform: translateY(2px); }
     .notes-wrapper .notes-list .note-item {
+      color: #3F4A3C;
       background-color: rgba(0, 184, 255, 0.4);
       margin-bottom: 2rem;
       margin-left: 2rem;
       border-radius: 20px;
       padding: 1rem 2rem;
-      color: #3F4A3C; }
+      transition: all .2s; }
+      .notes-wrapper .notes-list .note-item:hover {
+        background-color: rgba(0, 184, 255, 0.8);
+        cursor: pointer; }
       .notes-wrapper .notes-list .note-item__title {
         display: inline-block;
         padding: .8rem 1rem;
@@ -725,7 +762,9 @@ body {
           border-radius: 5px;
           letter-spacing: 1px;
           padding: .8rem 1rem;
-          background-color: rgba(255, 255, 255, 0.3); }
+          background-color: rgba(255, 255, 255, 0.3);
+          min-width: 20rem;
+          max-width: 25rem; }
       .notes-wrapper .notes-list .note-item__legend-list {
         padding: .5rem 1rem;
         list-style-type: none;
@@ -745,3 +784,31 @@ body {
         clear: both;
         content: '';
         display: block; }
+
+.modal-window {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100vh; }
+  .modal-window .modal-shadow {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    cursor: pointer;
+    transition: background-color .2s; }
+    .modal-window .modal-shadow:hover {
+      background-color: rgba(0, 0, 0, 0.25); }
+  .modal-window .modal-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    padding: 1.5rem 3rem;
+    background-color: #F2F2F2;
+    border-radius: 10px; }

@@ -6,12 +6,12 @@ import ConstructionSiteUsersTableCustomBody from "./ConstructionSiteUsersTableCu
 import ConstructionSiteUsersEditTableCustomBody from "./ConstructionSiteUsersEditTableCustomBody";
 
 //renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text")
-class ConstructionSiteViewForm extends Form
+class ConstructionSiteAddEditViewForm extends Form
 {
     constructor(props){
         super(props);
         if(props.match.params.id){
-            console.log("ConstructionSiteViewForm id =>", props.match.params.id);
+            console.log("ConstructionSiteAddEditViewForm id =>", props.match.params.id);
         }
     }
 
@@ -44,9 +44,11 @@ class ConstructionSiteViewForm extends Form
             ]
         },
         errors:{
-
         },
-        
+    }
+
+    handleSubmit=()=>{
+        console.log("Submitting form");
     }
 
     renderSideOptions(){
@@ -55,7 +57,8 @@ class ConstructionSiteViewForm extends Form
         return (
         <div className="construction-site__side-options">
             <button onClick={()=>{this.openAddEditForm(currentId)}}className="btn btn-warning">{isEditView ? "Odustani" : "Menjaj"}</button>
-            <button onClick={()=>{this.handleDelete(currentId)}} className="btn btn-danger">Obriši</button>
+            {!isEditView && <button onClick={()=>{this.handleDelete(currentId)}} className="btn btn-danger">Obriši</button>}
+            {isEditView && <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>}
             <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>
         </div>);
     }
@@ -75,7 +78,9 @@ class ConstructionSiteViewForm extends Form
     }
 
     handleOpenNotes=(id)=>{
-        console.log("Opening notes for "+id);
+        const constructionSiteName = this.state.data.name;
+
+        this.props.history.push("/Notes?ConstructionSiteFilter=" + constructionSiteName.trim().replace(" ","+"))
     }
 
     componentDidMount(){
@@ -178,6 +183,14 @@ class ConstructionSiteViewForm extends Form
         this.updateSelection(selection);
     }
 
+    componentDidUpdate(){
+        if(this.state.currentId !== "New"){
+            if(this.props.match.params.id === 'New'){
+                this.setState({currentId: "New", isEditView:true});
+            }
+        }
+    }
+    
     render(){
         return (
         <div className="construction-site construction-site--view-form">
@@ -191,4 +204,4 @@ class ConstructionSiteViewForm extends Form
         </div>);
     }
 }
-export default ConstructionSiteViewForm;
+export default ConstructionSiteAddEditViewForm;

@@ -72,7 +72,8 @@
 
     & .btn-warning,
     & .btn-danger,
-    & .btn-primary{
+    & .btn-primary,
+    & .btn-success{
     color:$smoky-white-color-light;
     padding-top:1rem;
     padding-bottom:1rem;
@@ -82,9 +83,20 @@
     border-radius:5px;
     }
 
+    & .btn-success{
+        color:$white-color;
+
+        &:active,
+        &:focus{
+            outline:none !important;  
+            box-shadow: none !important;
+        }
+    }
+
     & .btn-warning:active,
     & .btn-danger:active,
-    & .btn-primary:active{
+    & .btn-primary:active,
+    & .btn-success:active{
         transform:translateY(2px);
     }
 
