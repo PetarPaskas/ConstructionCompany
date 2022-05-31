@@ -14,6 +14,8 @@ namespace ConstructionCompany.EntityModels.Configurations
 
             builder.HasKey(n => n.NoteId);
 
+            builder.HasAlternateKey(n => new { n.ConstructionSiteId, n.Title });
+
             builder.HasOne(n => n.ConstructionSite)
                 .WithMany(cs => cs.Notes)
                 .HasForeignKey(n => n.ConstructionSiteId);
@@ -23,6 +25,9 @@ namespace ConstructionCompany.EntityModels.Configurations
                 .IsRequired();
 
             builder.Property(n => n.Description)
+                .IsRequired();
+
+            builder.Property(n => n.Title)
                 .IsRequired();
 
         }

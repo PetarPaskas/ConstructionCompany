@@ -47,6 +47,13 @@
         transition: all .2s;
         order:1;
 
+        &--visible{
+            visibility: visible;
+            opacity:1;
+            transform: translateY(0rem);
+            order:0;
+        }
+
     }
 
     &__error{
@@ -104,6 +111,22 @@
         }
         &--yellow{
             @include createButtonColor($mute-color-light);
+        }
+    }
+
+    &__text-area{
+        border:none;
+        box-shadow: none;
+        border-radius:10px;
+        color:$text-gray;
+        padding:.5rem 1rem;
+        border:.5px solid $blue-color-medium;
+        min-width:30rem;
+        min-height:10rem;
+        
+        &:focus{
+            outline:none;
+            box-shadow:0px 0px .7rem $blue-color-base;
         }
     }
 

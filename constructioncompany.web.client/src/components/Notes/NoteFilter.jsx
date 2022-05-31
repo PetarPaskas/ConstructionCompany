@@ -8,8 +8,7 @@ class NoteFilter extends Component{
         return (
             <InputText
             customAction={this.props.onFilter}
-            name={filter.name}
-            title={filter.title}
+            {...filter}
             />);
     }
 }

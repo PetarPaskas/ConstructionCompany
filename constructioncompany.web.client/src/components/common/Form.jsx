@@ -159,6 +159,16 @@ class Form extends Component{
         />;
     }
 
+    renderTextArea(containerClassName, label, name, value, id, errorMessage){
+        return<div className={"form-input " + containerClassName}>
+            <label className="form-input__label form-input__label--visible" htmlFor={id}>{label}</label>
+            <textarea className="form-input__text-area" id={id} name={name} onChange={this.handleChange} placeholder={`Unesi tekst ovde...`} value={value ?? ""}></textarea>
+            <small className="form-input__error">
+            {errorMessage ?? ""}
+            </small>
+            </div>
+    }
+
 }
 
 export default Form;

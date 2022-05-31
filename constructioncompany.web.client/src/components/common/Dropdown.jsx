@@ -55,30 +55,17 @@ class Dropdown extends Component{
     }
 
     handleMultiSelect=(e)=>{
-        // const {multiselectBuffer} = this.state;
-
-        // multiselectBuffer.push({
-        //     data:{
-        //         id:e.target.dataset.optionId, 
-        //         value: e.target.dataset.optionValue
-        //     },
-        //     selection:e.target.dataset.selection
-        // });
-
         this.handleDropdownClick(e, true);
     }
 
     finishMultiSelect=(e)=>{
-        //let {multiselectBuffer} = this.state;
         if(e.target.dataset.type === "confirm_selection"){
-            //multiselectBuffer = [];
         }
 
         if(e.target.dataset.type === "reset_selection"){
            this.props.onResetSelection(this.state.selection);
         }
 
-       // this.setState({shouldRenderOptions:false, multiselectBuffer: multiselectBuffer});
        this.setState({shouldRenderOptions:false});
     }
 

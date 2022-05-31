@@ -27,14 +27,36 @@
         flex-direction:column;
         align-items: flex-start;
 
+        .pagination{
+            margin-left:2rem;
+
+            .page-link.active{
+                background-color: $blue-color-base;
+                color:$white-color;
+            }
+
+            .page-link{
+                box-shadow: none;
+
+                &:active{
+                    transform:translateY(2px);
+                }
+            }
+        }
+
         .note-item{
+            color:$mute-color-dark;
             background-color: rgba($blue-color-base,.4%);
             margin-bottom:2rem;
             margin-left:2rem;
             border-radius:20px;
             padding:1rem 2rem;
+            transition:all .2s;
 
-            color:$mute-color-dark;
+            &:hover{
+                background-color: rgba($blue-color-base,.8%);
+                cursor: pointer;
+            }
 
             &__title{
                 display:inline-block;
@@ -56,6 +78,8 @@
                     letter-spacing: 1px;
                     padding:.8rem 1rem;
                     background-color: rgba($white-color,.3%);
+                    min-width:20rem;
+                    max-width:25rem;
                 }
             }
 
