@@ -1,0 +1,112 @@
+
+//Users table
+
+.users-table{
+
+    .table{
+        border-spacing:0px 12px;
+        border-collapse:separate;
+        border-radius:5px;
+        background-color: transparent;
+        transform:translateY(-12px);
+
+        tr{
+            td:first-child,
+            th:first-child{
+                border-top-left-radius: 5px;
+                border-bottom-left-radius: 5px;
+            }
+
+            td:last-child,
+            th:last-child{
+                border-top-right-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+        }
+
+        /*---Heading---*/
+        thead tr{
+            background-color: $table-color;
+
+            th{
+                padding:2rem 1rem;
+                color: $white-color;
+                letter-spacing: 0.03rem;
+                font-size:1.4rem;
+                border:1px solid $table-color;
+                cursor: pointer;
+
+                &:hover{
+                    background-color: darken($table-color,4%);
+                    border-left:1px solid darken($table-color,4%);
+                    border-right:1px solid darken($table-color,4%);
+                }
+
+                &.active{
+                    background-color: darken($table-color,10%);
+                    border-left:1px solid darken($table-color,10%);
+                    border-right:1px solid darken($table-color,10%);
+                }
+                .header-text{
+                    display:inline-block;
+                    padding-right: .5rem;
+                }
+
+                .header-arrow{
+                    display:inline-block;
+                    visibility: hidden;
+                    transition: transform .07s;
+                }
+            }
+        }
+
+        /*---Body---*/
+        tbody{
+            tr{
+                &:nth-child(2n+1){
+                    background-color: $table-color-transparent;
+                }
+                &:nth-child(2n+2){
+                    background-color: $table-color-transparent-dark;
+                }
+                &:last-of-type td{
+                    border-bottom:6px solid $table-color;
+                }
+                td{
+                    letter-spacing: 0.04rem;
+                    font-size:1.2rem;
+                    padding:1.7rem 1rem;
+                    border:hidden;
+                }
+            }
+        }
+
+        tfoot{
+            .pagination-row{
+                border:none;
+            }
+            .pagination-data{
+                position: relative;
+                border:none;
+                
+                @include standardPagination;
+
+                .pagination{
+                    position:absolute;
+                    top:0;
+                    left:0;
+                }
+            }
+        }
+    }
+} 
+
+
+
+
+
+
+
+
+
+

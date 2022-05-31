@@ -11,5 +11,7 @@ namespace ConstructionCompany.EntityModels
         public int MunicipalityId { get; set; }
         public string DisplayName { get; set; }
         public int MunicipalityCode { get; set; }
+        public IEnumerable<City> Cities { get; set; }
+
     }
 }

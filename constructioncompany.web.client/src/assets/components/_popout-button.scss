@@ -1,0 +1,45 @@
+
+/*---POPOUT BUTTON---*/
+/*------------------*/
+.popout-button{
+    &,
+    &:link,
+    &:visited{
+        text-decoration: none;
+        display:inline-block;
+        position: absolute;
+        top:0;
+        left:0;
+        height:2.1rem;
+        z-index: 5;
+        background-color: $green-color-medium;
+        font-weight: 600;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        transform:translateY(-100%);
+        padding:3px 8px 0px 6px;
+        transition:all .2s;
+        color:$white-color;
+        font-size:1rem;
+    }
+
+    &:hover,
+    &:active{
+        background-color: $green-color-dark;
+        text-decoration: none;
+    }
+
+    &:hover{
+       & ~ .hover-dropdown__options-container{
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        & ~ .collapsible::before,
+        & + * > .collapsible::before{
+            transform:rotate(90deg);
+            background-color: $green-color-medium;
+        }
+    }
+}
+

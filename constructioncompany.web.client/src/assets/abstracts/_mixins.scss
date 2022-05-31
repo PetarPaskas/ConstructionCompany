@@ -1,0 +1,50 @@
+@mixin standardPagination{
+    .pagination{
+        transition: transform .2s, background-color .1s;
+
+        .page-item{
+            transition: transform 0.2;
+        }
+        .page-link{
+            &,
+            &:link,
+            &:visited{
+                    outline:none;
+                    color:$table-color;
+            }
+                
+            &:hover,
+            &:active{
+                background-color: $table-color-transparent-dark;
+                outline:none;
+                box-shadow: none;
+                color:$text-gray;
+            }
+
+            &:active{
+            transform:translateY(1px);
+                & > .page-item{
+                    transform: scale(0.8);
+                }
+            }
+
+            &:focus{
+                outline:none;
+                box-shadow: none;
+            }
+
+            &.active{
+                background-color: $table-color;
+                color:$text-light;
+            }
+        }
+    }
+}
+
+@mixin createButtonColor($color){
+    background-color: rgba($color,.4%);
+    &:hover{
+     border:1px solid $color; 
+     background-color: rgba($color,.1%);
+    } 
+}

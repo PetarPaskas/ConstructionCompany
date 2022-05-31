@@ -1,0 +1,46 @@
+
+.navbar.navbar-light.bg-green {
+    background-color: $green-color-medium;
+    padding-top:2rem;
+    padding-bottom: 3rem;
+
+    .navlist{
+        width:50%;
+        margin:0 auto;
+        display:flex;
+        flex-direction: row;
+        list-style-type: none;
+        align-items:center;
+        justify-content: space-around;
+
+    }
+
+    .nav-btn,
+    .nav-btn:link,
+    .nav-btn:visited{
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 5px;
+        outline:none;
+        padding:1rem 2rem;
+        color:$green-color-light;
+        font-size:1.4rem;
+        text-decoration: none;
+        transition:all .1s;
+    }
+    .nav-btn:hover,
+    .nav-btn:active{
+     background-color:rgba($green-color-highlight,0.1);
+    }
+    .nav-btn:focus{
+        outline:none;
+        border:none;
+    }
+
+    .nav-btn.active{
+     background-color:rgba($green-color-highlight,0.25);
+    }
+
+
+}
+

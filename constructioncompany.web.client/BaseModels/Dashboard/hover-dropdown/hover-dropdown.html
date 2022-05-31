@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../styles/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="./hover-dropdown.css" type="text/css" rel="stylesheet">
+    <title>Hover Dropdown</title>
+</head>
+<body>
+    <div class="hover-dropdown center">
+
+        <a href="NekaLokacija" class="popout-button"><span class="text-bold">+</span> Dodaj</a>
+        <div style="z-index: 5;" class="hover-dropdown__main-option">
+            <button class="tab-btn tab-btn--main tab-btn--with-popout">
+                <span>Neki Tekst </span>
+            </button>
+            <span class="collapsible"></span>
+        </div>
+
+        
+        <div class="hover-dropdown__options-container">
+            <div class="hover-dropdown__options-cointainer-mask"></div>
+            <button style="z-index: 4; transform:translateY(-6%);" class="tab-btn tab-btn--short">
+                <span>Neki Tekst 2</span>
+            </button>
+            <button style="z-index: 3; transform:translateY(-12%);" class="tab-btn tab-btn--short">
+                <span>Neki Tekst 3</span>
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

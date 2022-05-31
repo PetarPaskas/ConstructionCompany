@@ -1,0 +1,121 @@
+.notes-wrapper{
+    width:80vw;
+    padding-top:5vh;
+    height: 95vh;
+    margin:0 auto;
+
+    display: grid;
+    grid-template-columns:repeat(12,[start-column] 1fr [end-column]);
+    justify-content: center;
+
+    .notes-filters-list{
+        grid-column: start-column 1 / end-column 3;
+
+        display:flex;
+        flex-direction:column;
+        align-items: flex-end;
+
+        .filter-item{
+            margin-bottom:2rem;
+        }
+    }
+    
+    .notes-list{
+        grid-column: start-column 5 / end-column 10;
+
+        display:flex;
+        flex-direction:column;
+        align-items: flex-start;
+
+        .pagination{
+            margin-left:2rem;
+
+            .page-link.active{
+                background-color: $blue-color-base;
+                color:$white-color;
+            }
+
+            .page-link{
+                box-shadow: none;
+
+                &:active{
+                    transform:translateY(2px);
+                }
+            }
+        }
+
+        .note-item{
+            color:$mute-color-dark;
+            background-color: rgba($blue-color-base,.4%);
+            margin-bottom:2rem;
+            margin-left:2rem;
+            border-radius:20px;
+            padding:1rem 2rem;
+            transition:all .2s;
+
+            &:hover{
+                background-color: rgba($blue-color-base,.8%);
+                cursor: pointer;
+            }
+
+            &__title{
+                display:inline-block;
+                padding:.8rem 1rem;
+                font-size:1.4rem;
+                border-radius: 5px;
+                letter-spacing: 1px;
+                background-color: rgba($white-color,.3%);
+                color:darken($mute-color-dark,20%);
+            }
+
+            &__description{
+                padding-top:2rem;
+                color:darken($mute-color-light,40%);
+
+                &--text{
+                    display: inline-block;
+                    border-radius: 5px;
+                    letter-spacing: 1px;
+                    padding:.8rem 1rem;
+                    background-color: rgba($white-color,.3%);
+                    min-width:20rem;
+                    max-width:25rem;
+                }
+            }
+
+            &__legend-list{
+                padding:.5rem 1rem;
+                list-style-type: none;
+                background-color: rgba($white-color,.3%);
+                border-radius: 5px;
+                transform:translateY(2.5rem);
+
+                & > li{
+                    text-align: right;
+                    &:not(:first-child){
+                        padding-top:.6rem;
+                    }
+                }
+            }
+
+            &__info{
+
+                &--left{
+                    float:left;
+                }
+    
+                &--right{
+                    padding-left:10rem;
+                    float:left;
+                }
+            }
+
+            &::after{
+                clear:both;
+                content:'';
+                display:block;
+            }
+        }
+    }
+}
+

@@ -1,0 +1,62 @@
+
+/*---HOVER DROPDOWN---*/
+/*------------------*/
+
+.hover-dropdown{
+    font-size:1.6rem;
+    display:inline-block;
+    position:relative;
+
+    &:hover{
+        .collapsible::before{
+            transform:rotate(-90deg);
+            background-color: $red-color-base;
+        }
+
+        .hover-dropdown__options-container{
+            visibility: visible;
+            opacity:1;
+            transition:all .2s;
+        }
+
+        .tab-btn{
+            box-shadow:0px 1px 0px 0px $smoky-white-color;
+        }
+    }
+    
+    &__main-option{
+        position:relative;
+        display:inline-block;
+
+        .tab-btn:hover,
+        .tab-btn:active{
+            background-color: $white-color;
+        }
+    }
+
+    &__options-container{
+        display:flex;
+        flex-direction: column;
+        position:relative;
+        
+        & > .tab-btn{
+            border-top-right-radius: 0px;
+            border-top-left-radius: 0px;
+            position:relative;
+            text-align:center;
+        }
+
+        & a{
+            text-decoration:none;
+            display:inline-block;
+        }
+    }
+
+    &__options-container{
+    visibility: hidden;
+    opacity: 0;
+    height:10px;
+    }
+
+}
+
