@@ -88,6 +88,7 @@ class Form extends Component{
                  }
                  data.professionId = newId;
                 break;
+            case "constructionSiteOptions":
             case "gradilisteOptions":
                 newId = [];
                 const constructionSites = data[selection].filter(el=>el.isSelected);
@@ -105,6 +106,9 @@ class Form extends Component{
                     }
                  }
                  data.cityId = newId;
+                break;
+            default:
+                console.error("Form.jsx line 111 => Implement updateSelection case option");
                 break;
         }
         this.setState({data});

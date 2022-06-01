@@ -680,11 +680,11 @@ body {
       .form-input__button--green:hover {
         border: 1px solid #31e02b;
         background-color: rgba(49, 224, 43, 0.1); }
-    .form-input__button--yellow {
-      background-color: rgba(162, 175, 159, 0.4); }
-      .form-input__button--yellow:hover {
-        border: 1px solid #A2AF9F;
-        background-color: rgba(162, 175, 159, 0.1); }
+    .form-input__button--red {
+      background-color: rgba(236, 89, 20, 0.4); }
+      .form-input__button--red:hover {
+        border: 1px solid #ec5914;
+        background-color: rgba(236, 89, 20, 0.1); }
   .form-input__text-area {
     border: none;
     box-shadow: none;
@@ -737,14 +737,15 @@ body {
           transform: translateY(2px); }
     .notes-wrapper .notes-list .note-item {
       color: #3F4A3C;
-      background-color: rgba(0, 184, 255, 0.4);
+      background-color: #9ee2fd;
       margin-bottom: 2rem;
       margin-left: 2rem;
       border-radius: 20px;
       padding: 1rem 2rem;
-      transition: all .2s; }
+      transition: all .2s;
+      z-index: 5; }
       .notes-wrapper .notes-list .note-item:hover {
-        background-color: rgba(0, 184, 255, 0.8);
+        background-color: #53ccfb;
         cursor: pointer; }
       .notes-wrapper .notes-list .note-item__title {
         display: inline-block;
@@ -778,12 +779,31 @@ body {
       .notes-wrapper .notes-list .note-item__info--left {
         float: left; }
       .notes-wrapper .notes-list .note-item__info--right {
-        padding-left: 10rem;
+        padding-left: 5rem;
         float: left; }
       .notes-wrapper .notes-list .note-item::after {
         clear: both;
         content: '';
         display: block; }
+
+.note-item-wrapper {
+  position: relative; }
+
+.note-item__delete-button {
+  background-color: #ec5914;
+  color: #fff;
+  display: inline-block;
+  position: absolute;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px; }
+  .note-item__delete-button:hover {
+    background-color: #c74b10;
+    cursor: pointer; }
+
+.note-item__delete-container {
+  position: absolute;
+  top: 20%;
+  left: 100%; }
 
 .modal-window {
   position: fixed;
@@ -812,3 +832,10 @@ body {
     padding: 1.5rem 3rem;
     background-color: #F2F2F2;
     border-radius: 10px; }
+
+.export {
+  height: 100vh;
+  background-image: url("../public/img/under-construction.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain; }

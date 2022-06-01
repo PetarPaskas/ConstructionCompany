@@ -274,7 +274,7 @@ export function createFakeDataForNotes(){
         description:"Lalalala",
         title:"Naslov",
         user:{userId:1,name:"Mike"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+        constructionSite:{constructionSiteId:2, name:"Gradiliste 222"}
     },
     {
         noteId:3,

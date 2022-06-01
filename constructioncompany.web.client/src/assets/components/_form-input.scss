@@ -109,8 +109,8 @@
         &--green{
             @include createButtonColor($green-color-base);
         }
-        &--yellow{
-            @include createButtonColor($mute-color-light);
+        &--red{
+            @include createButtonColor($red-color-base);
         }
     }
 
