@@ -680,11 +680,11 @@ body {
       .form-input__button--green:hover {
         border: 1px solid #31e02b;
         background-color: rgba(49, 224, 43, 0.1); }
-    .form-input__button--yellow {
-      background-color: rgba(162, 175, 159, 0.4); }
-      .form-input__button--yellow:hover {
-        border: 1px solid #A2AF9F;
-        background-color: rgba(162, 175, 159, 0.1); }
+    .form-input__button--red {
+      background-color: rgba(236, 89, 20, 0.4); }
+      .form-input__button--red:hover {
+        border: 1px solid #ec5914;
+        background-color: rgba(236, 89, 20, 0.1); }
   .form-input__text-area {
     border: none;
     box-shadow: none;

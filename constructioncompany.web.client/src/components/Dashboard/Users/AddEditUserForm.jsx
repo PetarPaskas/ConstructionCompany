@@ -42,8 +42,6 @@ class AddEditUserForm extends Form{
         },
     }
 
-
-
     onDropdownClick=(data, selection)=>{
         // console.log(e.target);
         // console.log(`Data => `, data);
@@ -62,6 +60,30 @@ class AddEditUserForm extends Form{
         }
 
         this.updateSelection(selection);
+
+    }
+    
+    handleDeleteUser=(id)=>{
+        console.log("Deleting user with an ID of " + id);
+    }
+
+    renderSubmitButton(){
+        return (<div className="row-element col-2">
+        <input type="submit" className="btn form-input__button form-input__button--green" value="Pošalji"/>
+    </div>);
+    }
+
+    renderDeleteButton(){
+        const id = this.props.match.params.id;
+        if(id !== "New"){
+            return (
+                <div className="row-element col-2">
+                <input type="button" onClick={()=>this.handleDeleteUser(id)}className="btn form-input__button form-input__button--red" value="Obriši"/>
+                </div>);
+        }
+        else{
+            return null;
+        }
 
     }
 
@@ -99,15 +121,12 @@ class AddEditUserForm extends Form{
                 {this.renderDate("col","employmentEndDate", data.employmentEndDate, "Radi do","")}
             </div>
             <div className="row flex-row-reverse">
-                <div className="row-element col-2">
-                    <input type="submit" className="btn form-input__button form-input__button--green" value="Pošalji"/>
-                </div>
-                <div className="row-element col-2">
-                    <input type="reset" className="btn form-input__button form-input__button--yellow" value="Resetuj"/>
-                </div>
+                {this.renderSubmitButton()}
+                {this.renderDeleteButton()}
             </div>
         </form>
     }
+
 }
 
 export default AddEditUserForm;
