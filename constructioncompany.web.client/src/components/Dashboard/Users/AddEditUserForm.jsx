@@ -56,6 +56,9 @@ class AddEditUserForm extends Form{
             case "gradilisteOptions":
                 this.submitNewOptionsSelection(data,selection,true);
                 break;
+            default:
+                console.error("No onDropdownClick selection implementation");
+                break;
         }
 
         this.updateSelection(selection);
