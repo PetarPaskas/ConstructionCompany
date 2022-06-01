@@ -13,11 +13,6 @@ import {generateSchemaForNoteForm} from "../common/utils"
 
 class NoteForm extends Form{
 
-
-    constructor(props){
-        super(props);
-    }
-
     state = {
         noteId:"New",
 
@@ -26,9 +21,7 @@ class NoteForm extends Form{
             description:"",
             title:"",
             constructionSiteId:"",
-            userId:"",
-            constructionSiteOptions:[],
-            userOptions:[]
+            constructionSiteOptions:[]
         },
         errors:{
             
@@ -36,6 +29,29 @@ class NoteForm extends Form{
     }
 
     schema = generateSchemaForNoteForm()
+
+    loadConstructionSiteOptions=(newData)=>{
+        let options = [
+            {id:"1",name:"Gradiliste 1",value:"g_1", isSelected:false},
+            {id:"2",name:"Gradiliste 2",value:"g_2", isSelected:false}
+        ];
+        let updateData = {};
+
+        if(newData){
+            for(let i = 0;i<options.length;i++){
+                if(options[i].id == newData.constructionSiteId)
+                {
+                    options[i].isSelected = true;
+                    break;
+                }
+            }
+             updateData = {...newData,constructionSiteOptions:options};
+        }else{
+             updateData = {...this.state.data,constructionSiteOptions:options};
+        }
+
+        this.setState({data:updateData});
+    }
 
     componentDidMount(){
         const {data} = this.props;
@@ -49,22 +65,36 @@ class NoteForm extends Form{
         }
 
         if(isShowing){
-            
-            console.log(isShowing);
             newData = {
                 ...newData,
                 dateCreated:isShowing.dateCreated,
                 description:isShowing.description,
                 title:isShowing.title,
                 constructionSiteId: isShowing.constructionSite.constructionSiteId,
-                userId:isShowing.user.userId
             };
         }
+        this.setState({data:newData});
 
         //here load options
-        //lalalal
+        this.loadConstructionSiteOptions(newData);
 
-        this.setState({data:newData});
+    }
+    
+    onDropdownClick=(data, selection)=>{
+
+            // console.log(e.target);
+            // console.log(`Data => `, data);
+
+            switch(selection){
+                case "constructionSiteOptions":
+                    this.submitNewOptionsSelection(data,selection);
+                    break;
+                default:
+                    console.error("No onDropdownClick selection implementation");
+                    break;
+            }
+    
+            this.updateSelection(selection);
     }
 
     handleFormSubmit(e){
@@ -73,6 +103,13 @@ class NoteForm extends Form{
     }
 
     render(){
+        const dropdownOptions = {
+            wrapperStyle: {
+                alignSelf:"end",
+                marginTop:"1.7rem"
+            },
+            wrapperClassName: "form-group col"
+        };
         const {data} = this.state;
         const {errors} = this.state;
         return(
@@ -84,6 +121,7 @@ class NoteForm extends Form{
                 */}
             <div className="row">
                 {this.renderInputField("form-group col","title", data.title,"Unesi naslov", errors.title)}
+                {this.renderDropdown(data.constructionSiteOptions,"gradiliste",dropdownOptions,"constructionSiteOptions")}
             </div>
             <div className="row">
                 {this.renderTextArea("form-group col","Unesi opis", "description", data.description,"noteform-description",errors.description)}

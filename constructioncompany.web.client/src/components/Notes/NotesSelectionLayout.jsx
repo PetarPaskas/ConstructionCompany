@@ -29,8 +29,9 @@ class NotesSelectionLayout extends Component{
     state={
         modalInfo:{
             shouldOpenModal:false,
-            currentlyShowingItemId:0
+            currentlyShowingItemId:0,
         },
+        isAddNewNoteModal:false,
         data:[
 
         ],
@@ -41,14 +42,14 @@ class NotesSelectionLayout extends Component{
         },
 
         filters:{
-            RadnikFilter: {
-                type:"text",
-                id:"RadnikFilter",
-                name:"RadnikFilter",
-                title:"Unesi ime radnika",
-                for:"user.name",
-                value:""
-            },
+            // RadnikFilter: {
+            //     type:"text",
+            //     id:"RadnikFilter",
+            //     name:"RadnikFilter",
+            //     title:"Unesi ime radnika",
+            //     for:"user.name",
+            //     value:""
+            // },
             ConstructionSiteFilter: {
                 type:"text",
                 id:"ConstructionSiteFilter",
@@ -96,8 +97,6 @@ class NotesSelectionLayout extends Component{
        }else{
         this.setState({data});
        }
-
-
     }
 
     handlePaginate=(newPage)=>{
@@ -121,20 +120,55 @@ class NotesSelectionLayout extends Component{
     }
 
     filterData=()=>{
-        return this.state.data.filter(dataItem => {
+        //For if you want to include radnik filter
+        // return this.state.data.filter(dataItem => {
+        //     let result = true;
+        //         if(this.state.filters.RadnikFilter.value.length > 0 ||
+        //             this.state.filters.ConstructionSiteFilter.value.length > 0){
+        //             result = dataItem.user.name.toLowerCase().includes(this.state.filters.RadnikFilter.value.trim().toLowerCase()) &&
+        //                     dataItem.constructionSite.name.toLowerCase().includes(this.state.filters.ConstructionSiteFilter.value.trim().toLowerCase());
+        //         }
+        //         return result;
+        //     });
+                return this.state.data.filter(dataItem => {
             let result = true;
-                if(this.state.filters.RadnikFilter.value.length > 0 ||
-                    this.state.filters.ConstructionSiteFilter.value.length > 0){
-                    result = dataItem.user.name.toLowerCase().includes(this.state.filters.RadnikFilter.value.trim().toLowerCase()) &&
-                            dataItem.constructionSite.name.toLowerCase().includes(this.state.filters.ConstructionSiteFilter.value.trim().toLowerCase());
+                if(this.state.filters.ConstructionSiteFilter.value.length > 0){
+                    result = dataItem.constructionSite.name.toLowerCase().includes(this.state.filters.ConstructionSiteFilter.value.trim().toLowerCase());
                 }
                 return result;
             });
     }
 
+    onAddNote=()=>{
+        // modalInfo:{
+        //     shouldOpenModal:false,
+        //     currentlyShowingItemId:0,
+        //     isAddNewNoteModal:false
+        // }
+
+        const {modalInfo} = this.state;
+        modalInfo.shouldOpenModal = true;
+
+        this.setState({modalInfo,isAddNewNoteModal:true});
+    }
+
+    appendAddButton(filtersArray){
+        filtersArray.push(
+            <div 
+            className="filter-item"
+            key={`NoteFilterItem__Add`}
+             >
+                <button className="btn btn-success" onClick={this.onAddNote}>
+                    Dodaj beležnicu
+                </button>
+            </div>
+        );
+    }
+
     renderFilters(){
         let filters = [];
         let index = 0;
+        this.appendAddButton(filters);
         const {filters:stateFilters} = this.state;
         for(let filterObj in stateFilters){
             filters.push(
@@ -180,6 +214,7 @@ class NotesSelectionLayout extends Component{
             key={`NoteItem__${(i+1)}`}
             noteItem={item}
             index={i}
+            onDelete={this.handleDeleteNoteItem}
             onItemClick={this.handleItemClick}
             />);
         }
@@ -187,23 +222,28 @@ class NotesSelectionLayout extends Component{
         return data;
     }
 
+    handleDeleteNoteItem=(id)=>{
+        console.log("Deleting note item "+id);
+    }
+
     handleCloseModal=(ev, shouldOpenModal = false, newId = 0)=>{
         let {modalInfo} = this.state;
         modalInfo.shouldOpenModal = shouldOpenModal;
         modalInfo.currentlyShowingItemId = newId;
-
-        this.setState({modalInfo});
+        const isAddNewNoteModal = false;
+        this.setState({modalInfo, isAddNewNoteModal});
     }
 
     renderModal=()=>{
         const {modalInfo} = this.state;
         // const item = this.state.data.find(el=>el.noteId === modalInfo.currentlyShowingItemId);
+        let data = modalInfo.isAddNewNoteModal ? [] : this.state.data;
         return (
         <Modal 
         handleClose={this.handleCloseModal}
         isOpen={modalInfo.shouldOpenModal}>
             <NoteForm 
-            data={this.state.data}
+            data={data}
             displayId={modalInfo.currentlyShowingItemId}/>
         </Modal>);
     }

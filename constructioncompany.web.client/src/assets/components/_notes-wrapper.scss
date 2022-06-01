@@ -46,15 +46,16 @@
 
         .note-item{
             color:$mute-color-dark;
-            background-color: rgba($blue-color-base,.4%);
+            background-color: $blue-color-base-mid-light;
             margin-bottom:2rem;
             margin-left:2rem;
             border-radius:20px;
             padding:1rem 2rem;
             transition:all .2s;
-
+            z-index:5;
+                        
             &:hover{
-                background-color: rgba($blue-color-base,.8%);
+                background-color: darken($blue-color-base-mid-light,15%);
                 cursor: pointer;
             }
 
@@ -105,7 +106,7 @@
                 }
     
                 &--right{
-                    padding-left:10rem;
+                    padding-left:5rem;
                     float:left;
                 }
             }
@@ -115,7 +116,35 @@
                 content:'';
                 display:block;
             }
+
+           
+
         }
     }
 }
 
+.note-item{
+    &-wrapper{
+        position:relative;
+    }
+
+    &__delete{
+        &-button{
+            background-color: $red-color-base;
+            color:$white-color;
+            display:inline-block;
+            position:absolute;
+            border-top-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+            &:hover{
+                background-color: darken($red-color-base,8%);
+                cursor:pointer;
+            }
+        }
+        &-container{
+            position:absolute;
+            top:20%;
+            left:100%;
+        }
+    }
+}
