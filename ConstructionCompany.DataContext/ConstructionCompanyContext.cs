@@ -1,4 +1,5 @@
-﻿using ConstructionCompany.EntityModels.Globals;
+﻿using ConstructionCompany.DataContext.Globals;
+using ConstructionCompany.EntityModels.Globals;
 
 namespace ConstructionCompany.DataContext
 {
@@ -18,6 +19,20 @@ namespace ConstructionCompany.DataContext
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Wage> Wages { get; set; }
         public DbSet<WorkType> WorkTypes { get; set; }
+
+        public ConstructionCompanyContext(DbContextOptions<ConstructionCompanyContext> options)
+            :base(options)
+        {
+
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(Constants.SQL_SERVER_CONNECTION_STRING_LOCALHOST);
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder builder) 
         {

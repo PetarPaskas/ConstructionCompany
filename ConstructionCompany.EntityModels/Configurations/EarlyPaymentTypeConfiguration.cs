@@ -16,17 +16,17 @@ namespace ConstructionCompany.EntityModels.Configurations
 
             builder.HasOne(ep => ep.User)
                 .WithMany(u => u.EarlyPayments)
-                .HasForeignKey(ep => ep.UserId);
+                .HasForeignKey(ep => ep.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(ep => ep.Sum)
                 .HasConversion<decimal>()
                 .IsRequired();
 
             builder.Property(ep => ep.BorrowStartDate)
-                .HasConversion<DateOnly>()
-                .HasColumnType("datetime")
                 .HasDefaultValueSql("GETDATE()")
                 .IsRequired();
+
         }
     }
 }

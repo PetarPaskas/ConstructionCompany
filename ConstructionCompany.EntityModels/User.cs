@@ -17,8 +17,8 @@ namespace ConstructionCompany.EntityModels
         public string FullName { get { return $"{Name} {Surname}"; } }
         public double HourlyRate { get; set; }
         public bool IsDisabled { get; set; }
-        public DateOnly EmploymentStartDate { get; set; }
-        public DateOnly? EmploymentEndDate { get; set; }
+        public DateTime EmploymentStartDate { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
         public string Password { get; set; }
         public int ProfessionId { get; set; }
         public int CurrencyId { get; set; }
