@@ -11,9 +11,9 @@ namespace ConstructionCompany.EntityModels
         public int EarlyPaymentId { get; set; }
         public bool IsResolved { get; set; }
         public decimal Sum { get; set; }
-        public DateOnly BorrowStartDate { get; set; }
-        public DateOnly BorrowEndDate { get; set; }
-        public DateOnly BorrowReturnDate { get; set; }
+        public DateTime BorrowStartDate { get; set; }
+        public DateTime BorrowEndDate { get; set; }
+        public DateTime BorrowReturnDate { get; set; }
         public int UserId { get; set; }
         public int NoteId { get; set; }
         public int PaymentTypeId { get; set; }
