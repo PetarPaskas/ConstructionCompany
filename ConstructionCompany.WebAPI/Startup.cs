@@ -26,11 +26,14 @@ namespace ConstructionCompany.WebAPI
 
             services.AddConstructionCompanyContext();
 
+            services.AddDependencyInjection(null);
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(name: "v1", info: new OpenApiInfo
                 { Title = "Northwind Service API", Version = "v1" });
             });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
