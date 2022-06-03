@@ -1,4 +1,7 @@
-﻿using ConstructionCompany.DataContext.Interfaces;
+﻿using ConstructionCompany.Common;
+using ConstructionCompany.Common.DTOs.UserDto;
+using ConstructionCompany.DataContext.Interfaces;
+using ConstructionCompany.EntityModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConstructionCompany.WebAPI.Controllers
@@ -7,48 +10,82 @@ namespace ConstructionCompany.WebAPI.Controllers
     [ApiController]
     public class UsersController:ControllerBase
     {
-        private IWorkTypeRepository _workTypeRepository;
-        public UsersController(IWorkTypeRepository workType)
+        private IUserRepository _usersRepository;
+        public UsersController(IUserRepository usersRepository)
         {
-            _workTypeRepository = workType;
+            _usersRepository = usersRepository;
         }
 
         [HttpGet("[action]/{constructionSiteId}")]
         public async Task<IActionResult> GetUsersForConstructionSite(int constructionSiteId)
         {
-            return Ok();
+            IEnumerable<User> usersDb = await _usersRepository.GetAllUsersForConstructionSite(constructionSiteId);
+
+            IEnumerable<GetUsersDto> users = usersDb.Select(u => u.AsDto());
+
+            return Ok(users);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllusers()
         {
-            return Ok();
+            IEnumerable<User> usersDb = await _usersRepository.GetAllWithNavProperties();
+
+            IEnumerable<GetUsersDto> users = usersDb.Select(user => user.AsDto());
+
+            return Ok(users);
+        }
+
+        [HttpGet("[action]/{date}")]
+        public async Task<IActionResult> GetAllUsersForDate(DateTime? date)
+        {
+            if(!date.HasValue)
+                return BadRequest(new ClientErrorMessage("Izaberi datum"));
+
+            IEnumerable<User> usersDb = await _usersRepository.GetUsersWithProfessionAndConstructionSiteForDateAsync(date.Value);
+
+            IEnumerable<GetUsersDto> users = usersDb.Select(user => user.AsDtoWithConstructionSite(date.Value));
+
+            return Ok(users);
         }
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUser(int userId)
         {
-            return Ok();
+            User user = await _usersRepository.GetUserWithNavProperties(userId);
+
+            return Ok(user.AsDtoWithWages());
         }
 
         [HttpPatch("{userId}")]
         public async Task<IActionResult> UpdateUser(int userId, [FromBody] object newUser)
         {
-            return Ok();
+            return Ok("IMPLEMENT THIS");
         }
 
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
-            return Ok();
+            await _usersRepository.DisableUser(userId);
 
+            return NoContent();
+        }
+
+        [HttpGet("[action]/{userId}")]
+        public async Task<IActionResult> EnableUser(int userId)
+        {
+            await _usersRepository.EnableUser(userId);
+
+            return NoContent();
         }
 
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] object user)
         {
-            return CreatedAtRoute(null, null);
+            return Ok("IMPLEMENT THIS");
+
+          //return CreatedAtRoute(null, null);
         }
 
     }

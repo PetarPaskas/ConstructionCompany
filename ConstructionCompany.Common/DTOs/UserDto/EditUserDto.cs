@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConstructionCompany.Common.DTOs
+namespace ConstructionCompany.Common.DTOs.UserDto
 {
     public record EditUserDto
     {

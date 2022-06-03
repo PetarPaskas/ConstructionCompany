@@ -22,6 +22,10 @@ namespace ConstructionCompany.EntityModels.Configurations
                 .WithMany(p => p.Users)
                 .HasForeignKey(u => u.CurrencyId);
 
+            builder.HasOne(u=>u.ConstructionSite)
+                .WithMany(cs=>cs.Users)
+                .HasForeignKey(u => u.ConstructionSiteId);
+
             builder.Ignore(u => u.FullName);
 
             builder.Property(u => u.Username)
