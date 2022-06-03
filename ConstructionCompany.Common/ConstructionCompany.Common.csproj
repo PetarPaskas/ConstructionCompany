@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\ConstructionSiteDto\" />
     <Folder Include="DTOs\ProfessionDto\" />
   </ItemGroup>
 

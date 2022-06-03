@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
+{
+    public record GetConstructionSiteDto
+    {
+        public int ConstructionSiteId { get; set; }
+        public string DisplayName { get; set; }
+        public string Address { get; set; }
+        public bool IsFinished { get; set; }
+        public DateTime DateStarted { get; set; }
+        public DateTime? DateFinished { get; set; }
+        public StrippedClientModel Client { get; set; }
+        public StrippedCityModel City { get; set; }
+    }
+}
