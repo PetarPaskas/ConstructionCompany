@@ -15,12 +15,12 @@ namespace ConstructionCompany.DataContext.Repositories
             _constructionCompanyContext = context;
         }
 
-        public async Task<bool> DisableUser(int userId)
+        public async Task<bool> DisableUserAsync(int userId)
         {
             return await ModifyIsDisabledOnUser(userId, true);
         }
 
-        public async Task<bool> EnableUser(int userId)
+        public async Task<bool> EnableUserAsync(int userId)
         {
             return await ModifyIsDisabledOnUser(userId, false);
         }
@@ -36,7 +36,7 @@ namespace ConstructionCompany.DataContext.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersForConstructionSite(int constructionSiteId)
+        public async Task<IEnumerable<User>> GetAllUsersForConstructionSiteAsync(int constructionSiteId)
         {
             var result = await _constructionCompanyContext
                  .Users.Where(u => u.ConstructionSiteId == constructionSiteId)
@@ -62,7 +62,7 @@ namespace ConstructionCompany.DataContext.Repositories
 
         }
 
-        public async Task<IEnumerable<User>> GetAllWithNavProperties()
+        public async Task<IEnumerable<User>> GetAllWithNavPropertiesAsync()
         {
                 var result = await _constructionCompanyContext.Users
                                     .Include(u=>u.Currency)
@@ -89,7 +89,7 @@ namespace ConstructionCompany.DataContext.Repositories
 
         }
 
-        public async Task<User> GetUserWithNavProperties(int id)
+        public async Task<User> GetUserWithNavPropertiesAsync(int id)
         {
             return await _constructionCompanyContext.Users
                 .Include(u=>u.Profession)
