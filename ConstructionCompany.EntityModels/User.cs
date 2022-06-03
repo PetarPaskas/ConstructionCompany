@@ -22,8 +22,10 @@ namespace ConstructionCompany.EntityModels
         public string Password { get; set; }
         public int ProfessionId { get; set; }
         public int CurrencyId { get; set; }
+        public int? ConstructionSiteId { get; set; }
         public Profession Profession { get; set; }
         public Currency Currency { get; set; }
+        public ConstructionSite ConstructionSite { get; set; }
         public IEnumerable<UserRole> UserRoles { get; set; }
         public IEnumerable<Wage> Wages { get; set; }
         public IEnumerable<EarlyPayment> EarlyPayments { get; set; }
