@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ConstructionCompany.Common.DTOs.NotesDto;
+using ConstructionCompany.DataContext.Interfaces;
+using ConstructionCompany.EntityModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ConstructionCompany.WebAPI.Controllers
 {
@@ -6,40 +9,54 @@ namespace ConstructionCompany.WebAPI.Controllers
     [Route("api/[controller]")]
     public class NotesController : ControllerBase
     {
-        public NotesController()
+        private INoteRepository _notesRepository;
+        public NotesController(INoteRepository notesRepository)
         {
-
+            _notesRepository = notesRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok();
+            IEnumerable<Note> notesDb = await _notesRepository.GetAllNotesWithNavPropertiesAsync();
+
+            IEnumerable<GetNoteDto> notes = notesDb.Select(n => n.AsDto());
+
+            return Ok(notes);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleNote(int noteId)
         {
-            return Ok();
+            Note noteDb = await _notesRepository.GetNoteWithNavPropertiesAsync(noteId);
+
+            return Ok(noteDb.AsDto());
 
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNote(int noteId)
         {
-            return Ok();
+            bool result = await _notesRepository.DeleteNoteAsync(noteId);
+
+            if (result)
+                return NoContent();
+            else
+                return BadRequest();
         }
 
         [HttpPatch("{noteId}")]
-        public async Task<IActionResult> UpdateNote(int noteId, object newNote)
+        public async Task<IActionResult> UpdateNote(int noteId, [FromBody] object newNote)
         {
-            return Ok();
+            return BadRequest("IMPLEMENT THIS");
+           // return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateNote([FromBody] object note)
         {
-            return CreatedAtRoute(null, null);
+            return BadRequest("IMPLEMENT THIS");
+            //return CreatedAtRoute(null, null);
         }
     }
 }

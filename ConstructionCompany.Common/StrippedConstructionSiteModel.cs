@@ -17,6 +17,12 @@ namespace ConstructionCompany.Common
 
         }
 
+        public StrippedConstructionSiteModel(Note note)
+        {
+            ConstructionSiteId = note.ConstructionSiteId;
+            ConstructionSiteName = note.ConstructionSite.DisplayName;
+        }
+
         public StrippedConstructionSiteModel(Wage wage)
         {
             ConstructionSiteId = wage.ConstructionSiteId;
