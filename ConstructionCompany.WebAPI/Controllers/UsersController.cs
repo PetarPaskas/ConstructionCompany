@@ -10,7 +10,7 @@ namespace ConstructionCompany.WebAPI.Controllers
     [ApiController]
     public class UsersController:ControllerBase
     {
-        private IUserRepository _usersRepository;
+        private readonly IUserRepository _usersRepository;
         public UsersController(IUserRepository usersRepository)
         {
             _usersRepository = usersRepository;

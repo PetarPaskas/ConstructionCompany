@@ -8,5 +8,6 @@ namespace ConstructionCompany.DataContext.Interfaces
 {
     public interface ICityRepository : IRepository<City>
     {
+        Task<IEnumerable<City>> GetAllCitiesWithNavPropAsync();
     }
 }

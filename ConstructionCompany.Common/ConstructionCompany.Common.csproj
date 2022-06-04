@@ -12,8 +12,4 @@
     <ProjectReference Include="..\ConstructionCompany.EntityModels\ConstructionCompany.EntityModels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\ProfessionDto\" />
-  </ItemGroup>
-
 </Project>
