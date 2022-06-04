@@ -17,5 +17,16 @@ namespace ConstructionCompany.Common.DTOs.ProfessionDto
                 ProfessionName = profession.DisplayName
             };
         }
+
+        public static Option AsOption(this Profession profession)
+        {
+            return new Option()
+            {
+                Id = profession.ProfessionId,
+                Name = $"{profession.DisplayName}-{profession.ProfessionId}",
+                Value = profession.DisplayName,
+                IsSelected = false
+            };
+        }
     }
 }

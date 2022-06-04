@@ -59,5 +59,10 @@ namespace ConstructionCompany.DataContext.Repositories
 
             return await Task.FromResult(cs);
         }
+
+        public async Task<IEnumerable<ConstructionSite>> GetallForOptions()
+        {
+            return await _constructionCompanyContext.ConstructionSites.ToListAsync();
+        }
     }
 }

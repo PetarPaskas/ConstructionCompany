@@ -23,5 +23,16 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
                 Client = new StrippedClientModel(constructionSite)
             };
         }
+
+        public static Option AsOption(this ConstructionSite site)
+        {
+            return new Option()
+            {
+                Id = site.ConstructionSiteId,
+                Name = $"{site.DisplayName}-{site.ConstructionSiteId}",
+                Value = site.DisplayName,
+                IsSelected = false
+            };
+        }
     }
 }

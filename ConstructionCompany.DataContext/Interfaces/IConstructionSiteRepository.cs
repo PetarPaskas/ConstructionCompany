@@ -12,5 +12,6 @@ namespace ConstructionCompany.DataContext.Interfaces
         Task<ConstructionSite> GetSingleWithNavPropertiesAsync(int constructionSiteId);
         Task<bool> DisableConstructionSiteAsync(int constructionSiteId);
         Task<bool> EnableConstructionSiteAsync(int constructionSiteId);
+        Task<IEnumerable<ConstructionSite>> GetallForOptions();
     }
 }
