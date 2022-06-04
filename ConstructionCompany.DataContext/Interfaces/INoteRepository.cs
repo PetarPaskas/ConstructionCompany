@@ -8,5 +8,8 @@ namespace ConstructionCompany.DataContext.Interfaces
 {
     public interface INoteRepository : IRepository<Note>
     {
+        Task<IEnumerable<Note>> GetAllNotesWithNavPropertiesAsync();
+        Task<Note> GetNoteWithNavPropertiesAsync(int noteId);
+        Task<bool> DeleteNoteAsync(int noteId);
     }
 }

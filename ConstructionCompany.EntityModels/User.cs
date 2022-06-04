@@ -17,13 +17,15 @@ namespace ConstructionCompany.EntityModels
         public string FullName { get { return $"{Name} {Surname}"; } }
         public double HourlyRate { get; set; }
         public bool IsDisabled { get; set; }
-        public DateOnly EmploymentStartDate { get; set; }
-        public DateOnly? EmploymentEndDate { get; set; }
+        public DateTime EmploymentStartDate { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
         public string Password { get; set; }
         public int ProfessionId { get; set; }
         public int CurrencyId { get; set; }
+        public int? ConstructionSiteId { get; set; }
         public Profession Profession { get; set; }
         public Currency Currency { get; set; }
+        public ConstructionSite ConstructionSite { get; set; }
         public IEnumerable<UserRole> UserRoles { get; set; }
         public IEnumerable<Wage> Wages { get; set; }
         public IEnumerable<EarlyPayment> EarlyPayments { get; set; }

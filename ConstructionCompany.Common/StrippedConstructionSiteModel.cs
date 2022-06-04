@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConstructionCompany.EntityModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,51 @@ namespace ConstructionCompany.Common
     {
         public int ConstructionSiteId { get; set; }
         public string ConstructionSiteName { get; set; }
+
+        public StrippedConstructionSiteModel()
+        {
+
+        }
+
+        public StrippedConstructionSiteModel(Note note)
+        {
+            ConstructionSiteId = note.ConstructionSiteId;
+            ConstructionSiteName = note.ConstructionSite.DisplayName;
+        }
+
+        public StrippedConstructionSiteModel(Wage wage)
+        {
+            ConstructionSiteId = wage.ConstructionSiteId;
+            ConstructionSiteName = wage.ConstructionSite.DisplayName;
+        }
+
+        public StrippedConstructionSiteModel(User user)
+        {
+
+            ConstructionSiteId = user.ConstructionSite.ConstructionSiteId;
+            ConstructionSiteName = user.ConstructionSite.DisplayName;
+        }
+
+        public StrippedConstructionSiteModel(User user, DateTime date)
+        {
+            var cSite = user
+                            .Wages
+                            .Single(w => w.WorkDay.Equals(date))
+                            .ConstructionSite;
+
+            ConstructionSiteId = cSite.ConstructionSiteId;
+            ConstructionSiteName = cSite.DisplayName;
+        }
+
+        public StrippedConstructionSiteModel(User user, int constructionSiteId)
+        {
+            var cSite = user
+                            .Wages
+                            .Single(w => w.ConstructionSiteId == constructionSiteId)
+                            .ConstructionSite;
+
+            ConstructionSiteId = cSite.ConstructionSiteId;
+            ConstructionSiteName = cSite.DisplayName;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace ConstructionCompany.EntityModels
         public int WageId { get; set; }
         public int UserId { get; set; }
         public int ConstructionSiteId { get; set; }
-        public DateOnly WorkDay { get; set; }
+        public DateTime WorkDay { get; set; }
         public int HoursDone { get; set; }
         public int HoursRequired { get; set; }
         public User User { get; set; }

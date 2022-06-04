@@ -30,8 +30,6 @@ namespace ConstructionCompany.EntityModels.Configurations
                 .IsRequired();
 
             builder.Property(w => w.WorkDay)
-                .HasColumnType("datetime")
-                .HasConversion<DateOnly>()
                 .IsRequired();
         }
     }
