@@ -1,4 +1,4 @@
-﻿using ConstructionCompany.Common.DTOs.NotesDto;
+﻿using ConstructionCompany.Common.DTOs.NoteDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ namespace ConstructionCompany.WebAPI.Controllers
     [Route("api/[controller]")]
     public class NotesController : ControllerBase
     {
-        private INoteRepository _notesRepository;
+        private readonly INoteRepository _notesRepository;
         public NotesController(INoteRepository notesRepository)
         {
             _notesRepository = notesRepository;

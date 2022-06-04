@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConstructionCompany.Common.DTOs.NotesDto
+namespace ConstructionCompany.Common.DTOs.NoteDto
 {
     public static class NotesExstensionMethods
     {

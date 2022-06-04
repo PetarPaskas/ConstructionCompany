@@ -9,7 +9,7 @@ namespace ConstructionCompany.WebAPI.Controllers
     [Route("api/[controller]")]
     public class ConstructionSitesController : ControllerBase
     {
-        private IConstructionSiteRepository _constructionSiteRepository;
+        private readonly IConstructionSiteRepository _constructionSiteRepository;
         public ConstructionSitesController(IConstructionSiteRepository constructionSiteRepository)
         {
             _constructionSiteRepository = constructionSiteRepository;

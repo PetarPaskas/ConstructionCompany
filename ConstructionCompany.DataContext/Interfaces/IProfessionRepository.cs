@@ -8,5 +8,6 @@ namespace ConstructionCompany.DataContext.Interfaces
 {
     public interface IProfessionRepository : IRepository<Profession>
     {
+        Task<IEnumerable<Profession>> GetAllProfessionsAsync();
     }
 }
