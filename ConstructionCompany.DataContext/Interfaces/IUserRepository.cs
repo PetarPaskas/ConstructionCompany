@@ -10,10 +10,14 @@ namespace ConstructionCompany.DataContext.Interfaces
     {
         Task<IEnumerable<User>> GetAllUsersWithProfessionAndConstructionSiteAsync();
         Task<IEnumerable<User>> GetUsersWithProfessionAndConstructionSiteForDateAsync(DateTime date);
+        Task<IEnumerable<User>> GetUsersWitNavForDateAndSingleConstructionSite(DateTime date, int constructionSiteId);
         Task<IEnumerable<User>> GetAllWithNavPropertiesAsync();
         Task<IEnumerable<User>> GetAllUsersForConstructionSiteAsync(int constructionSiteId);
         Task<User> GetUserWithNavPropertiesAsync(int id);
         Task<bool> DisableUserAsync(int userId);
         Task<bool> EnableUserAsync(int userId);
+
+        Task<User> CreateUserAsync(User user);
+        Task<User> UpdateUserAsync(int userId, User user);
     }
 }

@@ -49,6 +49,19 @@ namespace ConstructionCompany.WebAPI.Controllers
             return Ok(users);
         }
 
+        [HttpGet("[action]/{date}/{constructionSiteId}")]
+        public async Task<IActionResult> GetAllUsersForDateOnConstructionSite(DateTime? date, int constructionSiteId)
+        {
+            if (!date.HasValue)
+                return BadRequest(new ClientErrorMessage("Izaberi datum"));
+
+            IEnumerable<User> usersDb = await _usersRepository.GetUsersWitNavForDateAndSingleConstructionSite(date.Value, constructionSiteId);
+
+            IEnumerable<GetUsersDto> users = usersDb.Select(user => user.AsDtoWithConstructionSite(date.Value));
+
+            return Ok(users);
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUser(int userId)
         {
@@ -74,17 +87,28 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         [HttpPatch("{userId}")]
-        public async Task<IActionResult> UpdateUser(int userId, [FromBody] object newUser)
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] AddEditUserDto userDto)
         {
-            return Ok("IMPLEMENT THIS");
+            if (!ModelState.IsValid)
+                return BadRequest(new ClientErrorMessage("Invalid model"));
+
+            User newUser = await _usersRepository.UpdateUserAsync(userId, userDto.AsUser());
+
+            return Ok(newUser.AsDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] object user)
+        public async Task<IActionResult> CreateUser([FromBody] AddEditUserDto userDto)
         {
-            return Ok("IMPLEMENT THIS");
+            if (!ModelState.IsValid)
+                return BadRequest(new ClientErrorMessage("Invalid model"));
 
-          //return CreatedAtRoute(null, null);
+            User newUser = await _usersRepository.CreateUserAsync(userDto.AsUser());
+
+            return CreatedAtRoute(
+                routeName: $"api/users/getuser", 
+                routeValues: new {userId=newUser.UserId},
+                value: newUser.AsDto());
         }
 
     }

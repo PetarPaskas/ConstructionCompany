@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ConstructionCompany.WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class MiscController : ControllerBase
     {
         private readonly IConstructionSiteRepository _constructionSiteRepository;

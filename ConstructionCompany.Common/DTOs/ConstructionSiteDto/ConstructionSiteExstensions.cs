@@ -34,5 +34,19 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
                 IsSelected = false
             };
         }
+
+        public static ConstructionSite AsConstructionSite(this AddEditConstructionSiteDto siteDto)
+        {
+            return new ConstructionSite()
+            {
+                Address = siteDto.Address,
+                CityId = siteDto.CityId,
+                ClientId = siteDto.ClientId,
+                DateFinished = siteDto.DateFinished.Value,
+                IsFinished = siteDto.IsFinished,
+                DisplayName = siteDto.Name,
+                DateStarted = siteDto.DateStarted
+            };
+        }
     }
 }
