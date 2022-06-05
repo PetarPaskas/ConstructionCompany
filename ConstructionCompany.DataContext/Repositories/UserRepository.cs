@@ -89,6 +89,22 @@ namespace ConstructionCompany.DataContext.Repositories
 
         }
 
+        public async Task<IEnumerable<User>> GetUsersWitNavForDateAndSingleConstructionSite(DateTime date, int constructionSiteId)
+        {
+
+            var result = await _constructionCompanyContext.Wages
+                .Where(w => w.WorkDay.Equals(date) && w.ConstructionSiteId == constructionSiteId)
+                .Include(w => w.User)
+                .ThenInclude(u => u.Profession)
+                .Include(w => w.User)
+                .ThenInclude(u => u.Currency)
+                .Include(w => w.ConstructionSite)
+                .ToListAsync();
+
+            return await Task.FromResult<IEnumerable<User>>(result.Select(w => w.User));
+
+        }
+
         public async Task<User> GetUserWithNavPropertiesAsync(int id)
         {
             return await _constructionCompanyContext.Users
@@ -99,6 +115,35 @@ namespace ConstructionCompany.DataContext.Repositories
                 .ThenInclude(w=>w.ConstructionSite)
                 .SingleAsync(u=>u.UserId == id);
                 
+        }
+
+        public async Task<User> CreateUserAsync(User user)
+        {
+            await _constructionCompanyContext.Users.AddAsync(user);
+            await _constructionCompanyContext.SaveChangesAsync();
+            return await Task.FromResult<User>(user);
+        }
+
+        public async Task<User> UpdateUserAsync(int userId, User user)
+        {
+           User existingUser = await _constructionCompanyContext.Users.FindAsync(userId);
+            
+            existingUser.ConstructionSiteId = user.ConstructionSiteId;
+            existingUser.CurrencyId = user.CurrencyId;
+            existingUser.EmploymentEndDate = user.EmploymentEndDate;
+            existingUser.EmploymentStartDate = user.EmploymentStartDate;
+            existingUser.HourlyRate = user.HourlyRate;
+            existingUser.Username = user.Username;
+            existingUser.Name = user.Name;
+            existingUser.Surname = user.Surname;
+            existingUser.Nickname = user.Nickname;
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.IsDisabled = user.IsDisabled;
+            existingUser.Password = user.Password;
+            existingUser.ProfessionId = user.ProfessionId;
+
+            await _constructionCompanyContext.SaveChangesAsync();
+            return await Task.FromResult<User>(existingUser);
         }
     }
 }

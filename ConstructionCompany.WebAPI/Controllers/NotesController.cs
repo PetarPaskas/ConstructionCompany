@@ -1,4 +1,5 @@
-﻿using ConstructionCompany.Common.DTOs.NoteDto;
+﻿using ConstructionCompany.Common;
+using ConstructionCompany.Common.DTOs.NoteDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
 using Microsoft.AspNetCore.Mvc;
@@ -46,17 +47,25 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         [HttpPatch("{noteId}")]
-        public async Task<IActionResult> UpdateNote(int noteId, [FromBody] object newNote)
+        public async Task<IActionResult> UpdateNote(int noteId, [FromBody] AddEditNoteDto newNote)
         {
-            return BadRequest("IMPLEMENT THIS");
-           // return Ok();
+            Note updatedNote = await _notesRepository.UpdateNoteAsync(noteId, newNote.AsNote());
+
+            return Ok(updatedNote.AsDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNote([FromBody] object note)
+        public async Task<IActionResult> CreateNote([FromBody] AddEditNoteDto newNote)
         {
-            return BadRequest("IMPLEMENT THIS");
-            //return CreatedAtRoute(null, null);
+            if (!ModelState.IsValid)
+                return BadRequest(new ClientErrorMessage("Incorrect data format"));
+
+            Note note = await _notesRepository.AddNoteAsync(newNote.AsNote());
+
+            return CreatedAtRoute(
+                routeName: "api/notes", 
+                routeValues: new { noteId = note.NoteId}, 
+                value: note.AsDto());
         }
     }
 }

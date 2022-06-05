@@ -51,7 +51,27 @@ namespace ConstructionCompany.Common.DTOs.UserDto
 
             return dtoUser;
         }
-
+        
+        public static User AsUser(this AddEditUserDto userDto)
+        {
+            return new User()
+            {
+                ConstructionSiteId = userDto.ConstructionSitesId,
+                CurrencyId = userDto.CurrencyId,
+                EmploymentEndDate = userDto.EmploymentEndDate,
+                EmploymentStartDate = userDto.EmploymentStartDate,
+                HourlyRate = userDto.HourlyRate,
+                Username = "",
+                Name = userDto.Name,
+                Surname = userDto.Surname,
+                Nickname = userDto.Nickname,
+                PhoneNumber = userDto.PhoneNumber,
+                UserId = userDto.UserId,
+                IsDisabled = false,
+                Password = "",
+                ProfessionId = userDto.ProfessionId,
+            };
+        }
 
     }
 }

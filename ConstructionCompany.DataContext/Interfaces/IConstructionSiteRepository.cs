@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConstructionCompany.Common.DTOs.ConstructionSiteDto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,8 @@ namespace ConstructionCompany.DataContext.Interfaces
         Task<ConstructionSite> GetSingleWithNavPropertiesAsync(int constructionSiteId);
         Task<bool> DisableConstructionSiteAsync(int constructionSiteId);
         Task<bool> EnableConstructionSiteAsync(int constructionSiteId);
+        Task<IEnumerable<ConstructionSite>> GetallForOptions();
+        Task<ConstructionSite> UpdateConstructionSiteAsync(int constructionSiteId, AddEditConstructionSiteDto constructionSiteDto);
+        Task<ConstructionSite> AddConstructionSiteAsync(AddEditConstructionSiteDto cosntructionSiteDto);
     }
 }

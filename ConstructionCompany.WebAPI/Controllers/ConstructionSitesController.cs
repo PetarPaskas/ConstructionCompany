@@ -51,16 +51,21 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         [HttpPatch("{constructionSiteId}")]
-        public async Task<IActionResult> UpdateConstructionSite(int constructionSiteId, object newConstructionSite)
+        public async Task<IActionResult> UpdateConstructionSite(int constructionSiteId, AddEditConstructionSiteDto constructionSiteDto)
         {
-            return BadRequest("PLEASE IMPLEMENT THIS");
+           ConstructionSite newConstructionSite = await _constructionSiteRepository.UpdateConstructionSiteAsync(constructionSiteId, constructionSiteDto);
+
+            return Ok(newConstructionSite.AsDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateConstructionSite([FromBody] object constructionSite)
+        public async Task<IActionResult> CreateConstructionSite([FromBody] AddEditConstructionSiteDto constructionSiteDto)
         {
-            return BadRequest("PLEASE IMPLEMENT THIS");
-            //return CreatedAtRoute(null, null);
+            var cs = await _constructionSiteRepository.AddConstructionSiteAsync(constructionSiteDto);
+            return CreatedAtRoute(
+                routeName: $"api/constructionsites",
+                routeValues: new { ConstructionSiteId = cs.ConstructionSiteId } ,
+                cs.AsDto());
         }
     }
 }
