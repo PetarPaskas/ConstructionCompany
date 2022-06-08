@@ -121,6 +121,14 @@ namespace ConstructionCompany.DataContext.Repositories
         {
             await _constructionCompanyContext.Users.AddAsync(user);
             await _constructionCompanyContext.SaveChangesAsync();
+
+            await _constructionCompanyContext.Currencies.FindAsync(user.CurrencyId);
+            await _constructionCompanyContext.Professions.FindAsync(user.ProfessionId);
+
+            if (user.ConstructionSiteId.HasValue)
+                await _constructionCompanyContext.ConstructionSites.FindAsync(user.ConstructionSiteId.Value);
+
+
             return await Task.FromResult<User>(user);
         }
 
@@ -147,3 +155,4 @@ namespace ConstructionCompany.DataContext.Repositories
         }
     }
 }
+ 

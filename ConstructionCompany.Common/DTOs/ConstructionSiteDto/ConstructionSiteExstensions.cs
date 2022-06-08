@@ -15,7 +15,7 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
             {
                 ConstructionSiteId = constructionSite.ConstructionSiteId,
                 Address = constructionSite.Address,
-                DateFinished = constructionSite.DateFinished,
+                ExpectedEndDate = constructionSite.DateFinished,
                 DateStarted = constructionSite.DateStarted,
                 DisplayName = constructionSite.DisplayName,
                 IsFinished = constructionSite.IsFinished,
@@ -42,7 +42,7 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
                 Address = siteDto.Address,
                 CityId = siteDto.CityId,
                 ClientId = siteDto.ClientId,
-                DateFinished = siteDto.DateFinished.Value,
+                DateFinished = siteDto.ExpectedEndDate,
                 IsFinished = siteDto.IsFinished,
                 DisplayName = siteDto.Name,
                 DateStarted = siteDto.DateStarted

@@ -30,11 +30,8 @@ class NoteForm extends Form{
 
     schema = generateSchemaForNoteForm()
 
-    loadConstructionSiteOptions=(newData)=>{
-        let options = [
-            {id:"1",name:"Gradiliste 1",value:"g_1", isSelected:false},
-            {id:"2",name:"Gradiliste 2",value:"g_2", isSelected:false}
-        ];
+    loadConstructionSiteOptions=(newData, options)=>{
+
         let updateData = {};
 
         if(newData){
@@ -75,8 +72,9 @@ class NoteForm extends Form{
         }
         this.setState({data:newData});
 
-        //here load options
-        this.loadConstructionSiteOptions(newData);
+        const {dropdownOptions:options} = this.props;
+
+        this.loadConstructionSiteOptions(newData, options);
 
     }
     

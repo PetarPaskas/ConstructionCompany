@@ -11,7 +11,7 @@ namespace ConstructionCompany.Common.DTOs.NoteDto
         public DateTime DateCreated { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public int ConstructionSiteId { get; set; }
     }
 }

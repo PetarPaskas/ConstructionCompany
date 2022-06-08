@@ -13,7 +13,7 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
         public string Address { get; set; }
         public bool IsFinished { get; set; }
         public DateTime DateStarted { get; set; }
-        public DateTime? DateFinished { get; set; }
+        public DateTime? ExpectedEndDate { get; set; }
         public StrippedClientModel Client { get; set; }
         public StrippedCityModel City { get; set; }
     }

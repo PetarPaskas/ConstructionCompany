@@ -18,7 +18,7 @@ namespace ConstructionCompany.Common.DTOs.UserDto
         public double HourlyRate { get; set; }
         public int CurrencyId { get; set; }
         public int ProfessionId { get; set; }
-        public int ConstructionSitesId { get; set; }
+        public int? ConstructionSitesId { get; set; }
         public bool IsDisabled { get; set; }
     }
 }

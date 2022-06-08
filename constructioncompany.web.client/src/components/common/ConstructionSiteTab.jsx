@@ -5,7 +5,7 @@ class ConstructionSiteTab extends Component{
     handleConstructionSiteEdit=()=>{
         if(this.props.data){
             let {data} = this.props;
-            this.props.history.push(`/Dashboard/Gradilista/Edit/${data.ConstructionSiteId}`);
+            this.props.history.push(`/Dashboard/Gradilista/Edit/${data.constructionSiteId}`);
         }
     }
 
@@ -20,12 +20,12 @@ class ConstructionSiteTab extends Component{
            
             return (
             <div style={{position:"relative"}}>
-                <div onClick={()=>{this.handleConstructionSiteViewAll(data.ConstructionSiteId)}}className="construction-site__item tab-btn construction-site-tab tab-btn--with-content">
-                    <h3 className="construction-site-tab__title">{data.Name}</h3>
+                <div onClick={()=>{this.handleConstructionSiteViewAll(data.constructionSiteId)}}className="construction-site__item tab-btn construction-site-tab tab-btn--with-content">
+                    <h3 className="construction-site-tab__title">{data.displayName}</h3>
                     <ul className="construction-site-tab__list">
-                        <li className="construction-site-tab__item"><span>{data.Address}</span></li>
-                        <li className="construction-site-tab__item"><span>{data.CityName}</span></li>
-                        <li className="construction-site-tab__item"><span>{data.Client.Name}</span></li>
+                        <li className="construction-site-tab__item"><span>{data.address}</span></li>
+                        <li className="construction-site-tab__item"><span>{data.city.cityName}</span></li>
+                        <li className="construction-site-tab__item"><span>{data.client.name}</span></li>
                     </ul>
                 </div>
                 <button 

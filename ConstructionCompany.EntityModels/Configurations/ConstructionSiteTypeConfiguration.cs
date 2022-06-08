@@ -21,6 +21,10 @@ namespace ConstructionCompany.EntityModels.Configurations
                 .WithMany(c => c.ConstructionSites)
                 .HasForeignKey(cs => cs.CityId);
 
+            builder.HasOne(cs => cs.Client)
+                .WithMany(c => c.ConstructionSites)
+                .HasForeignKey(cs => cs.ClientId);
+
         }
     }
 }

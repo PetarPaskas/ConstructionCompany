@@ -42,7 +42,7 @@ namespace ConstructionCompany.DataContext.Repositories
             Note note = await _constructionCompanyContext.Notes
                                     .Include(n => n.User)
                                     .Include(n => n.ConstructionSite)
-                                    .SingleAsync(n => n.NoteId == noteId);
+                                    .SingleOrDefaultAsync(n => n.NoteId == noteId);
 
             return note;
         }
@@ -58,6 +58,12 @@ namespace ConstructionCompany.DataContext.Repositories
 
             await _constructionCompanyContext.SaveChangesAsync();
 
+            await _constructionCompanyContext.ConstructionSites.SingleOrDefaultAsync(cs => cs.ConstructionSiteId == note.ConstructionSiteId);
+            if (note.UserId.HasValue)
+            {
+                await _constructionCompanyContext.Users.SingleOrDefaultAsync(u => u.UserId == note.UserId.Value);
+            }
+
             return noteDb;
         }
 
@@ -65,6 +71,12 @@ namespace ConstructionCompany.DataContext.Repositories
         {
             await _constructionCompanyContext.Notes.AddAsync(note);
             await _constructionCompanyContext.SaveChangesAsync();
+            await _constructionCompanyContext.ConstructionSites.SingleOrDefaultAsync(cs => cs.ConstructionSiteId == note.ConstructionSiteId);
+
+            if (note.UserId.HasValue)
+            {
+                await _constructionCompanyContext.Users.SingleOrDefaultAsync(u => u.UserId == note.UserId.Value);
+            }
 
             return note;
         }

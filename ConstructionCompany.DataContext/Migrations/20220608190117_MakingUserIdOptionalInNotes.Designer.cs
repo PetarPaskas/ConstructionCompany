@@ -4,6 +4,7 @@ using ConstructionCompany.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConstructionCompany.DataContext.Migrations
 {
     [DbContext(typeof(ConstructionCompanyContext))]
-    partial class ConstructionCompanyContextModelSnapshot : ModelSnapshot
+    [Migration("20220608190117_MakingUserIdOptionalInNotes")]
+    partial class MakingUserIdOptionalInNotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,14 +218,14 @@ namespace ConstructionCompany.DataContext.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("NoteId");
 
-                    b.HasIndex("ConstructionSiteId");
+                    b.HasAlternateKey("ConstructionSiteId", "Title");
 
                     b.HasIndex("UserId");
 

@@ -3,6 +3,7 @@ using ConstructionCompany.Common.DTOs.UserDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ConstructionCompany.WebAPI.Controllers
 {
@@ -62,10 +63,13 @@ namespace ConstructionCompany.WebAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}", Name =nameof(GetUser))]
         public async Task<IActionResult> GetUser(int userId)
         {
             User user = await _usersRepository.GetUserWithNavPropertiesAsync(userId);
+
+            if (user is null)
+                return NotFound(new ClientErrorMessage("Korisnik sa datim Id-em nije pronadjen"));
 
             return Ok(user.AsDtoWithWages());
         }
@@ -100,15 +104,18 @@ namespace ConstructionCompany.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] AddEditUserDto userDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new ClientErrorMessage("Invalid model"));
+                if (!ModelState.IsValid)
+                    return BadRequest(new ClientErrorMessage("Invalid model"));
 
-            User newUser = await _usersRepository.CreateUserAsync(userDto.AsUser());
+                User newUser = await _usersRepository.CreateUserAsync(userDto.AsUser());
 
-            return CreatedAtRoute(
-                routeName: $"api/users/getuser", 
-                routeValues: new {userId=newUser.UserId},
-                value: newUser.AsDto());
+                var value = newUser.AsDto();
+
+                return CreatedAtRoute(
+                    routeName: nameof(GetUser),
+                    routeValues: new { userId = newUser.UserId },
+                    value: value);
+
         }
 
     }

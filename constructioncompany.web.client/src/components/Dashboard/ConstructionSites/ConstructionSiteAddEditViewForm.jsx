@@ -1,19 +1,16 @@
 import React from 'react';
 import Form from '../../common/Form';
 import Table from "../../common/Table/Table";
-import { createFakeDataForTableConstructionSite } from "../../common/utils";
+import constructionSiteClient from "../../http/constructionSitesClient";
+import miscClient from "../../http/miscClient";
+import usersClient from "../../http/usersClient";
+import {asDateOnly, dateToString, headersForConstructionSiteUsersEditTableCustomBody, generateSchemaConstructionSite} from "../../common/utils";
 import ConstructionSiteUsersTableCustomBody from "./ConstructionSiteUsersTableCustomBody";
 import ConstructionSiteUsersEditTableCustomBody from "./ConstructionSiteUsersEditTableCustomBody";
 
 //renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text")
 class ConstructionSiteAddEditViewForm extends Form
 {
-    constructor(props){
-        super(props);
-        if(props.match.params.id){
-            console.log("ConstructionSiteAddEditViewForm id =>", props.match.params.id);
-        }
-    }
 
     decideView=()=>{
         return (this.props.match.path === "/Dashboard/Gradilista/Edit/:id" ? 
@@ -21,25 +18,33 @@ class ConstructionSiteAddEditViewForm extends Form
                 (this.props.match.params.id === 'New' ? true : false));
     }
 
+    schema = generateSchemaConstructionSite();
+
     state={
         currentId:this.props.match.params.id,
         isEditView: this.decideView(),
-        usersData:{
-            header:[],
-            body:[]
-        },
         data:{
-            name:"testData",
-            address:"testData",
-            cityName:"testData",
-            dateStarted:"testData",
-            expectedEndDate:"testData",
+        // address: "Marka Oraskovica 22"
+        // city: {cityId: 2, cityName: 'Novi Sad', municipalityName: 'Novi Sad'}
+        // client: {clientId: 'ClientNumberOne', name: 'Test Client'}
+        // constructionSiteId: 1
+        // dateFinished: "2032-06-06T18:39:48.755"
+        // dateStarted: "2022-06-06T18:39:48.755"
+        // isFinished: true
+            displayName:"",
+            address:"",
+            dateStarted:"",
+            expectedEndDate:"",
             cityId:0,
+            cityName:"",
             citiesOptions:[
                 {id:"1",name:'Beograd',value:'b-g', isSelected:false},
                 {id:"2",name:"Slankamen",value:'skmn', isSelected:false}
             ],
             workerList:[
+
+            ],
+            checkedUsersBuffer:[
 
             ]
         },
@@ -54,18 +59,39 @@ class ConstructionSiteAddEditViewForm extends Form
     renderSideOptions(){
         const currentId = this.props.match.params.id;
         const {isEditView} = this.state;
-        return (
-        <div className="construction-site__side-options">
-            <button onClick={()=>{this.openAddEditForm(currentId)}}className="btn btn-warning">{isEditView ? "Odustani" : "Menjaj"}</button>
-            {!isEditView && <button onClick={()=>{this.handleDelete(currentId)}} className="btn btn-danger">Obriši</button>}
-            {isEditView && <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>}
-            <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>
-        </div>);
+        if(this.state.currentId !== "New"){
+            return (
+                <div className="construction-site__side-options">
+                    <button onClick={()=>{this.openAddEditForm(currentId)}}className="btn btn-warning">{isEditView ? "Odustani" : "Menjaj"}</button>
+                    {!isEditView && <button onClick={()=>{this.handleDelete(currentId)}} className="btn btn-danger">Obriši</button>}
+                    {isEditView && <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>}
+                    <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>
+                </div>);
+        }else{
+            return (
+                <div className="construction-site__side-options">
+                    <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>
+                </div>)
+        }
+
+
     }
 
     openAddEditForm=(id)=>{
-        const {isEditView} = this.state;
-        this.setState({isEditView:!isEditView});
+        console.log(this.state.data);
+        if(this.state.data.checkedUsersBuffer.length > 0){
+            const {workerList} = this.state.data;
+            const {checkedUsersBuffer} = this.state.data;
+            checkedUsersBuffer.forEach(idKey=>{
+                let user = workerList.find(user=>user.userId === idKey);
+                user.isSelected = !user.isSelected;
+            });
+            const {isEditView} = this.state;
+            this.setState({data:{...this.state.data,workerList,checkedUsersBuffer:[]}, isEditView:!isEditView});
+        }else{
+            const {isEditView} = this.state;
+            this.setState({isEditView:!isEditView});
+        }
     }
 
     closeAddEditForm=(id)=>{
@@ -78,41 +104,88 @@ class ConstructionSiteAddEditViewForm extends Form
     }
 
     handleOpenNotes=(id)=>{
-        const constructionSiteName = this.state.data.name;
+        const constructionSiteName = this.state.data.displayName;
 
         this.props.history.push("/Notes?ConstructionSiteFilter=" + constructionSiteName.trim().replace(" ","+"))
     }
 
-    componentDidMount(){
-        const data = createFakeDataForTableConstructionSite();
-        this.setState({usersData:data});
+    async componentDidMount(){
+        // address: "Marka Oraskovica 22"
+        // city: {cityId: 2, cityName: 'Novi Sad', municipalityName: 'Novi Sad'}
+        // client: {clientId: 'ClientNumberOne', name: 'Test Client'}
+        // constructionSiteId: 1
+        // dateFinished: "2032-06-06T18:39:48.755"
+        // dateStarted: "2022-06-06T18:39:48.755"
+        // displayName: "Gradiliste 1"
+        // isFinished: true
+        const id = this.props.match.params.id;
+
+        let finalData = {};
+        console.log("Id", id);
+        if(id && id !== "New"){
+           const {data} = await constructionSiteClient.getSingleSite(id);
+           finalData = data;
+           finalData.cityId = data.city.cityId;
+           finalData.cityName = data.city.cityName;
+        }
+
+        const {data:options} = await miscClient.getAllOptions();
+        const {data:usersOptions} = await usersClient.getAll();
+
+        finalData.citiesOptions = options.citiesOptions.map(city=>{
+            if(city.id == finalData.cityId){
+                return {...city, isSelected:true};
+            }
+            return city;
+        });
+        finalData.workerList = usersOptions.map(user=>{
+            user.isSelected = false;
+
+            if((id && id !== "New") && 
+                user.constructionSite?.constructionSiteId && 
+                user.constructionSite.constructionSiteId === parseInt(id)){
+                    user.isSelected = true;
+                }
+            return user;
+        });
+        finalData.checkedUsersBuffer = [];
+        this.setState({data:finalData});
+
     }
 
     renderInfoForm=()=>{
         const {data} = this.state;
         return ( <React.Fragment>
             <div className="row">
-                <h2 className="col">{data.name}</h2>
+                <h2 className="col">{data.displayName}</h2>
             </div>
             <div className="row">
                 {this.renderInputField("form-group col", "address", data.address, "Adresa", "", "text", !data.isEditView)}
                 {this.renderInputField("form-group col", "cityName", data.cityName, "Grad", "", "text", !data.isEditView)}
             </div>
             <div className="row">
-                {this.renderInputField("form-group col", "dateStarted", data.dateStarted, "Datum začetka", "", "text", !data.isEditView)}
-                {this.renderInputField("form-group col", "expectedEndDate", data.expectedEndDate, "Datum roka", "", "text", !data.isEditView)}
+                {this.renderInputField("form-group col", "dateStarted", dateToString(data.dateStarted), "Datum začetka", "", "text", !data.isEditView)}
+                {this.renderInputField("form-group col", "expectedEndDate", dateToString(data.expectedEndDate), "Datum roka", "", "text", !data.isEditView)}
             </div>
             </React.Fragment>);
     }
 
     renderInfoTable=()=>{
-        return (            
-            <Table
-            data={this.state.usersData}
-            withRowIndex={false}
-            customBodyComponent={ConstructionSiteUsersTableCustomBody}
-            />
-        );
+        if(this.state.data.workerList){
+            const body = this.state.data.workerList.filter(worker=>worker.isSelected);
+            const data = {
+                header:headersForConstructionSiteUsersEditTableCustomBody(),
+                body
+            };
+            return (            
+                <Table
+                data={data}
+                withRowIndex={false}
+                customBodyComponent={ConstructionSiteUsersTableCustomBody}
+                />
+            );
+        }
+
     }
 
     renderEditForm=()=>{
@@ -126,7 +199,7 @@ class ConstructionSiteAddEditViewForm extends Form
         };
         return (<React.Fragment>
                 <div className="row">
-                {this.renderInputField("form-group col", "name", data.name, "Naziv", errors.name , "text", data.isEditView)}
+                {this.renderInputField("form-group col", "displayName", data.displayName, "Naziv", errors.displayName , "text", data.isEditView)}
                 </div>
                 <div className="row">
                 {this.renderInputField("form-group col", "address", data.address, "Adresa", "", "text", data.isEditView)}
@@ -137,20 +210,19 @@ class ConstructionSiteAddEditViewForm extends Form
                 renderDate(containerClassNameAppender, name, value, labelPlaceholder, errorMessage)
                 renderDropdown(options, name, stylingOptions, selection, multiSelect = false){
                 */}
-                {this.renderDate("form-group col", "dateStarted", data.dateStarted, "Datum začetka", errors.dateStarted)}
-                {this.renderDate("form-group col", "expectedEndDate", data.expectedEndDate, "Datum roka", errors.expectedEndDate)}
+                {this.renderDate("form-group col", "dateStarted", asDateOnly(data.dateStarted), "Datum začetka", errors.dateStarted)}
+                {this.renderDate("form-group col", "expectedEndDate", asDateOnly(data.expectedEndDate), "Datum roka", errors.expectedEndDate)}
             </div>
         </React.Fragment>);
     }
 
     renderEditTable=()=>{
-         const {header} = this.state.usersData;
-        let newHeader = header.map(element=>({...element}));
-        newHeader.push({id:"empty"});
-
+        const header = headersForConstructionSiteUsersEditTableCustomBody();
+        header.push({id:"empty"});
+        const {workerList:body} = this.state.data;
         const data = {
-            header:newHeader,
-            body:this.state.usersData.body
+            header,
+            body
         };
 
         return (            
@@ -164,19 +236,23 @@ class ConstructionSiteAddEditViewForm extends Form
     }
 
     chooseWorkerOnClick=(id)=>{
-       const data = {...this.state.data};
-       let newList = [];
-       if(data.workerList.find(el=>el === id)){
-           newList = data.workerList.filter(el=>el !== id);
-       }else{
-           newList = [...data.workerList, id];
-       }
-        data.workerList = newList;        
-       this.setState({data});
+    let {workerList} = this.state.data;
+    workerList = workerList.map(user=>{
+        if(user.userId === id){
+            return {...user,isSelected:!user.isSelected};
+        }
+    return user;});
+
+    const {checkedUsersBuffer} = this.state.data;
+    checkedUsersBuffer.push(id);
+
+    this.setState({data:{...this.state.data,workerList,checkedUsersBuffer}});
     }
 
     onDropdownClick=(data, selection)=>{
+        
         if(selection === "citiesOptions"){
+            console.log("217 line ", data, selection);
             this.submitNewOptionsSelection(data,selection);
         }
 
@@ -197,7 +273,7 @@ class ConstructionSiteAddEditViewForm extends Form
             <div className="construction-site__info container">
                 {this.state.isEditView ? this.renderEditForm() : this.renderInfoForm()}
             </div>
-            {this.state.currentId !== "New" && this.renderSideOptions()}
+            {this.renderSideOptions()}
             <div className="construction-site__table users-table">
                 {this.state.isEditView ? this.renderEditTable() : this.renderInfoTable()}
             </div>

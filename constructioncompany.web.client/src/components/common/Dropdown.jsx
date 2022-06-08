@@ -87,7 +87,7 @@ class Dropdown extends Component{
                     }
                 }}
             >
-                {option.name}
+                {option.value}
             </li>));
         }
         else return null;
@@ -107,7 +107,7 @@ class Dropdown extends Component{
                     `Izaberi ${this.props.name}` : 
                     "Izaberi") :
         (this.state.defaultSelectedOption ?  
-                    `${this.state.defaultSelectedOption.name}` : 
+                    `${this.state.defaultSelectedOption.value}` : 
                     this.props.name ? 
                         `Izaberi ${this.props.name}` : 
                         "Izaberi");

@@ -26,10 +26,13 @@ namespace ConstructionCompany.WebAPI.Controllers
             return Ok(notes);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{noteId}", Name = nameof(GetSingleNote))]
         public async Task<IActionResult> GetSingleNote(int noteId)
         {
             Note noteDb = await _notesRepository.GetNoteWithNavPropertiesAsync(noteId);
+
+            if (noteDb is null)
+                return NotFound(new ClientErrorMessage("Beleska sa datim Id-em nije pronadjena"));
 
             return Ok(noteDb.AsDto());
 
@@ -63,7 +66,7 @@ namespace ConstructionCompany.WebAPI.Controllers
             Note note = await _notesRepository.AddNoteAsync(newNote.AsNote());
 
             return CreatedAtRoute(
-                routeName: "api/notes", 
+                routeName: nameof(GetSingleNote), 
                 routeValues: new { noteId = note.NoteId}, 
                 value: note.AsDto());
         }

@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import Table from "../../common/Table/Table";
 import CustomUsersTableBody from "./CustomUsersTableBody";
-import {createFakeDataForTable} from "../../common/utils";
+import {createHeadersDataForUsersTable} from "../../common/utils";
+import usersClient from "../../http/usersClient";
 
 class UsersLayout extends Component{
     state={
@@ -11,8 +12,13 @@ class UsersLayout extends Component{
         }
     }
 
-    componentDidMount(){
-        const data = createFakeDataForTable();
+    async componentDidMount(){
+        const header = createHeadersDataForUsersTable();
+        const data = {
+            header
+        };
+        const body = (await usersClient.getAll()).data;
+        data.body = body;
         this.setState({data});
     }
 

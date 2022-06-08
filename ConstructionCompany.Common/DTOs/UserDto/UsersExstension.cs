@@ -11,7 +11,7 @@ namespace ConstructionCompany.Common.DTOs.UserDto
     {
         public static GetUsersDto AsDto(this User user)
         {
-            return new GetUsersDto()
+            var newUser = new GetUsersDto()
             {
                 UserId = user.UserId,
                 Username = user.Username,
@@ -24,9 +24,14 @@ namespace ConstructionCompany.Common.DTOs.UserDto
                 EmploymentEndDate = user.EmploymentEndDate,
                 Profession = new StrippedProfessionModel(user),
                 Currency = new StrippedCurrencyModel(user),
-                ConstructionSite = new StrippedConstructionSiteModel(user),
+                ConstructionSite = null,
                 Wages = null
             };
+
+            if(user.ConstructionSiteId.HasValue)
+                newUser.ConstructionSite = new StrippedConstructionSiteModel(user);
+
+            return newUser;
         }
 
         public static GetUsersDto AsDtoWithConstructionSite(this User user, DateTime date)

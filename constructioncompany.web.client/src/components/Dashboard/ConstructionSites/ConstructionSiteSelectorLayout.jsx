@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import {createFakeDataForConstructionSite, pageData } from "../../common/utils";
+import { pageData } from "../../common/utils";
+import constructionSiteClient from "../../http/constructionSitesClient";
 import ConstructionSiteTab from "../../common/ConstructionSiteTab";
 import Pagination from "../../common/Pagination";
 import ConstructionSiteFilters from "./ConstructionSiteFilters";
@@ -33,8 +34,11 @@ class ConstructionSiteSelectorLayout extends Component{
     }
 
     componentDidMount(){
-        let data = createFakeDataForConstructionSite();
-        this.setState({data});
+        constructionSiteClient.getAll()
+        .then(returnData=>{
+            console.log("ConstructionSiteSelectorLayout line 39 data =>",returnData.data);
+            this.setState({data:returnData.data});
+        });
     }
 
     filterData=()=>{
@@ -42,8 +46,8 @@ class ConstructionSiteSelectorLayout extends Component{
             let result = true;
                 if(this.state.filters.CityFilter.value.length > 0 ||
                     this.state.filters.ClientFilter.value.length > 0){
-                    result = dataItem.CityName.toLowerCase().includes(this.state.filters.CityFilter.value.trim().toLowerCase()) &&
-                            dataItem.Client.Name.toLowerCase().includes(this.state.filters.ClientFilter.value.trim().toLowerCase());
+                    result = dataItem.city.cityName.toLowerCase().includes(this.state.filters.CityFilter.value.trim().toLowerCase()) &&
+                            dataItem.client.name.toLowerCase().includes(this.state.filters.ClientFilter.value.trim().toLowerCase());
                 }
                 return result;
             });
@@ -53,7 +57,6 @@ class ConstructionSiteSelectorLayout extends Component{
         let filteredData = this.filterData();
         if(filteredData.length > 0)
         {
-            
             let returnData = pageData(filteredData,this.state.pagination).map((item,index)=>{
                 return <ConstructionSiteTab history={this.props.history} key={`ConstructionSiteTab__${index}`} data={item}/>
             });
