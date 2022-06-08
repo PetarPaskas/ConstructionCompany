@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ConstructionCompany.Common\ConstructionCompany.Common.csproj" />
     <ProjectReference Include="..\ConstructionCompany.EntityModels\ConstructionCompany.EntityModels.csproj" />
   </ItemGroup>
 

@@ -3,6 +3,31 @@ export function shortenText(text,maxLength){
 }
 
 
+export function processFinalDataForAddEditUserForm(finalData, hasUser){
+    console.log(finalData);
+    if(hasUser){
+        let hasConstructionSite = false;
+
+        if(finalData.constructionSite?.constructionSiteId){
+            hasConstructionSite = true;
+        }
+
+        finalData.professionId = finalData.profession.professionId;
+        finalData.currencyId = finalData.currency.currencyId;
+        finalData.constructionSitesId = 0;
+    
+        finalData.professionOptions.find(option => option.id === finalData.profession.professionId).isSelected = true;
+        finalData.currencyOptions.find(option => option.id === finalData.currency.currencyId).isSelected = true;
+
+        if(hasConstructionSite){
+            finalData.constructionSitesId = 0;
+            finalData.constructionSiteOptions.find(option => option.id === finalData.constructionSite.constructionSiteId).isSelected = true;
+        }
+
+    }
+}
+
+
 export function createDashboardOption(id,name,path,popoutPath=""){
     return {
         id,
@@ -36,25 +61,34 @@ export function formatDateFunction(dateString){
     let date = new Date(dateString);
     return `${date.getDate()}-${(date.getMonth()+1) < 10 ? `0${(date.getMonth()+1)}` : (date.getMonth()+1)}-${date.getFullYear()}`;
 }
+function sortString(a,b,direction, selector = "") {
+    a = a ?? "";
+    b = b ?? "";
 
+    if(selector.length > 0){
+        return direction === 'asc' ? 
+        a[selector].localeCompare(b[selector]) : 
+        -1*(a[selector].localeCompare(b[selector]))
+    }
+    return direction === 'asc' ? 
+    a.localeCompare(b) : 
+    -1*(a.localeCompare(b))
+}
 export function orderByProperty(data, name, direction){
     let sortingData = data.map(el => ({...el}));
     switch(name.toLowerCase()){
         case "ime":
+            return sortingData.sort((a,b)=>sortString(a,b,direction,"name"));
         case "prezime":
+            return sortingData.sort((a,b)=>sortString(a,b,direction,"surname"));
         case "profesija":
+            return sortingData.sort((a,b)=>sortString(a.profession.professionName,b.profession.professionName,direction));
         case "trenutno":
-            return sortingData.sort((a,b)=> {
-                    return direction === 'asc' ? 
-                    a[name.toLowerCase()].localeCompare(b[name.toLowerCase()]) : 
-                    -1*(a[name.toLowerCase()].localeCompare(b[name.toLowerCase()]))
-                }
-                );
-
+            return sortingData.sort((a,b)=>sortString(a.constructionSite?.constructionSiteName,b.constructionSite?.constructionSiteName,direction));
         case "radi od":
             return sortingData.sort((a,b)=>{
-                const [aYear, aDay] = a.radiOd.split("T");
-                const [bYear, bDay] = b.radiOd.split("T");
+                const [aYear, aDay] = a.employmentStartDate.split("T");
+                const [bYear, bDay] = b.employmentStartDate.split("T") ?? "";
 
                 let first = aYear.split("-").map(el=>parseInt(el)).reduce((a,b)=>a+b);
                 let second = bYear.split("-").map(el=>parseInt(el)).reduce((a,b)=>a+b);
@@ -62,8 +96,8 @@ export function orderByProperty(data, name, direction){
             })
         case "satnica":
             return data.sort((a,b)=>{
-                let first = parseFloat(a.satnica);
-                let second = parseFloat(b.satnica);
+                let first = parseFloat(a.hourlyRate);
+                let second = parseFloat(b.hourlyRate);
                 return direction === "asc" ? first - second : second - first;
             });
         default:
@@ -73,6 +107,24 @@ export function orderByProperty(data, name, direction){
 
 export function getSelectedOption(options){
     return options.find(el=>el.isSelected);
+}
+
+export function dateToString(date){
+    let newDate = new Date(date);
+        var mm = newDate.getMonth() + 1; // getMonth() is zero-based
+        var dd = newDate.getDate();
+      
+        return [(dd>9 ? '' : '0') + dd,
+                (mm>9 ? '' : '0') + mm,
+                newDate.getFullYear(),
+               ].join(' / ');
+}
+
+export function asDateOnly(date){
+    if(date && date.length > 0)
+    return date.split("T")[0];
+
+    return "";
 }
 
 
@@ -86,7 +138,11 @@ export function translateEngToSrb(name){
         employmentEndDate: "Kraj radnog odnosa",
         hourlyRate: "Satnica",
         title: "Naslov",
-        description:"Opis"
+        description:"Opis",
+        dateStarted:"Začetak vremena",
+        expectedEndDate:"Očekivani završetak vremena",
+        address:"Adresa",
+        cityId:"Odabir grada"
     }
 
     return translations[name];
@@ -150,6 +206,13 @@ function commonUnreqValidate(val, prop){
     return commonValidate(val,prop);
 }
 
+function reqNumValidate(val, prop){
+    if(isNullOrEmpty(`${val}`) || parseInt(val) === 0)
+    return  `${translateEngToSrb(prop)} ne sme biti prazno`;
+
+    return null;
+}
+
 export function generateSchemaForAddEditUserForm(){
     return {
         name:(newVal)=>commonReqValidate(newVal,"name"),
@@ -169,26 +232,29 @@ export function generateSchemaForNoteForm(){
     }
 }
 
+export function generateSchemaConstructionSite(){
+    return {
+        displayName:(newVal)=>commonReqValidate(newVal,"title"),
+        address:(newVal)=>commonReqValidate(newVal,"address"),
+        dateStarted:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("dateStarted")} ne sme biti prazno` : null),
+        expectedEndDate:(newVal)=>true,
+        cityId:(newVal)=>reqNumValidate(newVal,"cityId"),
+    }
+}
+
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
-export function createFakeDataForTable(){
-    return ({
-        header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:4,name:"Radi Od"},{id:5,name:"Satnica"},{id:6,name:"Trenutno"}],
-        body:[
-            {id:1,ime:"AJanko",prezime:"Jankovic",radiOd:"2012-02-22T00:00:00",trenutno:"Gradiliste 2",profesija:"Maler", satnica:500},
-            {id:2,ime:"BJanko",prezime:"Jankovic",radiOd:"2012-03-22T00:00:00",trenutno:"Gradiliste 2",profesija:"Maler", satnica:600},
-            {id:3,ime:"Janko",prezime:"Jankovic",radiOd:"2012-04-22T00:00:00",trenutno:"Gradiliste 2",profesija:"Maler", satnica:700},
-            {id:4,ime:"CJanko",prezime:"Jankovic",radiOd:"2012-05-22T00:00:00",trenutno:"Gradiliste 2",profesija:"Maler", satnica:800},
-            {id:5,ime:"CJanko",prezime:"Jankovic",radiOd:"2012-05-22T00:00:00",trenutno:"Gradiliste 2",profesija:"Maler", satnica:900},
-            {id:6,ime:"CJanko",prezime:"Jankovic",radiOd:"2012-05-22T00:00:00",trenutno:"Gradiliste 2",profesija:"Maler", satnica:1000}
-        ]
-    });
+export function createHeadersDataForUsersTable(){
+    return[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:4,name:"Radi Od"},{id:5,name:"Satnica"},{id:6,name:"Trenutno"}];
 }
 
 function wrapInHourly(num){
     return `${num}din/hr`;
 }
 
+export function headersForConstructionSiteUsersEditTableCustomBody(){
+ return [{id:1, name:"Ime"},{id:2, name:"Prezime"},{id:3, name:"Profesija"},{id:5, name:"Satnica"}];
+}
 export function createFakeDataForTableConstructionSite(){
     return ({
         header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],

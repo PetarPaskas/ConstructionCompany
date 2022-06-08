@@ -19,5 +19,16 @@ namespace ConstructionCompany.Common.DTOs.CityDto
                 MunicipalityId = city.MunicipalityId
             };
         }
+
+        public static Option AsOption(this City city)
+        {
+            return new Option()
+            {
+                Id = city.CityId,
+                Name = $"{city.DisplayName}-{city.CityId}",
+                Value = city.DisplayName,
+                IsSelected = false,
+            };
+        }
     }
 }

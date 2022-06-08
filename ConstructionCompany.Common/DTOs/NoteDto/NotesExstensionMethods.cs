@@ -21,5 +21,14 @@ namespace ConstructionCompany.Common.DTOs.NoteDto
                 User = new StrippedUserModel(note)
             };
         }
+
+        public static Note AsNote(this AddEditNoteDto noteDto) => new Note()
+        {
+            ConstructionSiteId = noteDto.ConstructionSiteId,
+            DateCreated = noteDto.DateCreated,
+            Title = noteDto.Title,
+            UserId = noteDto.UserId,
+            Description = noteDto.Description,
+        };
     }
 }

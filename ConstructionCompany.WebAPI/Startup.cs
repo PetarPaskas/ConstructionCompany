@@ -15,7 +15,16 @@ namespace ConstructionCompany.WebAPI
 
             services.AddAuthorization();
 
-            services.AddCors();
+            services.AddCors(policy =>
+            {
+                policy.AddPolicy(name: "DevelopmentPolicy", options =>
+                {
+
+                     options.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                });
+            });
 
             services
                 .AddControllers()
@@ -42,18 +51,21 @@ namespace ConstructionCompany.WebAPI
 
             app.UseRouting();
 
-            app.UseCors(options =>
+            if (env.IsDevelopment())
             {
-                options.WithMethods("GET");
-            });
+                app.UseDeveloperExceptionPage();
 
-            app.UseSwagger();
+                app.UseSwagger();
 
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json",
-                "ConstructionCompany Service API Version 1");
-            });
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json",
+                    "ConstructionCompany Service API Version 1");
+                });
+
+            }
+
+            app.UseCors("DevelopmentPolicy");
 
             app.UseHttpsRedirection();
 

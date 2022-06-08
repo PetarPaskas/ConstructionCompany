@@ -19,7 +19,7 @@ namespace ConstructionCompany.Common
 
         public StrippedClientModel(ConstructionSite constructionSite)
         {
-            Client client = constructionSite.Clients.First();
+            Client client = constructionSite.Client;
 
             ClientId = client.ClientId;
             Name = client.ClientName;

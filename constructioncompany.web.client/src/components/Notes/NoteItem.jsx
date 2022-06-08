@@ -1,5 +1,4 @@
-import {shortenText} from "../common/utils";
-
+import {shortenText, dateToString} from "../common/utils";
 function NoteItem({noteItem,index, onItemClick, onDelete}){
     return(
     <div key={`NoteItem____${index}`} className="note-item-wrapper">
@@ -14,8 +13,8 @@ function NoteItem({noteItem,index, onItemClick, onDelete}){
             </div>
             <div className="note-item__info note-item__info--right">
                 <ul className="note-item__legend-list">
-                    <li>{noteItem.constructionSite.name}</li>
-                    <li>{noteItem.dateCreated}</li>
+                    <li>{noteItem.constructionSite.constructionSiteName}</li>
+                    <li>{dateToString(noteItem.dateCreated)}</li>
                 </ul>
             </div>
         </div>

@@ -30,6 +30,7 @@ class FormDate extends Component{
                 name={this.props.name}
                 className="form-input__date-element"
                 onChange={this.customAction}
+                value={this.props.value}
             />
             <small 
                 className="form-input__error form-input__date-error"

@@ -11,5 +11,7 @@ namespace ConstructionCompany.DataContext.Interfaces
         Task<IEnumerable<Note>> GetAllNotesWithNavPropertiesAsync();
         Task<Note> GetNoteWithNavPropertiesAsync(int noteId);
         Task<bool> DeleteNoteAsync(int noteId);
+        Task<Note> AddNoteAsync(Note note);
+        Task<Note> UpdateNoteAsync(int noteId, Note note);
     }
 }

@@ -8,28 +8,28 @@ namespace ConstructionCompany.DataContext.Repositories
 {
     public class NoteRepository : Repository<Note>, INoteRepository
     {
-        private ConstructionCompanyContext _context;
+        private ConstructionCompanyContext _constructionCompanyContext;
 
         public NoteRepository(ConstructionCompanyContext context)
             :base(context)
         {
-            _context = context;
+            _constructionCompanyContext = context;
         }
 
         public async Task<bool> DeleteNoteAsync(int noteId)
         {
-            Note note = await _context.Notes.FindAsync(noteId);
+            Note note = await _constructionCompanyContext.Notes.FindAsync(noteId);
 
-            _context.Notes.Remove(note);
+            _constructionCompanyContext.Notes.Remove(note);
 
-            await _context.SaveChangesAsync();
+            await _constructionCompanyContext.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<IEnumerable<Note>> GetAllNotesWithNavPropertiesAsync()
         {
-            IEnumerable<Note> notes = await _context.Notes
+            IEnumerable<Note> notes = await _constructionCompanyContext.Notes
                                                 .Include(n => n.User)
                                                 .Include(n => n.ConstructionSite)
                                                 .ToListAsync();
@@ -39,10 +39,44 @@ namespace ConstructionCompany.DataContext.Repositories
 
         public async Task<Note> GetNoteWithNavPropertiesAsync(int noteId)
         {
-            Note note = await _context.Notes
+            Note note = await _constructionCompanyContext.Notes
                                     .Include(n => n.User)
                                     .Include(n => n.ConstructionSite)
-                                    .SingleAsync(n => n.NoteId == noteId);
+                                    .SingleOrDefaultAsync(n => n.NoteId == noteId);
+
+            return note;
+        }
+
+        public async Task<Note> UpdateNoteAsync(int noteId, Note note)
+        {
+            var noteDb = await _constructionCompanyContext.Notes.FindAsync(noteId);
+
+            noteDb.Description = note.Description;
+            noteDb.Title = note.Title;
+            noteDb.ConstructionSiteId = note.ConstructionSiteId;
+            noteDb.UserId = note.UserId;
+
+            await _constructionCompanyContext.SaveChangesAsync();
+
+            await _constructionCompanyContext.ConstructionSites.SingleOrDefaultAsync(cs => cs.ConstructionSiteId == note.ConstructionSiteId);
+            if (note.UserId.HasValue)
+            {
+                await _constructionCompanyContext.Users.SingleOrDefaultAsync(u => u.UserId == note.UserId.Value);
+            }
+
+            return noteDb;
+        }
+
+        public async Task<Note> AddNoteAsync(Note note)
+        {
+            await _constructionCompanyContext.Notes.AddAsync(note);
+            await _constructionCompanyContext.SaveChangesAsync();
+            await _constructionCompanyContext.ConstructionSites.SingleOrDefaultAsync(cs => cs.ConstructionSiteId == note.ConstructionSiteId);
+
+            if (note.UserId.HasValue)
+            {
+                await _constructionCompanyContext.Users.SingleOrDefaultAsync(u => u.UserId == note.UserId.Value);
+            }
 
             return note;
         }

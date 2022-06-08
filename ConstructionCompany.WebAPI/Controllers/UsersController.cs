@@ -3,6 +3,7 @@ using ConstructionCompany.Common.DTOs.UserDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ConstructionCompany.WebAPI.Controllers
 {
@@ -49,10 +50,26 @@ namespace ConstructionCompany.WebAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("[action]/{date}/{constructionSiteId}")]
+        public async Task<IActionResult> GetAllUsersForDateOnConstructionSite(DateTime? date, int constructionSiteId)
+        {
+            if (!date.HasValue)
+                return BadRequest(new ClientErrorMessage("Izaberi datum"));
+
+            IEnumerable<User> usersDb = await _usersRepository.GetUsersWitNavForDateAndSingleConstructionSite(date.Value, constructionSiteId);
+
+            IEnumerable<GetUsersDto> users = usersDb.Select(user => user.AsDtoWithConstructionSite(date.Value));
+
+            return Ok(users);
+        }
+
+        [HttpGet("{userId}", Name =nameof(GetUser))]
         public async Task<IActionResult> GetUser(int userId)
         {
             User user = await _usersRepository.GetUserWithNavPropertiesAsync(userId);
+
+            if (user is null)
+                return NotFound(new ClientErrorMessage("Korisnik sa datim Id-em nije pronadjen"));
 
             return Ok(user.AsDtoWithWages());
         }
@@ -74,17 +91,31 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         [HttpPatch("{userId}")]
-        public async Task<IActionResult> UpdateUser(int userId, [FromBody] object newUser)
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] AddEditUserDto userDto)
         {
-            return Ok("IMPLEMENT THIS");
+            if (!ModelState.IsValid)
+                return BadRequest(new ClientErrorMessage("Invalid model"));
+
+            User newUser = await _usersRepository.UpdateUserAsync(userId, userDto.AsUser());
+
+            return Ok(newUser.AsDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] object user)
+        public async Task<IActionResult> CreateUser([FromBody] AddEditUserDto userDto)
         {
-            return Ok("IMPLEMENT THIS");
+                if (!ModelState.IsValid)
+                    return BadRequest(new ClientErrorMessage("Invalid model"));
 
-          //return CreatedAtRoute(null, null);
+                User newUser = await _usersRepository.CreateUserAsync(userDto.AsUser());
+
+                var value = newUser.AsDto();
+
+                return CreatedAtRoute(
+                    routeName: nameof(GetUser),
+                    routeValues: new { userId = newUser.UserId },
+                    value: value);
+
         }
 
     }

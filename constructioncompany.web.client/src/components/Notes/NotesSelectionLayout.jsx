@@ -5,7 +5,8 @@ import Pagination from "../common/Pagination";
 import NoteFilter from "./NoteFilter";  
 import Modal from "../common/Modal";
 import NoteForm from "./NoteForm";
-
+import noteClient from "../http/notesClient";
+import miscClient from "../http/miscClient";
 /*
 {
     noteId:,
@@ -41,6 +42,8 @@ class NotesSelectionLayout extends Component{
             currentPage: 1
         },
 
+        constructionSiteOptions: [],
+
         filters:{
             // RadnikFilter: {
             //     type:"text",
@@ -56,6 +59,14 @@ class NotesSelectionLayout extends Component{
                 name:"ConstructionSiteFilter",
                 title:"Unesi ime gradilišta",
                 for:"constructionSite.constructionSiteId", //Probably property of the object we're targeting
+                value:""
+            },
+            NoteTitleFilter: {
+                type:"text",
+                id:"NoteTitleFilter",
+                name:"NoteTitleFilter",
+                title:"Unesi naslov beležnice",
+                for:"title", //Probably property of the object we're targeting
                 value:""
             }
         }
@@ -84,8 +95,10 @@ class NotesSelectionLayout extends Component{
 
     }
 
-    componentDidMount(){
-        const data = createFakeDataForNotes();
+    async componentDidMount(){
+        const {data} = await noteClient.getAll();
+        const {constructionSiteOptions} = ((await miscClient.getAllOptions()).data);
+
        const queryStringData = this.readQueryString();
        if(queryStringData){
         const {filters} = this.state;
@@ -93,9 +106,9 @@ class NotesSelectionLayout extends Component{
        for(let prop in queryStringData){
            filters[prop].value = queryStringData[prop];
        }
-       this.setState({data,filters});
+       this.setState({data, filters, constructionSiteOptions});
        }else{
-        this.setState({data});
+        this.setState({data, constructionSiteOptions});
        }
     }
 
@@ -120,31 +133,18 @@ class NotesSelectionLayout extends Component{
     }
 
     filterData=()=>{
-        //For if you want to include radnik filter
-        // return this.state.data.filter(dataItem => {
-        //     let result = true;
-        //         if(this.state.filters.RadnikFilter.value.length > 0 ||
-        //             this.state.filters.ConstructionSiteFilter.value.length > 0){
-        //             result = dataItem.user.name.toLowerCase().includes(this.state.filters.RadnikFilter.value.trim().toLowerCase()) &&
-        //                     dataItem.constructionSite.name.toLowerCase().includes(this.state.filters.ConstructionSiteFilter.value.trim().toLowerCase());
-        //         }
-        //         return result;
-        //     });
                 return this.state.data.filter(dataItem => {
             let result = true;
-                if(this.state.filters.ConstructionSiteFilter.value.length > 0){
-                    result = dataItem.constructionSite.name.toLowerCase().includes(this.state.filters.ConstructionSiteFilter.value.trim().toLowerCase());
+                if(this.state.filters.ConstructionSiteFilter.value.length > 0 || 
+                    this.state.filters.NoteTitleFilter.value.length > 0){
+                    result = dataItem.constructionSite.constructionSiteName.toLowerCase().includes(this.state.filters.ConstructionSiteFilter.value.trim().toLowerCase()) 
+                            && dataItem.title.toLowerCase().includes(this.state.filters.NoteTitleFilter.value.trim().toLocaleLowerCase());
                 }
                 return result;
             });
     }
 
     onAddNote=()=>{
-        // modalInfo:{
-        //     shouldOpenModal:false,
-        //     currentlyShowingItemId:0,
-        //     isAddNewNoteModal:false
-        // }
 
         const {modalInfo} = this.state;
         modalInfo.shouldOpenModal = true;
@@ -192,6 +192,9 @@ class NotesSelectionLayout extends Component{
     }
 
     renderItems(){
+        if(this.state.data.length === 0){
+            return <p>Trenutno nema beležnica, dodaj nove</p>
+        }
         let items = this.filterData();
         const data = [];
 
@@ -238,13 +241,17 @@ class NotesSelectionLayout extends Component{
         const {modalInfo} = this.state;
         // const item = this.state.data.find(el=>el.noteId === modalInfo.currentlyShowingItemId);
         let data = modalInfo.isAddNewNoteModal ? [] : this.state.data;
+        let dropdownOptions = !modalInfo.isAddNewNoteModal ? this.state.constructionSiteOptions 
+                              : this.state.constructionSiteOptions.map(el=>({...el, isSelected: false}));
         return (
         <Modal 
         handleClose={this.handleCloseModal}
         isOpen={modalInfo.shouldOpenModal}>
             <NoteForm 
             data={data}
-            displayId={modalInfo.currentlyShowingItemId}/>
+            displayId={modalInfo.currentlyShowingItemId}
+            dropdownOptions={dropdownOptions}
+            />
         </Modal>);
     }
 

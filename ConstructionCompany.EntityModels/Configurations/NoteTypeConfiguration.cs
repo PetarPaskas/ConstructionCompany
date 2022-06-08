@@ -14,7 +14,7 @@ namespace ConstructionCompany.EntityModels.Configurations
 
             builder.HasKey(n => n.NoteId);
 
-            builder.HasAlternateKey(n => new { n.ConstructionSiteId, n.Title });
+            //builder.HasAlternateKey(n => new { n.ConstructionSiteId, n.Title });
 
             builder.HasOne(n => n.ConstructionSite)
                 .WithMany(cs => cs.Notes)

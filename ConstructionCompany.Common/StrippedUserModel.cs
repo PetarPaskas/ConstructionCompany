@@ -9,7 +9,7 @@ namespace ConstructionCompany.Common
 {
     public record StrippedUserModel
     {
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public string FullName { get; set; }
 
         public StrippedUserModel()
@@ -19,8 +19,17 @@ namespace ConstructionCompany.Common
 
         public StrippedUserModel(Note note)
         {
-            UserId = note.UserId;
-            FullName = note.User.FullName;
+            if (note.UserId.HasValue)
+            {
+                UserId = note.UserId.Value;
+                FullName = note.User.FullName;
+            }
+            else
+            {
+                UserId = null;
+                FullName = String.Empty;
+            }
+
         }
     }
 }

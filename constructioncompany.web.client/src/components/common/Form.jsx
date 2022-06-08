@@ -70,7 +70,7 @@ class Form extends Component{
         const {data} = this.state;
         let newId = 0;
         switch(selection){
-            case "valutaOptions":
+            case "currencyOptions":
                   const valutaOption = getSelectedOption(data[selection]);
                   if(valutaOption){
                     if(data.currencyId !== valutaOption.id){
@@ -79,7 +79,7 @@ class Form extends Component{
                   }
                   data.currencyId = newId;
                 break;
-            case "profesijeOptions":
+            case "professionOptions":
                  const profesijeOption = getSelectedOption(data[selection]);
                  if(profesijeOption){
                     if(profesijeOption.id !== data.professionId){
@@ -117,11 +117,14 @@ class Form extends Component{
     submitNewOptionsSelection=(paramData,selection, keepOriginal = false)=>{
         const {data:newData} = this.state;
         const options = newData[selection].map(el=>{
-            if(paramData.id === el.id && paramData.value === el.value)
+            if(parseInt(paramData.id) == el.id && paramData.value == el.value){
                 return ({...el, isSelected:!el.isSelected});
-            else
+            }
+            else{
                 return keepOriginal ? ({...el}) : ({...el, isSelected:false});
+            }
         });
+        
         newData[selection] = options;
         this.setState({data:newData});
     }

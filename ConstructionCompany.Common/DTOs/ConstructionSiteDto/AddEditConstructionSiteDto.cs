@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
 {
-    public record GetConstructionSiteDto
+    public record AddEditConstructionSiteDto
     {
         public int ConstructionSiteId { get; set; }
-        public string DisplayName { get; set; }
+        public string Name { get; set; }
         public string Address { get; set; }
         public bool IsFinished { get; set; }
         public DateTime DateStarted { get; set; }
-        public DateTime? ExpectedEndDate { get; set; }
-        public StrippedClientModel Client { get; set; }
-        public StrippedCityModel City { get; set; }
+        public DateTime ExpectedEndDate { get; set; }
+        public int CityId { get; set; }
+        public string ClientId { get; set; }
+        public IEnumerable<int> Users { get; set; }
     }
 }

@@ -8,5 +8,6 @@ namespace ConstructionCompany.DataContext.Interfaces
 {
     public interface ICurrencyRepository : IRepository<Currency>
     {
+        Task<IEnumerable<Currency>> GetAllForOptions();
     }
 }

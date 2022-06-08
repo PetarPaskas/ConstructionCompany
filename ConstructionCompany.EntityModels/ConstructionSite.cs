@@ -17,7 +17,8 @@ namespace ConstructionCompany.EntityModels
         public int CityId { get; set; }
         public string ClientId { get; set; }
         public City City { get; set; }
-        public IEnumerable<Client> Clients { get; set; }
+        public Client Client { get; set; }
+        //public IEnumerable<Client> Clients { get; set; }
         public IEnumerable<Note> Notes { get; set; }
         public IEnumerable<Wage> Wages { get; set; }
         public IEnumerable<User> Users { get; set; }

@@ -1,17 +1,14 @@
 import Form from "../../common/Form";
-import {generateSchemaForAddEditUserForm} from "../../common/utils";
+import {generateSchemaForAddEditUserForm, asDateOnly, processFinalDataForAddEditUserForm} from "../../common/utils";
+import miscClient from "../../http/miscClient";
+import  usersClient from "../../http/usersClient";
 
 class AddEditUserForm extends Form{
-    constructor(props){
-        super(props);
-        if(props.match.params.id){
-            console.log("AddEditUserForm id =>",props.match.params.id);
-        }
-    }
 
     schema=generateSchemaForAddEditUserForm();
 
     state={
+        currentId:this.props.match.params.id,
         data:{
             name:"",
             surname:"",
@@ -22,24 +19,37 @@ class AddEditUserForm extends Form{
             hourlyRate:0,
             professionId:0,
             currencyId:0,
-            constructionSitesId:[],
-            profesijeOptions:[
-                {id:"1",name:"Maler",value:"maler", isSelected:false},
-                {id:"2",name:"Moler",value:"moler", isSelected:false},
-                {id:"3",name:"Svaler",value:"jebach",isSelected:false},
-                {id:"4",name:"Elektricar",value:"isto_jebach",isSelected:false}
-            ],
-            valutaOptions:[
-                {id:"1",name:"EUR",value:"eur", isSelected:false},
-                {id:"2",name:"RSD",value:"rsd", isSelected:false}
-            ],
-            gradilisteOptions:[
-                {id:"1",name:"Gradiliste 1",value:"g_1", isSelected:false},
-                {id:"2",name:"Gradiliste 2",value:"g_2", isSelected:false}
-            ]
+            constructionSitesId:0,
+            professionOptions:[],
+            currencyOptions:[],
+            constructionSiteOptions:[]
         },
         errors:{
         },
+    }
+
+    callApi = async ()=>{
+        let finalData = {...this.state.data};
+        let hasUser = false;
+        if(this.state.currentId && this.state.currentId !== "New"){
+            const id = parseInt(this.state.currentId);
+            const user = (await usersClient.getSingleUser(id)).data;
+            finalData = {...finalData, ...user};
+            hasUser=true;
+        }
+
+        const options = (await miscClient.getAllOptions()).data;
+        finalData.professionOptions = options.professionOptions;
+        finalData.currencyOptions = options.currencyOptions;
+        finalData.constructionSiteOptions = options.constructionSiteOptions;
+
+        processFinalDataForAddEditUserForm(finalData, hasUser);
+
+        this.setState({data:finalData});
+    }
+
+    async componentDidMount(){
+        await this.callApi();
     }
 
     onDropdownClick=(data, selection)=>{
@@ -47,13 +57,14 @@ class AddEditUserForm extends Form{
         // console.log(`Data => `, data);
 
         switch(selection){
-            case "valutaOptions":
-            case "profesijeOptions":
+            case "currencyOptions":
+            case "professionOptions":
+            case "constructionSiteOptions":
                 this.submitNewOptionsSelection(data,selection);
                 break;
-            case "gradilisteOptions":
-                this.submitNewOptionsSelection(data,selection,true);
-                break;
+            // case "constructionSiteOptions":
+            //     this.submitNewOptionsSelection(data,selection,true);
+            //     break;
             default:
                 console.error("No onDropdownClick selection implementation");
                 break;
@@ -109,16 +120,16 @@ class AddEditUserForm extends Form{
             </div>
             <div className="row">
                 {this.renderInputField("form-group col", "hourlyRate", `${data.hourlyRate > 0 ? data.hourlyRate : ""}`, "Unesi Satnicu", "","number")}
-                {this.renderDropdown(data.valutaOptions, "valutu", dropdownOptions, "valutaOptions")}
-                {this.renderDropdown(data.profesijeOptions, "profesiju", dropdownOptions, "profesijeOptions")}
+                {this.renderDropdown(data.currencyOptions, "valutu", dropdownOptions, "currencyOptions")}
+                {this.renderDropdown(data.professionOptions, "profesiju", dropdownOptions, "professionOptions")}
 
             </div>
             <div className="row">
-            {this.renderDropdown(data.gradilisteOptions, "gradiliste", dropdownOptions, "gradilisteOptions", true)}
+            {this.renderDropdown(data.constructionSiteOptions, "gradiliste", dropdownOptions, "constructionSiteOptions")}
 
             {/* containerClassNameAppender, name, value, labelPlaceholder, errorMessage */}
-                {this.renderDate("col","employmentStartDate", data.employmentStartDate, "Radi od","")}
-                {this.renderDate("col","employmentEndDate", data.employmentEndDate, "Radi do","")}
+                {this.renderDate("col","employmentStartDate", asDateOnly(data.employmentStartDate), "Radi od","")}
+                {this.renderDate("col","employmentEndDate", asDateOnly(data.employmentEndDate), "Radi do","")}
             </div>
             <div className="row flex-row-reverse">
                 {this.renderSubmitButton()}

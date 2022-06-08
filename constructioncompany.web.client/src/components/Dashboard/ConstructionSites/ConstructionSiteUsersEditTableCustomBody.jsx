@@ -2,12 +2,12 @@
 function ConstructionSiteUsersEditTableCustomBody({item, index, itemOrder, onCustomChange}){
     return(<tr key={`table-body__${index}`}>
     <td>{itemOrder}</td>
-    <td>{item.ime ?? ""}</td>
-    <td>{item.prezime ?? ""}</td>
-    <td>{item.profesija ?? ""}</td>
-    <td>{item.satnica}</td>
+    <td>{item.name ?? ""}</td>
+    <td>{item.surname ?? ""}</td>
+    <td>{item.profession.professionName ?? ""}</td>
+    <td>{item.hourlyRate} {item.currency.currencyName}</td>
     <td>
-        <input type="checkbox" onChange={()=>{onCustomChange(item.id);}} name={item.ime}/>
+        <input type="checkbox" onChange={()=>{onCustomChange(item.userId);}} checked={item.isSelected} name={item.displayName}/>
     </td>
     </tr>
     );

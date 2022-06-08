@@ -1,4 +1,5 @@
-﻿using ConstructionCompany.Common.DTOs.ConstructionSiteDto;
+﻿using ConstructionCompany.Common;
+using ConstructionCompany.Common.DTOs.ConstructionSiteDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,13 @@ namespace ConstructionCompany.WebAPI.Controllers
             return Ok(data);
         }
 
-        [HttpGet("{constructionSiteId}")]
+        [HttpGet("{constructionSiteId}", Name = nameof(GetSingleConstructionSite) )]
         public async Task<IActionResult> GetSingleConstructionSite(int constructionSiteId)
         {
             ConstructionSite cs = await _constructionSiteRepository.GetSingleWithNavPropertiesAsync(constructionSiteId);
+
+            if(cs is null)
+                return NotFound(new ClientErrorMessage("Gradiliste sa datim id-em nije pronadjeno"));
 
            return Ok(cs.AsDto());
 
@@ -51,16 +55,26 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         [HttpPatch("{constructionSiteId}")]
-        public async Task<IActionResult> UpdateConstructionSite(int constructionSiteId, object newConstructionSite)
+        public async Task<IActionResult> UpdateConstructionSite(int constructionSiteId, AddEditConstructionSiteDto constructionSiteDto)
         {
-            return BadRequest("PLEASE IMPLEMENT THIS");
+           ConstructionSite newConstructionSite = await _constructionSiteRepository.UpdateConstructionSiteAsync(constructionSiteId, constructionSiteDto);
+
+            return Ok(newConstructionSite.AsDto());
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateConstructionSite([FromBody] object constructionSite)
+        public async Task<IActionResult> CreateConstructionSite([FromBody] AddEditConstructionSiteDto constructionSiteDto)
         {
-            return BadRequest("PLEASE IMPLEMENT THIS");
-            //return CreatedAtRoute(null, null);
+            if(!ModelState.IsValid)
+                return BadRequest(new ClientErrorMessage("Nepotpuni podaci za kreiranje gradilista"));
+
+                var cs = await _constructionSiteRepository.AddConstructionSiteAsync(constructionSiteDto);
+                return CreatedAtRoute(
+                            routeName: nameof(GetSingleConstructionSite),
+                            routeValues: new { ConstructionSiteId = cs.ConstructionSiteId },
+                            cs.AsDto());
+
+
         }
     }
 }

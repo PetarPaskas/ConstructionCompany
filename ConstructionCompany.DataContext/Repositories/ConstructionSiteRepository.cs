@@ -1,8 +1,11 @@
-﻿using System;
+﻿using ConstructionCompany.Common.DTOs.ConstructionSiteDto;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace ConstructionCompany.DataContext.Repositories
 {
@@ -42,7 +45,7 @@ namespace ConstructionCompany.DataContext.Repositories
                                                         .ConstructionSites
                                                         .Include(cs => cs.City)
                                                         .ThenInclude(c => c.Municipality)
-                                                        .Include(cs => cs.Clients)
+                                                        .Include(cs => cs.Client)
                                                         .ToListAsync();
 
             return await Task.FromResult(cs);
@@ -54,10 +57,106 @@ namespace ConstructionCompany.DataContext.Repositories
                                             .ConstructionSites
                                             .Include(cs => cs.City)
                                             .ThenInclude(c=>c.Municipality)
-                                            .Include(cs => cs.Clients)
-                                            .SingleAsync(cs=>cs.ConstructionSiteId==constructionSiteId);
+                                            .Include(cs => cs.Client)
+                                            .SingleOrDefaultAsync(cs=>cs.ConstructionSiteId==constructionSiteId);
 
             return await Task.FromResult(cs);
+        }
+
+        public async Task<IEnumerable<ConstructionSite>> GetallForOptions()
+        {
+            return await _constructionCompanyContext.ConstructionSites.ToListAsync();
+        }
+
+        public async Task<ConstructionSite> UpdateConstructionSiteAsync(int constructionSiteId, AddEditConstructionSiteDto constructionSiteDto)
+        {
+           ConstructionSite cs = await _constructionCompanyContext.ConstructionSites
+                                            .Include(cs=>cs.Users)
+                                            .SingleOrDefaultAsync(cs=>cs.ConstructionSiteId == constructionSiteId);
+
+           await ManageUsersForConstructionSite(constructionSiteId, cs, constructionSiteDto);
+
+            cs.Address = constructionSiteDto.Address;
+            cs.CityId = constructionSiteDto.CityId;
+            cs.ClientId = constructionSiteDto.ClientId;
+            cs.DateFinished = constructionSiteDto.ExpectedEndDate;
+            cs.IsFinished = constructionSiteDto.IsFinished;
+            cs.DisplayName = constructionSiteDto.Name;
+            cs.DateStarted = constructionSiteDto.DateStarted;
+
+            await _constructionCompanyContext.SaveChangesAsync();
+
+            return cs;
+        }
+
+
+
+        public async Task<ConstructionSite> AddConstructionSiteAsync(AddEditConstructionSiteDto cosntructionSiteDto)
+        {
+                var cs = cosntructionSiteDto.AsConstructionSite();
+
+                await _constructionCompanyContext.ConstructionSites.AddAsync(cs);
+
+                await ManageUsersForConstructionSite(cs.ConstructionSiteId, cs, cosntructionSiteDto);
+
+                await _constructionCompanyContext.SaveChangesAsync();
+
+            return cs; 
+        }
+
+        private async Task ManageUsersForConstructionSite(int constructionSiteId, ConstructionSite cs, AddEditConstructionSiteDto constructionSiteDto)
+        {
+            try
+            {
+                if (constructionSiteId != 0)
+                {
+                    if (!(constructionSiteDto.Users is null) && constructionSiteDto.Users.Count() > 0)
+                    {
+                        var newUsers = await _constructionCompanyContext.Users.Where(u => constructionSiteDto.Users.Contains(u.UserId)).ToListAsync();
+
+                        foreach (var user in cs.Users)
+                        {
+                            user.ConstructionSiteId = null;
+                        }
+
+                        foreach (var newUser in newUsers)
+                        {
+                            newUser.ConstructionSiteId = constructionSiteId;
+                        }
+
+                    }
+                    else
+                    {
+                        foreach (var user in cs.Users)
+                            user.ConstructionSiteId = null;
+                    }
+                }
+                else
+                {
+                    if (constructionSiteDto.Users.Count() > 0)
+                    {
+                        var readyUsers = await _constructionCompanyContext.Users.Where(u => constructionSiteDto.Users.Contains(u.UserId)).ToListAsync();
+                        foreach (var user in readyUsers)
+                        {
+                            user.ConstructionSite = cs;
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
+            }
+
+            await _constructionCompanyContext.Cities
+                .Where(c => c.CityId == cs.CityId)
+                .Include(c=>c.Municipality)
+                .LoadAsync();
+
+            await _constructionCompanyContext.Clients
+                .Where(c => c.ClientId.Equals(cs.ClientId))
+                .LoadAsync();
         }
     }
 }
