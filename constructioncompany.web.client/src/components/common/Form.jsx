@@ -12,22 +12,18 @@ class Form extends Component{
     // }
     //
     //
-    handleChange=({target})=>{
-       const newValue = target.value;
-        const elementName = target.name;
-        if(!this.schema){
-            console.error("Please provide a schema object for validation.");
-            return;
-        }
 
-        let error = this.validate(elementName, newValue);
+    doValidation=(elementName, newValue)=>{
+            let error = this.validate(elementName, newValue);
             //If validation didn't pass
         if(this.state.errors === undefined){
             console.error("Please provide a state error object for storing errors.");
             return;
         }
+
         console.log("Form.jsx:handleChange Error =>",error);
         let {errors:newErrors} = this.state;
+
         if(!error){
             delete newErrors[elementName]
         }
@@ -35,11 +31,22 @@ class Form extends Component{
             newErrors[elementName] = error;
         }
 
+        this.setState({errors:newErrors})
+    };
+
+    handleChange=({target})=>{
+       const newValue = target.value;
+        const elementName = target.name;
+        if(!this.schema){
+            console.error("Please provide a schema object for validation.");
+            return;
+        }
+        this.doValidation(elementName, newValue);
         //setting data
         const {data:newData} = this.state;
         newData[elementName] = newValue;
 
-        this.setState({data:newData, errors:newErrors});
+        this.setState({data:newData});
     }
 
     validate=(elementName, newValue)=>{
@@ -107,6 +114,17 @@ class Form extends Component{
                  }
                  data.cityId = newId;
                 break;
+            case "clientOptions":
+                const clientOption = getSelectedOption(data[selection]);
+                console.log(data[selection]);
+                if(clientOption){
+                    if(clientOption.id !== data.clientId){
+                        newId = clientOption.id;
+                        console.log("New client option => ",clientOption);
+                    }
+                }
+                data.clientId = newId;
+                break;
             default:
                 console.error("Form.jsx line 111 => Implement updateSelection case option");
                 break;
@@ -114,18 +132,28 @@ class Form extends Component{
         this.setState({data});
     }
 
-    submitNewOptionsSelection=(paramData,selection, keepOriginal = false)=>{
+    submitNewOptionsSelection=(paramData,selection, keepOriginal = false, stringIdentifier = false)=>{
         const {data:newData} = this.state;
-        const options = newData[selection].map(el=>{
-            if(parseInt(paramData.id) == el.id && paramData.value == el.value){
-                return ({...el, isSelected:!el.isSelected});
-            }
-            else{
-                return keepOriginal ? ({...el}) : ({...el, isSelected:false});
-            }
-        });
-        
-        newData[selection] = options;
+        if(!stringIdentifier){
+            newData[selection] = newData[selection].map(el=>{
+                if(parseInt(paramData.id) == el.id && paramData.value == el.value){
+                    return ({...el, isSelected:!el.isSelected});
+                }
+                else{
+                    return keepOriginal ? ({...el}) : ({...el, isSelected:false});
+                }
+            });
+        }else{
+            newData[selection] = newData[selection].map(el=>{
+                if(paramData.id == el.id && paramData.value == el.value){
+                    return ({...el, isSelected:!el.isSelected});
+                }
+                else{
+                    return keepOriginal ? ({...el}) : ({...el, isSelected:false});
+                }
+            });
+        }
+
         this.setState({data:newData});
     }
 

@@ -65,6 +65,7 @@ namespace ConstructionCompany.DataContext.Repositories
         public async Task<IEnumerable<User>> GetAllWithNavPropertiesAsync()
         {
                 var result = await _constructionCompanyContext.Users
+                                    .Where(u=>!u.IsDisabled)
                                     .Include(u=>u.Currency)
                                     .Include(u=>u.Profession)
                                     .Include(u=>u.ConstructionSite)

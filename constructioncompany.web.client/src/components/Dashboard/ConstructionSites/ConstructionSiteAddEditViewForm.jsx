@@ -8,6 +8,8 @@ import {asDateOnly, dateToString, headersForConstructionSiteUsersEditTableCustom
 import ConstructionSiteUsersTableCustomBody from "./ConstructionSiteUsersTableCustomBody";
 import ConstructionSiteUsersEditTableCustomBody from "./ConstructionSiteUsersEditTableCustomBody";
 
+const redirectLocation = "http://localhost:3000/Dashboard/Gradilista";
+
 //renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text")
 class ConstructionSiteAddEditViewForm extends Form
 {
@@ -37,23 +39,93 @@ class ConstructionSiteAddEditViewForm extends Form
             expectedEndDate:"",
             cityId:0,
             cityName:"",
+            isFinished:false,
+            clientId:"",
             citiesOptions:[
-                {id:"1",name:'Beograd',value:'b-g', isSelected:false},
-                {id:"2",name:"Slankamen",value:'skmn', isSelected:false}
             ],
             workerList:[
 
             ],
             checkedUsersBuffer:[
+            ],
+            clientOptions:[
 
             ]
         },
         errors:{
+            displayName:""
         },
     }
 
-    handleSubmit=()=>{
-        console.log("Submitting form");
+    handleSubmit= async ()=>{
+        //         {
+        //   "constructionSiteId": 0,
+        //   "name": "string",
+        //   "address": "string",
+        //   "isFinished": true,
+        //   "dateStarted": "2022-06-09T17:17:35.492Z",
+        //   "expectedEndDate": "2022-06-09T17:17:35.492Z",
+        //   "cityId": 0,
+        //   "clientId": "string",
+        //   "users": [
+        //     0
+        //   ]
+        // }
+
+        const {currentId} = this.state;
+        const {errors} = this.state;
+        let shouldErrorCity = false;
+        let shouldErrorClient = false;
+
+        if(!this.state.data.citiesOptions.some(city=>city.isSelected)){
+            shouldErrorCity = true;
+        }
+        if(!this.state.data.clientOptions.some(client=>client.isSelected)){
+            shouldErrorClient = true;
+        }
+
+        shouldErrorCity && (errors.cityId = "Odaberi grad") || (delete errors.cityId);
+        shouldErrorClient && (errors.clientId = "Odaberi klijenta") || (delete errors.clientId);
+
+        this.setState({...errors});
+
+        if(Object.keys(errors).length > 0){
+            alert("Popuni sva polja ispravnim unosom");
+            return;
+        }
+
+        const {data} = this.state;
+        const newData = {
+             name:data.displayName,
+             address:data.address,
+             isFinished:data.isFinished,
+             dateStarted:data.dateStarted,
+             expectedEndDate:data.expectedEndDate,
+             cityId:data.cityId,
+             clientId: data.clientId,
+             users:[]
+        }
+
+        data.workerList.forEach(user=>{
+            if(user.isSelected){
+                newData.users.push(user.userId);
+            }
+        })
+
+        try{
+            let data;
+            if(currentId === "New"){
+               data = await constructionSiteClient.createSite(newData);
+            }else{
+               data = await constructionSiteClient.updateConstructionSite(currentId,newData)
+            }
+            console.log(data);
+            window.location.href = redirectLocation;
+        }
+        catch(e){
+            console.error(e);
+        }
+
     }
 
     renderSideOptions(){
@@ -99,8 +171,14 @@ class ConstructionSiteAddEditViewForm extends Form
         this.setState({shouldOpenForm:false});
     }
 
-    handleDelete=(id)=>{
-        console.log("Deleting gradiliste "+ id);
+    handleDelete= async (id)=>{
+        try{
+            await constructionSiteClient.deleteSite(parseInt(id));
+            window.location.href = redirectLocation;
+        }catch(err){
+            console.error("handleDelete error => ",err);
+            alert("Greska pri brisanju");
+        }
     }
 
     handleOpenNotes=(id)=>{
@@ -120,13 +198,14 @@ class ConstructionSiteAddEditViewForm extends Form
         // isFinished: true
         const id = this.props.match.params.id;
 
-        let finalData = {};
-        console.log("Id", id);
+        let finalData = {...this.state.data};
+
         if(id && id !== "New"){
            const {data} = await constructionSiteClient.getSingleSite(id);
            finalData = data;
            finalData.cityId = data.city.cityId;
            finalData.cityName = data.city.cityName;
+           finalData.clientId = data.client.clientId;
         }
 
         const {data:options} = await miscClient.getAllOptions();
@@ -138,6 +217,7 @@ class ConstructionSiteAddEditViewForm extends Form
             }
             return city;
         });
+
         finalData.workerList = usersOptions.map(user=>{
             user.isSelected = false;
 
@@ -148,6 +228,14 @@ class ConstructionSiteAddEditViewForm extends Form
                 }
             return user;
         });
+
+        finalData.clientOptions = options.clientOptions.map(client=>{
+            if(client.id == finalData.clientId){
+                return {...client, isSelected:true};
+            }
+            return client;
+        });
+
         finalData.checkedUsersBuffer = [];
         this.setState({data:finalData});
 
@@ -199,19 +287,20 @@ class ConstructionSiteAddEditViewForm extends Form
         };
         return (<React.Fragment>
                 <div className="row">
-                {this.renderInputField("form-group col", "displayName", data.displayName, "Naziv", errors.displayName , "text", data.isEditView)}
+                {this.renderInputField("form-group col", "displayName", data.displayName, "Naziv*", errors.displayName , "text", data.isEditView)}
+                {this.renderDropdown(this.state.data.clientOptions,"klijenta*",styling,"clientOptions")}
                 </div>
                 <div className="row">
-                {this.renderInputField("form-group col", "address", data.address, "Adresa", "", "text", data.isEditView)}
-                {this.renderDropdown(this.state.data.citiesOptions,"grad",styling,"citiesOptions")}
+                {this.renderInputField("form-group col", "address", data.address, "Adresa*", "", "text", data.isEditView)}
+                {this.renderDropdown(this.state.data.citiesOptions,"grad*",styling,"citiesOptions")}
             </div>
             <div className="row">
             {/*renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text", disabled) 
                 renderDate(containerClassNameAppender, name, value, labelPlaceholder, errorMessage)
                 renderDropdown(options, name, stylingOptions, selection, multiSelect = false){
                 */}
-                {this.renderDate("form-group col", "dateStarted", asDateOnly(data.dateStarted), "Datum začetka", errors.dateStarted)}
-                {this.renderDate("form-group col", "expectedEndDate", asDateOnly(data.expectedEndDate), "Datum roka", errors.expectedEndDate)}
+                {this.renderDate("form-group col", "dateStarted", asDateOnly(data.dateStarted), "Datum začetka*", errors.dateStarted)}
+                {this.renderDate("form-group col", "expectedEndDate", asDateOnly(data.expectedEndDate), "Datum roka*", errors.expectedEndDate)}
             </div>
         </React.Fragment>);
     }
@@ -255,7 +344,9 @@ class ConstructionSiteAddEditViewForm extends Form
             console.log("217 line ", data, selection);
             this.submitNewOptionsSelection(data,selection);
         }
-
+        if(selection === "clientOptions"){
+            this.submitNewOptionsSelection(data,selection, false, true);
+        }
         this.updateSelection(selection);
     }
 

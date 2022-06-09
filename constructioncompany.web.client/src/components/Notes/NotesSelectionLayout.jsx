@@ -24,6 +24,7 @@ import miscClient from "../http/miscClient";
 ?ConstructionSiteFilter=testData+asf+aaa
 */
 
+let location = "http://localhost:3000/Notes";
 
 class NotesSelectionLayout extends Component{
 
@@ -225,8 +226,15 @@ class NotesSelectionLayout extends Component{
         return data;
     }
 
-    handleDeleteNoteItem=(id)=>{
-        console.log("Deleting note item "+id);
+    handleDeleteNoteItem= async (id)=>{
+        try{
+            await noteClient.deleteNote(parseInt(id));
+            window.location.reload()
+        }
+        catch(err){
+            alert("Greska pri brisanju beleznice");
+            console.log(err);
+        }
     }
 
     handleCloseModal=(ev, shouldOpenModal = false, newId = 0)=>{
