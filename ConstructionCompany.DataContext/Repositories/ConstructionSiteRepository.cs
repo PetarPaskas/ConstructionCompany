@@ -43,6 +43,7 @@ namespace ConstructionCompany.DataContext.Repositories
         {
             IEnumerable<ConstructionSite> cs =  await _constructionCompanyContext
                                                         .ConstructionSites
+                                                        .Where(cs=>!cs.IsFinished)
                                                         .Include(cs => cs.City)
                                                         .ThenInclude(c => c.Municipality)
                                                         .Include(cs => cs.Client)
@@ -86,20 +87,28 @@ namespace ConstructionCompany.DataContext.Repositories
 
             await _constructionCompanyContext.SaveChangesAsync();
 
+            await _constructionCompanyContext.Users
+                                 .Where(user => constructionSiteDto.Users.Contains(user.UserId))
+                                 .LoadAsync();
+
             return cs;
         }
 
 
 
-        public async Task<ConstructionSite> AddConstructionSiteAsync(AddEditConstructionSiteDto cosntructionSiteDto)
+        public async Task<ConstructionSite> AddConstructionSiteAsync(AddEditConstructionSiteDto constructionSiteDto)
         {
-                var cs = cosntructionSiteDto.AsConstructionSite();
+                var cs = constructionSiteDto.AsConstructionSite();
 
                 await _constructionCompanyContext.ConstructionSites.AddAsync(cs);
 
-                await ManageUsersForConstructionSite(cs.ConstructionSiteId, cs, cosntructionSiteDto);
+                await ManageUsersForConstructionSite(cs.ConstructionSiteId, cs, constructionSiteDto);
 
                 await _constructionCompanyContext.SaveChangesAsync();
+
+                await _constructionCompanyContext.Users
+                                                 .Where(user => constructionSiteDto.Users.Contains(user.UserId))
+                                                 .LoadAsync();
 
             return cs; 
         }
@@ -157,6 +166,7 @@ namespace ConstructionCompany.DataContext.Repositories
             await _constructionCompanyContext.Clients
                 .Where(c => c.ClientId.Equals(cs.ClientId))
                 .LoadAsync();
+
         }
     }
 }

@@ -38,7 +38,7 @@ namespace ConstructionCompany.WebAPI.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{noteId}")]
         public async Task<IActionResult> DeleteNote(int noteId)
         {
             bool result = await _notesRepository.DeleteNoteAsync(noteId);

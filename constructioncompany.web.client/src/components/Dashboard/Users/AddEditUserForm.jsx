@@ -1,7 +1,10 @@
 import Form from "../../common/Form";
-import {generateSchemaForAddEditUserForm, asDateOnly, processFinalDataForAddEditUserForm} from "../../common/utils";
+import {generateSchemaForAddEditUserForm, asDateOnly, processFinalDataForAddEditUserForm, getSelectedOption} from "../../common/utils";
 import miscClient from "../../http/miscClient";
+import userClient from "../../http/usersClient";
 import  usersClient from "../../http/usersClient";
+
+const reloadLocation = "http://localhost:3000/Dashboard/Radnici";
 
 class AddEditUserForm extends Form{
 
@@ -16,7 +19,7 @@ class AddEditUserForm extends Form{
             phoneNumber:"",
             employmentStartDate:"",
             employmentEndDate:"",
-            hourlyRate:0,
+            hourlyRate:"",
             professionId:0,
             currencyId:0,
             constructionSitesId:0,
@@ -74,8 +77,15 @@ class AddEditUserForm extends Form{
 
     }
     
-    handleDeleteUser=(id)=>{
-        console.log("Deleting user with an ID of " + id);
+    handleDeleteUser=async (id)=>{
+        try{
+            await userClient.disableUser(parseInt(id));
+            window.location.href = reloadLocation;
+        }
+        catch(err){
+            alert("Greska pri brisanju korisnika");
+            console.error("Greska pri brisanju korisnika error => ",err);
+        }
     }
 
     renderSubmitButton(){
@@ -98,9 +108,74 @@ class AddEditUserForm extends Form{
 
     }
 
-    handleSubmit=(e)=>{
+    handleSubmit=async (e)=>{
+
+        const validateNeccessaryOption = ["name", "surname", "nickname", "phoneNumber", "employmentStartDate", "hourlyRate"];
+
         e.preventDefault();
-        console.log("Submiting the form");
+
+        const {data} = this.state;
+        const {currentId} = this.state;
+        let {errors} = this.state;
+
+        for(let index of validateNeccessaryOption){
+            this.doValidation(index,this.state.data[index]);
+        }
+
+        let professionOption = getSelectedOption(data.professionOptions);
+        let currencyOption = getSelectedOption(data.currencyOptions);
+        let constructionSiteOption = getSelectedOption(data.constructionSiteOptions);
+
+        if(!professionOption || data.professionId === 0)
+        errors.professionId = "Odaberi profesiju";
+        else 
+        delete errors.professionId;
+
+        if(!currencyOption || data.currencyId === 0)
+        errors.currencyId = "Odaberi valutu";
+        else 
+        delete errors.currencyId;
+
+        if(!constructionSiteOption || (typeof(data.constructionSitesId) !== 'object' || data.constructionSitesId === 0))
+            errors.constructionSiteId = "Odaberi gradilište";
+        else 
+        delete errors.constructionSiteId;
+
+        this.setState({errors:{...errors}});
+
+        if(Object.keys(errors).length > 0){
+            alert("Popuni sva polja adekvatnim unosom");
+            return;
+        }
+
+        const newObj = {
+            name:data.name,
+            nickname:data.nickname,
+            surname: data.surname,
+            phoneNumber:data.phoneNumber,
+            employmentStartDate:data.employmentStartDate,
+            hourlyRate:parseFloat(data.hourlyRate),
+            professionId:data.professionId,
+            currencyId:data.currencyId,
+            constructionSiteId:(data.constructionSitesId[0].id),
+            employmentEndDate:(data.employmentEndDate === "" ? null : data.employmentEndDate)
+        }
+
+        try{
+            if(currentId !== "New"){
+                await userClient.createUser(newObj);
+            }
+            else{
+                await userClient.updateUser(parseInt(currentId),newObj);
+            }
+
+            window.location.href = reloadLocation;
+        }
+        catch(err){
+            alert("Greska pri radu sa korisnicima");
+            console.error("Korisnici rad =>",err);
+        }
+
     }
 
     render(){
@@ -114,21 +189,24 @@ class AddEditUserForm extends Form{
         const {data} = this.state;
         return<form className="container user-form" onSubmit={this.handleSubmit}>
             <div className="row">
-                {this.renderInputField("form-group col", "name", data.name, "Unesi Ime", "")}
-                {this.renderInputField("form-group col", "surname", data.surname, "Unesi Prezime", "")}
-                {this.renderInputField("form-group col", "nickname", data.nickname, "Unesi Nadimak", "")}
+                {this.renderInputField("form-group col", "name", data.name, "Unesi Ime*", "")}
+                {this.renderInputField("form-group col", "surname", data.surname, "Unesi Prezime*", "")}
             </div>
             <div className="row">
-                {this.renderInputField("form-group col", "hourlyRate", `${data.hourlyRate > 0 ? data.hourlyRate : ""}`, "Unesi Satnicu", "","number")}
-                {this.renderDropdown(data.currencyOptions, "valutu", dropdownOptions, "currencyOptions")}
-                {this.renderDropdown(data.professionOptions, "profesiju", dropdownOptions, "professionOptions")}
+                {this.renderInputField("form-group col", "nickname", data.nickname, "Unesi Nadimak", "")}
+                {this.renderInputField("form-group col", "phoneNumber", data.phoneNumber, "Unesi broj telefona*", "")}
+            </div>
+            <div className="row">
+                {this.renderInputField("form-group col", "hourlyRate", `${data.hourlyRate > 0 ? data.hourlyRate : ""}`, "Unesi Satnicu*", "","number")}
+                {this.renderDropdown(data.currencyOptions, "valutu*", dropdownOptions, "currencyOptions")}
+                {this.renderDropdown(data.professionOptions, "profesiju*", dropdownOptions, "professionOptions")}
 
             </div>
             <div className="row">
-            {this.renderDropdown(data.constructionSiteOptions, "gradiliste", dropdownOptions, "constructionSiteOptions")}
+            {this.renderDropdown(data.constructionSiteOptions, "gradiliste*", dropdownOptions, "constructionSiteOptions")}
 
             {/* containerClassNameAppender, name, value, labelPlaceholder, errorMessage */}
-                {this.renderDate("col","employmentStartDate", asDateOnly(data.employmentStartDate), "Radi od","")}
+                {this.renderDate("col","employmentStartDate", asDateOnly(data.employmentStartDate), "Radi od*","")}
                 {this.renderDate("col","employmentEndDate", asDateOnly(data.employmentEndDate), "Radi do","")}
             </div>
             <div className="row flex-row-reverse">

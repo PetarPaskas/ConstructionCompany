@@ -20,8 +20,9 @@ export function processFinalDataForAddEditUserForm(finalData, hasUser){
         finalData.currencyOptions.find(option => option.id === finalData.currency.currencyId).isSelected = true;
 
         if(hasConstructionSite){
-            finalData.constructionSitesId = 0;
-            finalData.constructionSiteOptions.find(option => option.id === finalData.constructionSite.constructionSiteId).isSelected = true;
+            let option = finalData.constructionSiteOptions.find(option => option.id === finalData.constructionSite.constructionSiteId);
+            option.isSelected = true;
+            finalData.constructionSitesId = [option];
         }
 
     }
@@ -217,7 +218,7 @@ export function generateSchemaForAddEditUserForm(){
     return {
         name:(newVal)=>commonReqValidate(newVal,"name"),
         surname:(newVal)=>commonReqValidate(newVal,"surname"),
-        nickname:(newVal)=>commonUnreqValidate(newVal,"nickname"),
+        nickname:(newVal)=>null,
         phoneNumber:(newVal)=>commonUnreqValidate(newVal,"phoneNumber"),
         employmentStartDate:(newVal)=>commonReqValidate(newVal,"employmentStartDate"),
         employmentEndDate:(newVal)=>commonUnreqValidate(newVal,"employmentEndDate"),
@@ -237,7 +238,7 @@ export function generateSchemaConstructionSite(){
         displayName:(newVal)=>commonReqValidate(newVal,"title"),
         address:(newVal)=>commonReqValidate(newVal,"address"),
         dateStarted:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("dateStarted")} ne sme biti prazno` : null),
-        expectedEndDate:(newVal)=>true,
+        expectedEndDate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("expectedEndDate")} ne sme biti prazno` : null),
         cityId:(newVal)=>reqNumValidate(newVal,"cityId"),
     }
 }

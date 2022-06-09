@@ -117,13 +117,28 @@ class Table extends Component{
         return null;
     }
 
+    renderDataCounter(){
+        if(this.props.data.body && this.props.data.body.length > 0){
+            const length = this.props.data.body.length;
+            return (<p className="table__data">Trenutno postoji {length} {length === 1 ? "podatak" : length > 1 && length <= 3 ? "podatka" : "podataka"}</p>);
+        }
+        else{
+            return (<p className="table__data">Nema podataka koji se mogu prikazati</p>);
+        }
+        
+    }
+
     render(){
         return (
+        <div className="table__wrapper">
+            {this.renderDataCounter()}
         <table className="table">
             {this.renderHeader()}
             {this.renderBody()}
             {this.renderFooter()}
-        </table>);
+        </table>;
+        </div>);
+
     }
 }
 

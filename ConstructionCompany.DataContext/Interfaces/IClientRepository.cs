@@ -8,5 +8,6 @@ namespace ConstructionCompany.DataContext.Interfaces
 {
     public interface IClientRepository : IRepository<Client>
     {
+        Task<IEnumerable<Client>> GetAllForOptions();
     }
 }

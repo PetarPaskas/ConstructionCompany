@@ -21,8 +21,8 @@ namespace ConstructionCompany.Common
         {
             Client client = constructionSite.Client;
 
-            ClientId = client.ClientId;
-            Name = client.ClientName;
+            ClientId = client?.ClientId ?? "";
+            Name = client?.ClientName ?? "";
         }
     }
 }
