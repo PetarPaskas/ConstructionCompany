@@ -1,5 +1,6 @@
 import Form from "../common/Form";
-import {generateSchemaForNoteForm} from "../common/utils"
+import {generateSchemaForNoteForm} from "../common/utils";
+import noteClient from "../http/notesClient";
 
 /*
 {
@@ -10,6 +11,8 @@ import {generateSchemaForNoteForm} from "../common/utils"
     constructionSite:{constructionSiteId:, name}
 }
 */
+
+let location = "http://localhost:3000/Notes";
 
 class NoteForm extends Form{
 
@@ -24,7 +27,8 @@ class NoteForm extends Form{
             constructionSiteOptions:[]
         },
         errors:{
-            
+            constructionSiteId:"",
+            title:""
         }
     }
 
@@ -53,6 +57,7 @@ class NoteForm extends Form{
     componentDidMount(){
         const {data} = this.props;
         const {displayId} = this.props;
+        let options = this.props.dropdownOptions.map(el=>({...el}));
 
         let isShowing = undefined;
         let {data:newData} = this.state;
@@ -69,13 +74,13 @@ class NoteForm extends Form{
                 title:isShowing.title,
                 constructionSiteId: isShowing.constructionSite.constructionSiteId,
             };
+            this.setState({noteId:isShowing.noteId, data:newData});
         }
-        this.setState({data:newData});
-
-        const {dropdownOptions:options} = this.props;
+        else{
+            this.setState({data:newData});
+        }
 
         this.loadConstructionSiteOptions(newData, options);
-
     }
     
     onDropdownClick=(data, selection)=>{
@@ -95,9 +100,47 @@ class NoteForm extends Form{
             this.updateSelection(selection);
     }
 
-    handleFormSubmit(e){
+    handleFormSubmit= async (e)=>{
         e.preventDefault();
-        console.log("Submitting form");
+        const {data} = this.state;
+        const {noteId} = this.state;
+
+        const cs = data.constructionSiteOptions.find(cs => cs.isSelected);
+        let {errors} = this.state;
+        if(!cs && (data.constructionSiteId === "" || parseInt(data.constructionSiteId) === 0)){
+            this.setState({errors:{...errors, constructionSiteId:"Odaberi gradiliste"}});
+            return;
+        }else{
+            delete errors.constructionSiteId;
+            this.setState({errors});
+        }
+
+        if(Object.keys(errors).length > 0)
+        {
+            alert("Nije moguće obraditi zahtev, razreši greške.");
+            return;
+        }
+
+        const newData = {
+            dateCreated:new Date(),
+            description:data.description,
+            title:data.title,
+            constructionSiteId: parseInt(cs?.id ?? data.constructionSiteId)
+        };
+
+        try{
+            if(noteId === "New"){
+               await noteClient.createNote(newData);
+            }
+            else{
+               await noteClient.updateNote(noteId, newData)
+            }
+
+            window.location.href= location;
+        }catch(err){
+            console.log(err)
+        }
+
     }
 
     render(){

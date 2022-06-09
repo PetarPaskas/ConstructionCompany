@@ -71,7 +71,6 @@ namespace ConstructionCompany.Common.DTOs.UserDto
                 Surname = userDto.Surname,
                 Nickname = userDto.Nickname,
                 PhoneNumber = userDto.PhoneNumber,
-                UserId = userDto.UserId,
                 IsDisabled = false,
                 Password = "",
                 ProfessionId = userDto.ProfessionId,

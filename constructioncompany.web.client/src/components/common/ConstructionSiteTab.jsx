@@ -17,7 +17,6 @@ class ConstructionSiteTab extends Component{
     renderContent(){
         if(this.props.data){
             let {data} = this.props;
-           
             return (
             <div style={{position:"relative"}}>
                 <div onClick={()=>{this.handleConstructionSiteViewAll(data.constructionSiteId)}}className="construction-site__item tab-btn construction-site-tab tab-btn--with-content">
@@ -25,7 +24,7 @@ class ConstructionSiteTab extends Component{
                     <ul className="construction-site-tab__list">
                         <li className="construction-site-tab__item"><span>{data.address}</span></li>
                         <li className="construction-site-tab__item"><span>{data.city.cityName}</span></li>
-                        <li className="construction-site-tab__item"><span>{data.client.name}</span></li>
+                        <li className="construction-site-tab__item"><span>{data.client.name !== "" ? data.client.name : "Nema klijenta"}</span></li>
                     </ul>
                 </div>
                 <button 

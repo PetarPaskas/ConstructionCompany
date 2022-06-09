@@ -8,7 +8,6 @@ namespace ConstructionCompany.Common.DTOs.UserDto
 {
     public record AddEditUserDto
     {
-        public int UserId { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string PhoneNumber { get; set; }

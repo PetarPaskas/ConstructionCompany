@@ -15,16 +15,20 @@ namespace ConstructionCompany.WebAPI.Controllers
         private readonly IProfessionRepository _professionRepository;
         private readonly ICityRepository _cityRepository;
         private readonly ICurrencyRepository _currencyRepository;
+        private readonly IClientRepository _clientsRepository;
+
         public MiscController(
             IProfessionRepository profRepo, 
             ICityRepository cityRepo, 
             IConstructionSiteRepository constRepo,
-            ICurrencyRepository currencyRepo)
+            ICurrencyRepository currencyRepo,
+            IClientRepository clientRepo)
         {
             _professionRepository = profRepo;
             _cityRepository = cityRepo;
             _constructionSiteRepository = constRepo;
             _currencyRepository = currencyRepo;
+            _clientsRepository = clientRepo;
         }
 
         [HttpGet("[action]")]
@@ -54,8 +58,9 @@ namespace ConstructionCompany.WebAPI.Controllers
             IEnumerable<Profession> professionsDb = await _professionRepository.GetAllProfessionsAsync();
             IEnumerable<ConstructionSite> constructionSitesDb = await _constructionSiteRepository.GetallForOptions();
             IEnumerable<Currency> currenciesDb = await _currencyRepository.GetAllForOptions();
+            IEnumerable<Client> clientsDb = await _clientsRepository.GetAllForOptions();
 
-            GetOptionsDto options = new(citiesDb, professionsDb, constructionSitesDb, currenciesDb);
+            GetOptionsDto options = new(citiesDb, professionsDb, constructionSitesDb, currenciesDb, clientsDb);
 
             return Ok(options);
         }
