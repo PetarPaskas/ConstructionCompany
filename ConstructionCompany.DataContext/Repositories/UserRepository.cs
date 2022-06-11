@@ -152,6 +152,13 @@ namespace ConstructionCompany.DataContext.Repositories
             existingUser.ProfessionId = user.ProfessionId;
 
             await _constructionCompanyContext.SaveChangesAsync();
+
+            await _constructionCompanyContext.Users
+                .Include(u=>u.Profession)
+                .Include(u=>u.ConstructionSite)
+                .Include(u=>u.Currency)
+                .SingleOrDefaultAsync(user => existingUser.UserId == user.UserId);
+
             return await Task.FromResult<User>(existingUser);
         }
     }

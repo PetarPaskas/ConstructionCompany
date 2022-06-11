@@ -136,7 +136,7 @@ class Table extends Component{
             {this.renderHeader()}
             {this.renderBody()}
             {this.renderFooter()}
-        </table>;
+        </table>
         </div>);
 
     }

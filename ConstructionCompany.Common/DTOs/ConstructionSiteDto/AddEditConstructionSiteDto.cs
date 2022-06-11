@@ -8,7 +8,6 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
 {
     public record AddEditConstructionSiteDto
     {
-        public int ConstructionSiteId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public bool IsFinished { get; set; }

@@ -66,13 +66,16 @@ namespace ConstructionCompany.DataContext.Repositories
 
         public async Task<IEnumerable<ConstructionSite>> GetallForOptions()
         {
-            return await _constructionCompanyContext.ConstructionSites.ToListAsync();
+            return await _constructionCompanyContext.ConstructionSites.Where(cs=>!cs.IsFinished).ToListAsync();
         }
 
         public async Task<ConstructionSite> UpdateConstructionSiteAsync(int constructionSiteId, AddEditConstructionSiteDto constructionSiteDto)
         {
            ConstructionSite cs = await _constructionCompanyContext.ConstructionSites
                                             .Include(cs=>cs.Users)
+                                            .Include(cs=>cs.Client)
+                                            .Include(cs=>cs.City)
+                                            .ThenInclude(c=>c.Municipality)
                                             .SingleOrDefaultAsync(cs=>cs.ConstructionSiteId == constructionSiteId);
 
            await ManageUsersForConstructionSite(constructionSiteId, cs, constructionSiteDto);
@@ -90,6 +93,8 @@ namespace ConstructionCompany.DataContext.Repositories
             await _constructionCompanyContext.Users
                                  .Where(user => constructionSiteDto.Users.Contains(user.UserId))
                                  .LoadAsync();
+
+            await _constructionCompanyContext.Cities.Include(c=>c.Municipality).SingleOrDefaultAsync(c=> c.CityId == cs.CityId);
 
             return cs;
         }

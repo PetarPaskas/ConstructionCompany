@@ -6,11 +6,13 @@ import { getSelectedOption} from "./utils";
 
 class Form extends Component{
 
+    //
     // state = {
     //     data:{},
     //     errors:{}
     // }
     //
+    // schema = {}
     //
 
     doValidation=(elementName, newValue)=>{
@@ -50,7 +52,12 @@ class Form extends Component{
     }
 
     validate=(elementName, newValue)=>{
-        return this.schema[elementName](newValue);
+        if(this.schema[elementName]){
+            return this.schema[elementName](newValue);
+        }
+        const message = "No schema property provided for this element. Please provide schema property.";
+        console.error(`Form.jsx line 59 => ${message}`)
+        return message;
     }
 
     renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text", disabled = false){
