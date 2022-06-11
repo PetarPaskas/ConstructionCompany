@@ -173,5 +173,6 @@ namespace ConstructionCompany.DataContext.Repositories
                 .LoadAsync();
 
         }
+
     }
 }
