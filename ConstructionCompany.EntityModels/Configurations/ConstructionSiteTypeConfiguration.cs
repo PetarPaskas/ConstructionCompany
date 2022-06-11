@@ -14,6 +14,8 @@ namespace ConstructionCompany.EntityModels.Configurations
 
             builder.HasKey(cs => cs.ConstructionSiteId);
 
+            builder.HasAlternateKey(cs => cs.DisplayName);
+
             builder.Property(cs => cs.Address)
                 .IsRequired();
 
@@ -24,6 +26,9 @@ namespace ConstructionCompany.EntityModels.Configurations
             builder.HasOne(cs => cs.Client)
                 .WithMany(c => c.ConstructionSites)
                 .HasForeignKey(cs => cs.ClientId);
+
+            builder.Property(cs => cs.DisplayName)
+                .IsRequired();
 
         }
     }

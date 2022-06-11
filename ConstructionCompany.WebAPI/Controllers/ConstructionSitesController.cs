@@ -16,6 +16,13 @@ namespace ConstructionCompany.WebAPI.Controllers
             _constructionSiteRepository = constructionSiteRepository;
         }
 
+        [HttpGet("[action]")]
+        public IActionResult OneTimeThing()
+        {
+            _constructionSiteRepository.OneTimeThing();
+            return Ok();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

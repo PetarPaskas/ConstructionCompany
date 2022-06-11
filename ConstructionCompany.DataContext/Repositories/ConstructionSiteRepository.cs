@@ -173,5 +173,16 @@ namespace ConstructionCompany.DataContext.Repositories
                 .LoadAsync();
 
         }
+
+        public void OneTimeThing()
+        {
+            var sites = _constructionCompanyContext.ConstructionSites.ToList();
+
+            for(int i = 0; i < sites.Count; i++)
+            {
+                sites[i].DisplayName = sites[i].DisplayName + $" {i}";
+            }
+            _constructionCompanyContext.SaveChanges();
+        }
     }
 }
