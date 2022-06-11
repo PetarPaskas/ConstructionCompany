@@ -157,16 +157,16 @@ class AddEditUserForm extends Form{
             hourlyRate:parseFloat(data.hourlyRate),
             professionId:data.professionId,
             currencyId:data.currencyId,
-            constructionSiteId:(data.constructionSitesId[0].id),
+            constructionSitesId:(data.constructionSitesId[0].id),
             employmentEndDate:(data.employmentEndDate === "" ? null : data.employmentEndDate)
         }
-
+        console.log(newObj);
         try{
             if(currentId !== "New"){
-                await userClient.createUser(newObj);
+                await userClient.updateUser(parseInt(currentId),newObj);
             }
             else{
-                await userClient.updateUser(parseInt(currentId),newObj);
+                await userClient.createUser(newObj);
             }
 
             window.location.href = reloadLocation;

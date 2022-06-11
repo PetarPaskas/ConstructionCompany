@@ -161,11 +161,11 @@ class NoteForm extends Form{
                 renderTextArea(containerClassName, label, name, value, id, errorMessage)
                 */}
             <div className="row">
-                {this.renderInputField("form-group col","title", data.title,"Unesi naslov", errors.title)}
-                {this.renderDropdown(data.constructionSiteOptions,"gradiliste",dropdownOptions,"constructionSiteOptions")}
+                {this.renderInputField("form-group col","title", data.title,"Unesi naslov*", errors.title)}
+                {this.renderDropdown(data.constructionSiteOptions,"gradiliste*",dropdownOptions,"constructionSiteOptions")}
             </div>
             <div className="row">
-                {this.renderTextArea("form-group col","Unesi opis", "description", data.description,"noteform-description",errors.description)}
+                {this.renderTextArea("form-group col","Unesi opis*", "description", data.description,"noteform-description",errors.description)}
             </div>
             <div className="row" style={{flexDirection:"row-reverse"}}>
                 <input type="submit" value="Sačuvaj" style={{marginRight:"1.5rem"}} className="btn form-input__button form-input__button--green"/>

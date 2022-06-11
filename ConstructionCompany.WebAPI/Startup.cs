@@ -40,7 +40,7 @@ namespace ConstructionCompany.WebAPI
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(name: "v1", info: new OpenApiInfo
-                { Title = "Northwind Service API", Version = "v1" });
+                { Title = "Construction Company Service API Petar Paskaš", Version = "v1" });
             });
 
         }
@@ -63,16 +63,15 @@ namespace ConstructionCompany.WebAPI
                     "ConstructionCompany Service API Version 1");
                 });
 
-            }
+                app.UseCors("DevelopmentPolicy");
 
-            app.UseCors("DevelopmentPolicy");
+            }
 
             app.UseHttpsRedirection();
 
             app.UseDefaultFiles();
 
             app.UseStaticFiles();
-
 
             app.UseEndpoints(endpoints =>
             {

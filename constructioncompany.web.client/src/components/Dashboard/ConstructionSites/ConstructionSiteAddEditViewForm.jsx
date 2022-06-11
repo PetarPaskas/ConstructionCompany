@@ -53,7 +53,6 @@ class ConstructionSiteAddEditViewForm extends Form
             ]
         },
         errors:{
-            displayName:""
         },
     }
 
