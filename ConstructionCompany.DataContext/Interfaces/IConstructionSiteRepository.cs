@@ -15,7 +15,6 @@ namespace ConstructionCompany.DataContext.Interfaces
         Task<bool> EnableConstructionSiteAsync(int constructionSiteId);
         Task<IEnumerable<ConstructionSite>> GetallForOptions();
         Task<ConstructionSite> UpdateConstructionSiteAsync(int constructionSiteId, AddEditConstructionSiteDto constructionSiteDto);
-        void OneTimeThing();
         Task<ConstructionSite> AddConstructionSiteAsync(AddEditConstructionSiteDto cosntructionSiteDto);
     }
 }
