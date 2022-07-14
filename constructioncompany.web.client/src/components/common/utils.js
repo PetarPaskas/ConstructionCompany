@@ -245,6 +245,34 @@ export function generateSchemaConstructionSite(){
 
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
+export function getFullCurrentMonth(){
+    const today = new Date();
+    const datum = new Date(today.getFullYear(),today.getMonth()+1,0);
+    return datum;
+}
+const datumBase = [ "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sept", "Okt", "Nov", "Dec"]
+
+const datumSrb = {
+    "Jan":"Januar",
+    "Feb":"Februar",
+    "Mar":"Mart",
+    "Apr":"April",
+    "Maj":"Maj",
+    "Jun":"Jun",
+    "Jul":"Jul",
+    "Avg":"Avgust",
+    "Sept":"Septembar",
+    "Okt":"Oktobar",
+    "Nov":"Novembar",
+    "Dec":"Decembar"
+}
+
+
+export function getDateMonthSrb(date, withYear = false){
+    const month = datumSrb[datumBase[date.getMonth()]];
+    return withYear ? `${month} ${date.getFullYear()}` : month;
+}
+
 export function createHeadersDataForUsersTable(){
     return[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:4,name:"Radi Od"},{id:5,name:"Satnica"},{id:6,name:"Trenutno"}];
 }

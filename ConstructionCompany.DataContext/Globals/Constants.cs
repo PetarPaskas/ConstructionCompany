@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,20 @@ using System.Threading.Tasks;
 
 namespace ConstructionCompany.DataContext.Globals
 {
-    public static class Constants
+    public class Constants
     {
-        public const string SQL_SERVER_CONNECTION_STRING_LOCALHOST = "Server=localhost;Initial Catalog=ConstructionCompanyDB;Integrated Security=SSPI;";
+        private readonly IConfiguration _configuration;
+        public Constants(IConfiguration config)
+        {
+            _configuration = config;
+        }
+       public string ConnectionString { get
+            {
+                if (_configuration["ASPNETCORE_ENVIRONMENT"].Equals("Development"))
+                {
+                    return _configuration.GetConnectionString("Localhost");
+                }
+                return _configuration.GetConnectionString("Default");
+            } }
     }
 }

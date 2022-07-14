@@ -1,7 +1,48 @@
 .export{
     height: 100vh;
-    background-image:url("../public/img/under-construction.png") ;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
+    // background-image:url("../public/img/under-construction.png") ;
+    // background-position: center;
+    // background-repeat: no-repeat;
+    // background-size: contain;
+    .step-buttons{
+        padding-top:2rem;
+        margin:0 auto;
+        width:20%;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &--element{
+            text-align: center;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        &--header-text{
+            font-weight: 600;
+            color:$gradiliste-tab-text-dark;
+            font-size:1.6rem;
+        }
+        .step-button{
+            border-radius:50%;
+            padding:.5rem 1rem;
+            font-size:1.5rem;
+            font-weight: 600;
+            cursor:pointer;
+            color:$text-gray;
+            border:.5px solid $blue-color-base-mid-light;
+            outline:none;
+            &:hover{
+                background-color: $blue-color-light;
+            }
+        }
+    }
+
+    .users-table{
+        width:60%;
+        margin:0 auto;
+        margin-top:6rem;
+    }
+
 }
