@@ -10,7 +10,7 @@ namespace ConstructionCompany.DataContext.Globals
 {
     public static class ExstensionMethods
     {
-        public static void AddConstructionCompanyContext(this IServiceCollection services, string connectionString = Constants.SQL_SERVER_CONNECTION_STRING_LOCALHOST)
+        public static void AddConstructionCompanyContext(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<ConstructionCompanyContext>(options =>
             {

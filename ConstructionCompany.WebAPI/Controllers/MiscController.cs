@@ -51,6 +51,8 @@ namespace ConstructionCompany.WebAPI.Controllers
             return Ok(data);
         }
 
+        //GetAllOptions(GetOptionsDto options)
+        //Options => cities = true/false; currencies = true/false; i tako, na osnovu objekta retrieve options
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAllOptions()
         {

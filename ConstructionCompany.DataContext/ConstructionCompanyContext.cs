@@ -1,5 +1,6 @@
 ﻿using ConstructionCompany.DataContext.Globals;
 using ConstructionCompany.EntityModels.Globals;
+using Microsoft.Extensions.Configuration;
 
 namespace ConstructionCompany.DataContext
 {
@@ -20,17 +21,24 @@ namespace ConstructionCompany.DataContext
         public DbSet<Wage> Wages { get; set; }
         public DbSet<WorkType> WorkTypes { get; set; }
 
+        private string _connectionString;
         public ConstructionCompanyContext(DbContextOptions<ConstructionCompanyContext> options)
             :base(options)
         {
 
         }
 
+       public ConstructionCompanyContext(DbContextOptions<ConstructionCompanyContext> options, IConfiguration configuration)
+        : base(options)
+        {
+            _connectionString = new Constants(configuration).ConnectionString;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Constants.SQL_SERVER_CONNECTION_STRING_LOCALHOST);
+                optionsBuilder.UseSqlServer(_connectionString);
             }
         }
 

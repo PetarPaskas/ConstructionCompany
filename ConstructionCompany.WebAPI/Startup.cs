@@ -9,6 +9,16 @@ namespace ConstructionCompany.WebAPI
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        private string _connectionString { 
+                get { return new Constants(_configuration).ConnectionString; }
+            }
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvcCore();
@@ -33,7 +43,7 @@ namespace ConstructionCompany.WebAPI
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });
 
-            services.AddConstructionCompanyContext();
+            services.AddConstructionCompanyContext(_connectionString);
 
             services.AddDependencyInjection(null);
 
