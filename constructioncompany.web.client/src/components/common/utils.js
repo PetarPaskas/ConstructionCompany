@@ -284,115 +284,128 @@ function wrapInHourly(num){
 export function headersForConstructionSiteUsersEditTableCustomBody(){
  return [{id:1, name:"Ime"},{id:2, name:"Prezime"},{id:3, name:"Profesija"},{id:5, name:"Satnica"}];
 }
-export function createFakeDataForTableConstructionSite(){
-    return ({
-        header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],
-        body:[
-            {id:1,ime:"AJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(500)},
-            {id:2,ime:"BJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(600)},
-            {id:3,ime:"Janko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(700)},
-            {id:4,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(800)},
-            {id:5,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(900)},
-            {id:6,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(1000)}
-        ]
-    });
-}
 
-export function createFakeDataForConstructionSite(){
-    return ([
-        {
-            ConstructionSiteId:1,
-            Name:"Gradiliste 1",
-            Address:"Milosa Perica 7",
-            CityName: "Beograd",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:2,
-            Name:"Gradiliste 2",
-            Address:"Milosa Perica 7",
-            CityName: "Beograd",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:3,
-            Name:"Gradiliste 3",
-            Address:"Urosa Jovanovica 27",
-            CityName: "Slankamen",
-            Client:{
-                Id:13,
-                Name:"Mokri Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:4,
-            Name:"Gradiliste 4",
-            Address:"Milosa Perica 7",
-            CityName: "Beograd",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:5,
-            Name:"Gradiliste 5",
-            Address:"Milosa Perica 27",
-            CityName: "Zrenjanin",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
+export function getDisplayFieldForItem(displayField){
+    if(Array.isArray(displayField)){
+        let finalName = "";
+        for(let element of displayField){
+            finalName = `${finalName} ${this[element]}`;
         }
-    ]);
+        return finalName;
+    }
+
+    return this[displayField];
 }
 
+// export function createFakeDataForTableConstructionSite(){
+//     return ({
+//         header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],
+//         body:[
+//             {id:1,ime:"AJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(500)},
+//             {id:2,ime:"BJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(600)},
+//             {id:3,ime:"Janko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(700)},
+//             {id:4,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(800)},
+//             {id:5,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(900)},
+//             {id:6,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(1000)}
+//         ]
+//     });
+// }
 
-export function createFakeDataForNotes(){
-    return [{
-        noteId:1,
-        dateCreated:"2020-08-08",
-        description:"Njansjfnajksnf",
-        title:"Naslov",
-        user:{userId:1,name:"John"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
-    },
-    {
-        noteId:2,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"Mike"},
-        constructionSite:{constructionSiteId:2, name:"Gradiliste 222"}
-    },
-    {
-        noteId:3,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"Mike"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
-    },
-    {
-        noteId:4,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"John"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
-    },
-    {
-        noteId:5,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"John"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
-    }]
-}
+// export function createFakeDataForConstructionSite(){
+//     return ([
+//         {
+//             ConstructionSiteId:1,
+//             Name:"Gradiliste 1",
+//             Address:"Milosa Perica 7",
+//             CityName: "Beograd",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:2,
+//             Name:"Gradiliste 2",
+//             Address:"Milosa Perica 7",
+//             CityName: "Beograd",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:3,
+//             Name:"Gradiliste 3",
+//             Address:"Urosa Jovanovica 27",
+//             CityName: "Slankamen",
+//             Client:{
+//                 Id:13,
+//                 Name:"Mokri Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:4,
+//             Name:"Gradiliste 4",
+//             Address:"Milosa Perica 7",
+//             CityName: "Beograd",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:5,
+//             Name:"Gradiliste 5",
+//             Address:"Milosa Perica 27",
+//             CityName: "Zrenjanin",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         }
+//     ]);
+// }
+
+
+// export function createFakeDataForNotes(){
+//     return [{
+//         noteId:1,
+//         dateCreated:"2020-08-08",
+//         description:"Njansjfnajksnf",
+//         title:"Naslov",
+//         user:{userId:1,name:"John"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+//     },
+//     {
+//         noteId:2,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"Mike"},
+//         constructionSite:{constructionSiteId:2, name:"Gradiliste 222"}
+//     },
+//     {
+//         noteId:3,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"Mike"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
+//     },
+//     {
+//         noteId:4,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"John"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
+//     },
+//     {
+//         noteId:5,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"John"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+//     }]
+// }

@@ -867,6 +867,23 @@ body {
     width: 60%;
     margin: 0 auto;
     margin-top: 6rem; }
+  .export .group-describe-form {
+    max-width: 45rem;
+    margin: 0 auto;
+    margin-top: 6rem;
+    padding: 1.3rem 2rem;
+    border: 0.5px solid #A2AF9F;
+    box-shadow: 0px 2px 4px 0px #A2AF9F;
+    border-radius: 20px; }
+    .export .group-describe-form .btn-danger, .export .group-describe-form .btn-danger:visited, .export .group-describe-form .btn-danger:link {
+      background-color: #ec5914;
+      color: #fff;
+      border: none;
+      outline: none; }
+    .export .group-describe-form .btn-danger:hover, .export .group-describe-form .btn-danger:visited {
+      background-color: #c74b10;
+      cursor: pointer;
+      outline: none; }
 
 .calendar-wrapper {
   margin-top: 6rem; }
@@ -907,6 +924,8 @@ body {
           border: 0.5px solid #c61d00; }
         .calendar-wrapper .calendar .day-sunday:hover {
           background-color: #ff8d7a; }
+      .calendar-wrapper .calendar .day.today {
+        border: 1px solid #ec5914; }
     .calendar-wrapper .calendar-header, .calendar-wrapper .calendar-footer {
       width: 66rem;
       margin: 0 auto;

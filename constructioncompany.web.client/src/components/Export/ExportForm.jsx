@@ -4,6 +4,7 @@ import ConstructionSiteUsersEditTableCustomBody from "../Dashboard/ConstructionS
 import Table from "../common/Table/Table";
 import {headersForConstructionSiteUsersEditTableCustomBody} from "../common/utils";
 import usersClient from "../http/usersClient";
+import GroupDescribeForm from "../common/GroupDescribeForm";
 
 class ExportForm extends Form{
     state={
@@ -16,7 +17,7 @@ class ExportForm extends Form{
         steps:{
             calendarSelectorStep:true,
             workerSelectorStep:false,
-            workerDescripeStep:false
+            workerDescribeStep:false
         }
     }
 
@@ -124,7 +125,7 @@ class ExportForm extends Form{
             currentStep = "[1/3] Izaberi datum";
         if(steps.workerSelectorStep)
             currentStep = "[2/3] Izaberi radnike";
-        if(steps.workerDescripeStep)
+        if(steps.workerDescribeStep)
             currentStep = "[3/3] Opisi radnike";
 
         return <div className="step-buttons">
@@ -140,6 +141,14 @@ class ExportForm extends Form{
                     <button className="step-button" onClick={(e)=>this.chooseStep('next')}>&gt;</button>
                 </div>
             </div>
+    }
+
+    renderWorkerDescribeStep(){
+        const items = this.state.data.users;
+        return <GroupDescribeForm
+                items={items}
+                displayField={["name","phoneNumber"]}
+                />;
     }
 
     selectDay = (day)=>{
@@ -160,6 +169,9 @@ class ExportForm extends Form{
         
         if(steps.workerSelectorStep)
             return this.renderWorkerSelectorStep();
+
+        if(steps.workerDescribeStep)
+            return this.renderWorkerDescribeStep();
     }
 
     render(){

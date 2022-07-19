@@ -46,7 +46,9 @@
                     background-color: darken($red-color-mild,5%);
                 }
             }
-
+            &.today{
+                border:1px solid $red-color-base;
+            }
         }
 
         &-header, &-footer{
