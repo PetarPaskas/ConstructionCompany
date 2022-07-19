@@ -10,14 +10,19 @@ class Calendar extends Component{
     renderCalendarDays=()=>{
         let {currDate} = this.state;
         let weeks = Math.ceil(currDate.getDate()/7);
-
+        let today = new Date();
         let kalendarDays = [];
 
         for(let i = 1; i<=currDate.getDate();i++){
+            let isToday = false;
+            if(i === today.getDate() && currDate.getMonth() === today.getMonth() && today.getFullYear() === currDate.getFullYear())
+            {
+                isToday = true;
+            }
             kalendarDays.push(
                 (<div key={`$day__${i}`} 
                  onClick={(e)=>this.handleCalendarClick(e,{day:i})}
-                className={`day ${i%7 === 0 ? "day-sunday" : ""}`}>
+                className={`day ${i%7 === 0 ? "day-sunday" : ""} ${isToday ? 'today' : ""}`}>
                     {i}
                 </div>));
         }

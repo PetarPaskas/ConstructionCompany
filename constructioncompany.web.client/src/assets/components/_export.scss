@@ -45,4 +45,32 @@
         margin-top:6rem;
     }
 
+    .group-describe-form{
+        max-width:45rem;
+        margin:0 auto;
+        margin-top:6rem;
+        padding:1.3rem 2rem;
+        border:.5px solid $mute-color-light;
+        box-shadow:0px 2px 4px 0px $mute-color-light;
+        border-radius:20px; 
+
+        .btn-danger{
+            &,
+            &:visited,
+            &:link{
+                background-color: $red-color-base;
+                color:$white-color;
+                border:none;
+                outline:none;
+            }
+
+            &:hover,&:visited{
+                background-color: darken($red-color-base,8%);
+                cursor:pointer;
+                outline:none;
+            }
+        }
+
+    }
+
 }
