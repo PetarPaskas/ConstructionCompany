@@ -4,6 +4,7 @@ import ConstructionSiteUsersEditTableCustomBody from "../Dashboard/ConstructionS
 import Table from "../common/Table/Table";
 import {headersForConstructionSiteUsersEditTableCustomBody} from "../common/utils";
 import usersClient from "../http/usersClient";
+import miscClient from "../http/miscClient";
 import GroupDescribeForm from "../common/GroupDescribeForm";
 
 class ExportForm extends Form{
@@ -12,7 +13,8 @@ class ExportForm extends Form{
         selectedDays:[],
         workerList:[],
         data:{
-            users:[]
+            users:[],
+            constructionSiteOptions:[]
         },
         steps:{
             calendarSelectorStep:true,
@@ -23,11 +25,11 @@ class ExportForm extends Form{
 
     async componentDidMount(){
         const usersOptions = (await usersClient.getAll()).data.map(el=>({...el,isSelected:false}));
+        const {constructionSiteOptions} = (await miscClient.getAllOptions()).data;
         const data = {
-            users:usersOptions
+            users:usersOptions,
+            constructionSiteOptions
         };
-
-        console.log(usersOptions);
 
         this.setState({data});
     }
@@ -52,6 +54,7 @@ class ExportForm extends Form{
 
     renderCalendarSelectorStep(){
         return <Calendar
+            selectedDays={this.state.selectedDays}
             onCalendarClick={this.selectDay}
             />
     }
@@ -86,7 +89,6 @@ class ExportForm extends Form{
             users.find(user=>user.userId === userId).isSelected = true;
         }
 
-        console.log(workerList);
         this.setState({workerList:workerList, data:{users:users}});
     }
 
@@ -113,9 +115,7 @@ class ExportForm extends Form{
                 }
             }
         
-            console.log("New steps => ", steps);
             this.setState({steps:steps});
-        
     }
 
     renderStepsChooser(){
@@ -144,10 +144,13 @@ class ExportForm extends Form{
     }
 
     renderWorkerDescribeStep(){
-        const items = this.state.data.users;
+        const {constructionSiteOptions, users} = this.state.data;
+        const items = users;
+        const options = constructionSiteOptions;
         return <GroupDescribeForm
                 items={items}
                 displayField={["name","phoneNumber"]}
+                options={options}
                 />;
     }
 

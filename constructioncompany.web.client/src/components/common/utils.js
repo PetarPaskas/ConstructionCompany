@@ -297,6 +297,14 @@ export function getDisplayFieldForItem(displayField){
     return this[displayField];
 }
 
+export function decideDayClassName(day, isToday, isSelected){
+    const sunday = day%7 === 0 ? "day-sunday" : "";
+    const today = isToday ? 'today' : "";
+    const selectedDay = isSelected ? "day--selected" : "";
+
+    return `day ${sunday} ${today} ${selectedDay}`;
+}
+
 // export function createFakeDataForTableConstructionSite(){
 //     return ({
 //         header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],
