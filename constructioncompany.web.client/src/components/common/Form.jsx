@@ -139,7 +139,7 @@ class Form extends Component{
         this.setState({data});
     }
 
-    submitNewOptionsSelection=(paramData,selection, keepOriginal = false, stringIdentifier = false)=>{
+    submitNewOptionsSelection=(paramData, selection, keepOriginal = false, stringIdentifier = false)=>{
         const {data:newData} = this.state;
         if(!stringIdentifier){
             newData[selection] = newData[selection].map(el=>{

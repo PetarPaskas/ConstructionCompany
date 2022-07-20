@@ -1,5 +1,9 @@
 import { Component } from "react";
-import {getFullCurrentMonth, getDateMonthSrb} from "../common/utils";
+import {getFullCurrentMonth, getDateMonthSrb, decideDayClassName} from "../common/utils";
+
+/*
+    props => date[] selectedDays 
+*/
 
 class Calendar extends Component{
 
@@ -15,14 +19,20 @@ class Calendar extends Component{
 
         for(let i = 1; i<=currDate.getDate();i++){
             let isToday = false;
+            let isAlreadySelected = false;
+            //if day is today
             if(i === today.getDate() && currDate.getMonth() === today.getMonth() && today.getFullYear() === currDate.getFullYear())
             {
                 isToday = true;
             }
+            //if day is selected
+            if(this.props.selectedDays && this.props.selectedDays.some(sel=>sel === i)){
+                isAlreadySelected = true;
+            }
             kalendarDays.push(
                 (<div key={`$day__${i}`} 
                  onClick={(e)=>this.handleCalendarClick(e,{day:i})}
-                className={`day ${i%7 === 0 ? "day-sunday" : ""} ${isToday ? 'today' : ""}`}>
+                className={decideDayClassName(i, isToday, isAlreadySelected)}>
                     {i}
                 </div>));
         }
@@ -31,7 +41,7 @@ class Calendar extends Component{
     }
 
     handleCalendarClick=(e, data)=>{
-        e.target.classList.toggle("day--selected");
+       //e.target.classList.toggle("day--selected");
         if(this.props.onCalendarClick)
         {
             this.props.onCalendarClick(data.day);

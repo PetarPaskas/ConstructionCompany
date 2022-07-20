@@ -20,25 +20,27 @@ class GroupDescribeForm extends Form
 {
     state={
         itemId:this.props.valueField,
-        data:{0:{hoursDone:""}},
+        data:{
+            options:this.props.options,
+            },
+        formData:{0:{hoursDone:"", constructionSiteId:""}},
         dataInstances:1,
-        options:[],
         errors:{}
     }
 
     //{hoursDone, constructionSiteId}
 
     appendDataInstance=(e)=>{
-        const {data:newData,dataInstances} = this.state;
+        const {formData:newData,dataInstances} = this.state;
         const newDataInstances = dataInstances + 1;
-        newData[newDataInstances-1] = {hoursDone:""};
-        this.setState({data:newData,dataInstances:newDataInstances});
+        newData[newDataInstances-1] = {hoursDone:"",constructionSiteId:""};
+        this.setState({formData:newData,dataInstances:newDataInstances});
     }
 
     removeDataInstance=(i)=>{
-        const {data:newData,dataInstances} = this.state;
+        const {formData:newData} = this.state;
         delete newData[i];
-        this.setState({data:newData});
+        this.setState({formData:newData});
     }
 
     renderDataInstances(){
@@ -51,14 +53,22 @@ class GroupDescribeForm extends Form
         };
 
         const {dataInstances} = this.state;
-        const {data:stateData} = this.state;
+        const {formData:stateData} = this.state;
         const data = [];
+        const stateDataKeys = Object.keys(stateData);
+
+        
 
         for(let i in stateData){
-            let isFirstKey = Object.keys(stateData)[0] === i;
+            const optionsForDataInstance = this.state.data.options.map(el=>{
+                if(el.id === stateData[i].constructionSiteId)
+                    return {...el, isSelected:true, dataInstance: i};
+                return {...el, dataInstance:i};
+            });
+            let isFirstKey = stateDataKeys[0] === i;
             data.push(<div className="row" key={`Data-instance__${i}`}>
-                {this.renderInputField("col", "hoursDone", stateData[i]["hoursDone"], "Unesi odradjene sate", "", "number")}
-                {this.renderDropdown(this.state.options, "gradiliste*", dropdownOptions, "options")}
+                {this.renderInputField("col", `${i}-hoursDone`, stateData[i]["hoursDone"], "Unesi odradjene sate", "", "number")}
+                {this.renderDropdown(optionsForDataInstance, "gradiliste*", dropdownOptions, "options")}
                 <div className="col-1" style={{alignSelf:"center"}}>
                 {!isFirstKey &&<button className="btn btn-danger" onClick={()=>this.removeDataInstance(i)}>&#215;</button>}
                 </div>
@@ -66,6 +76,22 @@ class GroupDescribeForm extends Form
         }
 
         return data;
+    }
+
+    handleChange=({target})=>{
+        const [propertyName, identifier] = target.name.split("-");
+        const {formData:newData} = this.state;
+
+        if(!isNaN(parseInt(target.value))){
+            newData[propertyName][identifier] = parseInt(target.value);
+        }
+
+        if(target.value === ""){
+            newData[propertyName][identifier] = target.value;
+        }
+
+        this.setState({paramData:newData});
+
     }
 
     renderHeader(){
@@ -85,8 +111,41 @@ class GroupDescribeForm extends Form
     }
 
     onDropdownClick(data,selection){
-        console.log(data, "data");
-        console.log(selection, "selection");
+        switch(selection){
+            case "options":
+                this.submitNewOptionsSelectionWithDataInstance(data,selection);
+                break;
+            default:
+                console.error("No onDropdownClick selection implementation");
+                break;
+        }
+    }
+
+    submitNewOptionsSelectionWithDataInstance=(paramData, selection, keepOriginal, stringIdentifier)=>{
+        const {formData:newData} = this.state;
+        let canProceed = true;
+        //If dropdown options is already selected by another dataInstance; shouldn't be able to write
+        for(let prop in newData){
+            console.log(prop);
+            if(parseInt(prop) !== parseInt(paramData.dataInstance)){
+                if(newData[prop].constructionSiteId !== "" && newData[prop].constructionSiteId === parseInt(paramData.id))
+                canProceed = false;
+            }
+        }
+        if(canProceed){
+            let item = newData[parseInt(paramData.dataInstance)];
+            if(item.constructionSiteId === parseInt(paramData.id)){
+                item.constructionSiteId = "";
+            }
+            else{
+                item.constructionSiteId = parseInt(paramData.id);
+            }
+            this.setState({formData:newData});
+        }
+        else{
+            console.error("Option already selected by another data instance");
+        }
+
     }
 
     render(){

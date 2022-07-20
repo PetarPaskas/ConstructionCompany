@@ -42,6 +42,10 @@ class Dropdown extends Component{
             value: e.target.dataset.optionValue
         };
 
+        if(e.target.dataset.dataInstance){
+            data.dataInstance = e.target.dataset.dataInstance;
+        }
+
         const {selection} = e.target.dataset;
 
         this.props.handleDropdownClick(data,selection);
@@ -78,6 +82,7 @@ class Dropdown extends Component{
                 className={`dropdown__item ${option.isSelected ? "active" : ""}`}
                 data-option-id={option.id} 
                 data-option-value={option.value} 
+                data-data-instance={option.dataInstance ?? ""}
                 data-selection={this.state.selection}
                 onClick={(e)=>{
                     if(this.state.isMultiselect){
