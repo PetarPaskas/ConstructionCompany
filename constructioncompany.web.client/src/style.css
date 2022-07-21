@@ -874,7 +874,15 @@ body {
     padding: 1.3rem 2rem;
     border: 0.5px solid #A2AF9F;
     box-shadow: 0px 2px 4px 0px #A2AF9F;
-    border-radius: 20px; }
+    border-radius: 20px;
+    position: relative; }
+    .export .group-describe-form .describe-form-header {
+      padding-bottom: 1rem; }
+    .export .group-describe-form .btn-success {
+      background-color: #00AA67; }
+      .export .group-describe-form .btn-success:hover {
+        border: 1px solid #00AA67;
+        background-color: #009158; }
     .export .group-describe-form .btn-danger, .export .group-describe-form .btn-danger:visited, .export .group-describe-form .btn-danger:link {
       background-color: #ec5914;
       color: #fff;
@@ -884,6 +892,45 @@ body {
       background-color: #c74b10;
       cursor: pointer;
       outline: none; }
+    .export .group-describe-form .btn--left {
+      position: absolute;
+      top: 20%;
+      left: 0%;
+      transform: translate(-100%, -20%);
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px; }
+    .export .group-describe-form .btn--right {
+      position: absolute;
+      top: 20%;
+      right: 0%;
+      transform: translate(100%, -20%);
+      border-bottom-right-radius: 10px;
+      border-top-right-radius: 10px; }
+    .export .group-describe-form .btn--left.choose-item-btn, .export .group-describe-form .btn--right.choose-item-btn {
+      font-weight: 600;
+      background-color: #00B8FF;
+      color: #F2F2F2;
+      padding: .5rem;
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: background-color .15s; }
+      .export .group-describe-form .btn--left.choose-item-btn:hover, .export .group-describe-form .btn--right.choose-item-btn:hover {
+        background-color: #009edb; }
+    .export .group-describe-form .btn--top {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -100%); }
+      .export .group-describe-form .btn--top.date-info {
+        background-color: #00AA67;
+        text-align: center;
+        color: #dfdfdf;
+        font-size: 1.4rem;
+        font-weight: 600;
+        padding: .5rem 3rem;
+        letter-spacing: .4px; }
 
 .calendar-wrapper {
   margin-top: 6rem; }

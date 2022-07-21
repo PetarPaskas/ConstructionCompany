@@ -1,5 +1,6 @@
 import Form from "./Form";
-import {getDisplayFieldForItem} from "../common/utils";
+import {modifyExistingForGroupDescribeForm, getDisplayFieldForItem, generateFinalDataItemForGroupDescribeForm, validateGroupDescribeFormData} from "../common/utils";
+import React from "react";
 
 /*
 props:{
@@ -18,14 +19,23 @@ state:{
 */
 class GroupDescribeForm extends Form
 {
+
     state={
-        itemId:this.props.valueField,
         data:{
             options:this.props.options,
+            selectedDays:this.props.selectedDays,
+            currentItem:"",
+            currentDay:""
             },
-        formData:{0:{hoursDone:"", constructionSiteId:""}},
+        errors:{},
+        itemId:this.props.valueField,
         dataInstances:1,
-        errors:{}
+        formData:this.setDefault(),
+        finalData:[]
+    }
+
+    setDefault(){
+        return {0:{hoursDone:"", constructionSiteId:""}};
     }
 
     //{hoursDone, constructionSiteId}
@@ -43,6 +53,41 @@ class GroupDescribeForm extends Form
         this.setState({formData:newData});
     }
 
+    getItem = (status)=>{
+        const {currentItem, currentDay} = this.state.data;
+        const {finalData} = this.state;
+        const {items, valueField} = this.props;
+
+        if(status === "next"){
+            //Check if the data is valid for generating
+            const isValid = validateGroupDescribeFormData(null);
+            //Generate final data item
+            const finalItem = generateFinalDataItemForGroupDescribeForm(null);
+            //If worker exists in finalData; modify
+            modifyExistingForGroupDescribeForm.call(finalData,finalItem);
+            //If worker doesn't exist in finalData; append
+            finalData.push(finalItem);
+            //Set next worker/day for populating info
+            let newItem, newDay;
+            //Reset formData
+            //this.setState({});
+        }
+
+        if(status === "previous"){
+            //Set previous worker/day for populating info
+
+            //Find the previous day/worker
+
+            //Load previous state data
+        }
+    }
+
+    renderHeader(){
+        const item = this.props.items[8];
+        const name = getDisplayFieldForItem.call(item,this.props.displayField);
+        return <h2 className="describe-form-header">{name}</h2>
+    }
+
     renderDataInstances(){
         const dropdownOptions = {
             wrapperStyle: {
@@ -57,8 +102,6 @@ class GroupDescribeForm extends Form
         const data = [];
         const stateDataKeys = Object.keys(stateData);
 
-        
-
         for(let i in stateData){
             const optionsForDataInstance = this.state.data.options.map(el=>{
                 if(el.id === stateData[i].constructionSiteId)
@@ -66,17 +109,64 @@ class GroupDescribeForm extends Form
                 return {...el, dataInstance:i};
             });
             let isFirstKey = stateDataKeys[0] === i;
-            data.push(<div className="row" key={`Data-instance__${i}`}>
+            data.push(
+            <div className="row" key={`Data-instance__${i}`}>
                 {this.renderInputField("col", `${i}-hoursDone`, stateData[i]["hoursDone"], "Unesi odradjene sate", "", "number")}
                 {this.renderDropdown(optionsForDataInstance, "gradiliste*", dropdownOptions, "options")}
                 <div className="col-1" style={{alignSelf:"center"}}>
-                {!isFirstKey &&<button className="btn btn-danger" onClick={()=>this.removeDataInstance(i)}>&#215;</button>}
+                    {!isFirstKey && <button className="btn btn-danger" onClick={()=>this.removeDataInstance(i)}>&#215;</button>}
                 </div>
-            </div>)
+            </div>);
         }
 
         return data;
     }
+
+    renderNavigation(){
+        const dateInfo = <div 
+        className="btn--top date-info">
+            17. 07. 2022.
+            </div>;
+
+        const leftNav = <div 
+        className="btn--left choose-item-btn" 
+        onClick={()=>{this.getItem("previous")}}>
+            &lt;
+        </div>;
+
+        const rightNav = <div 
+        className="btn--right choose-item-btn" 
+        onClick={()=>{this.getItem("next")}}>
+            &gt;
+        </div>;
+        
+        return <React.Fragment>
+            {dateInfo}
+            {leftNav}
+            {rightNav}
+            </React.Fragment>;
+    }
+
+    renderDefaultBody(){
+        return (<div className="container">
+            {this.renderHeader()}
+            {this.renderDataInstances()}
+            <div className="row" style={{justifyContent:"center",marginTop:"1rem"}}>
+                <button className="btn btn-success" onClick={this.appendDataInstance}>+</button>
+            </div>
+        </div>)
+    }
+    
+    render(){
+        return (<div className="group-describe-form">
+            {this.renderNavigation()}
+            {this.renderDefaultBody()}
+        </div>)
+    }
+
+
+
+// -Override-
 
     handleChange=({target})=>{
         const [propertyName, identifier] = target.name.split("-");
@@ -94,22 +184,6 @@ class GroupDescribeForm extends Form
 
     }
 
-    renderHeader(){
-        const item = this.props.items[0]
-        const name = getDisplayFieldForItem.call(item,this.props.displayField);
-        return <h2>{name}</h2>
-    }
-
-    renderDefaultBody(){
-        return (<div className="container">
-            {this.renderHeader()}
-            {this.renderDataInstances()}
-            <div className="row" style={{justifyContent:"center",marginTop:"1rem"}}>
-                <button className="btn btn-success" onClick={this.appendDataInstance}>Dodaj</button>
-            </div>
-        </div>)
-    }
-
     onDropdownClick(data,selection){
         switch(selection){
             case "options":
@@ -119,39 +193,6 @@ class GroupDescribeForm extends Form
                 console.error("No onDropdownClick selection implementation");
                 break;
         }
-    }
-
-    submitNewOptionsSelectionWithDataInstance=(paramData, selection, keepOriginal, stringIdentifier)=>{
-        const {formData:newData} = this.state;
-        let canProceed = true;
-        //If dropdown options is already selected by another dataInstance; shouldn't be able to write
-        for(let prop in newData){
-            console.log(prop);
-            if(parseInt(prop) !== parseInt(paramData.dataInstance)){
-                if(newData[prop].constructionSiteId !== "" && newData[prop].constructionSiteId === parseInt(paramData.id))
-                canProceed = false;
-            }
-        }
-        if(canProceed){
-            let item = newData[parseInt(paramData.dataInstance)];
-            if(item.constructionSiteId === parseInt(paramData.id)){
-                item.constructionSiteId = "";
-            }
-            else{
-                item.constructionSiteId = parseInt(paramData.id);
-            }
-            this.setState({formData:newData});
-        }
-        else{
-            console.error("Option already selected by another data instance");
-        }
-
-    }
-
-    render(){
-        return (<div className="group-describe-form">
-                {this.renderDefaultBody()}
-        </div>)
     }
 }
 

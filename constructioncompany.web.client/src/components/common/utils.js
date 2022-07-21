@@ -2,7 +2,6 @@ export function shortenText(text,maxLength){
     return text.slice(0,maxLength-3)+"...";
 }
 
-
 export function processFinalDataForAddEditUserForm(finalData, hasUser){
     console.log(finalData);
     if(hasUser){
@@ -27,7 +26,6 @@ export function processFinalDataForAddEditUserForm(finalData, hasUser){
 
     }
 }
-
 
 export function createDashboardOption(id,name,path,popoutPath=""){
     return {
@@ -289,6 +287,7 @@ export function getDisplayFieldForItem(displayField){
     if(Array.isArray(displayField)){
         let finalName = "";
         for(let element of displayField){
+            if(this[element])
             finalName = `${finalName} ${this[element]}`;
         }
         return finalName;
@@ -303,6 +302,18 @@ export function decideDayClassName(day, isToday, isSelected){
     const selectedDay = isSelected ? "day--selected" : "";
 
     return `day ${sunday} ${today} ${selectedDay}`;
+}
+
+export function generateFinalDataItemForGroupDescribeForm(data){
+
+}
+
+export function validateGroupDescribeFormData(data){
+    
+}
+
+export function modifyExistingForGroupDescribeForm(data){
+
 }
 
 // export function createFakeDataForTableConstructionSite(){
