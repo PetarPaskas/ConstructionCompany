@@ -11,7 +11,7 @@ class ExportForm extends Form{
     state={
         date:new Date(),
         selectedDays:[],
-        workerList:[],
+        selectedWorkers:[],
         data:{
             users:[],
             constructionSiteOptions:[]
@@ -33,24 +33,6 @@ class ExportForm extends Form{
 
         this.setState({data});
     }
-
-    // renderCalendarForDate(){
-    //     //Zelimo januar 2019
-    //     const jan2019 = new Date(2019, this.datum["Jan"]+1, 0);
-    //     console.log("Januar 2019",jan2019);
-    //     let kalendar = [];
-    //     let weeks = Math.ceil(jan2019.getDate()/7);
-
-    //     for(let i = 1; i<=jan2019.getDate();i++){
-    //         kalendar.push(
-    //             (<div key={`$day__${i}`} className={`day ${i%7 === 0 ? "day-sunday" : ""}`}>
-    //                 {i}
-    //             </div>));
-    //     }
-
-    //     return kalendar;
-
-    // }
 
     renderCalendarSelectorStep(){
         return <Calendar
@@ -77,19 +59,19 @@ class ExportForm extends Form{
     }
 
     chooseWorkerOnClick=(userId)=>{
-        let workerList = [...this.state.workerList];
+        let selectedWorkers = [...this.state.selectedWorkers];
         let users = this.state.data.users.map(el=>({...el}));
 
-        if(workerList.some(el=>el===userId)){
-            workerList = workerList.filter(el=>el !== userId);
+        if(selectedWorkers.some(el=>el===userId)){
+            selectedWorkers = selectedWorkers.filter(el=>el !== userId);
             users.find(user=>user.userId === userId).isSelected = false;
         }
         else{
-            workerList.push(userId);
+            selectedWorkers.push(userId);
             users.find(user=>user.userId === userId).isSelected = true;
         }
 
-        this.setState({workerList:workerList, data:{users:users}});
+        this.setState({selectedWorkers:selectedWorkers, data:{users:users}});
     }
 
     chooseStep=(step)=>{
@@ -130,14 +112,12 @@ class ExportForm extends Form{
 
         return <div className="step-buttons">
                 <div className="step-buttons--element">
-                    {/* <p className="step-buttons--title">Prethodni korak</p> */}
                     <button className="step-button" onClick={(e)=>this.chooseStep('previous')}>&lt;</button>
                 </div>
                 <div className="step-buttons--element">
                     <span className="step-buttons--header-text">{currentStep}</span>
                 </div>
                 <div className="step-buttons--element">
-                    {/* <p className="step-buttons--title">Sledeći korak</p> */}
                     <button className="step-button" onClick={(e)=>this.chooseStep('next')}>&gt;</button>
                 </div>
             </div>
@@ -145,11 +125,13 @@ class ExportForm extends Form{
 
     renderWorkerDescribeStep(){
         const {constructionSiteOptions, users} = this.state.data;
+        const {selectedDays} = this.state;
         const items = users;
         const options = constructionSiteOptions;
         return <GroupDescribeForm
                 items={items}
-                displayField={["name","phoneNumber"]}
+                displayField={["name","nickname","surname"]}
+                selectedDays={selectedDays}
                 options={options}
                 />;
     }
@@ -186,6 +168,4 @@ class ExportForm extends Form{
     }
 }
 
-//ConstructionSiteUsersEditTableCustomBody
-//Table
 export default ExportForm;

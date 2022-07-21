@@ -164,6 +164,33 @@ class Form extends Component{
         this.setState({data:newData});
     }
 
+    //FOR GROUP DESCRIBE FORM
+    submitNewOptionsSelectionWithDataInstance=(paramData, selection, keepOriginal, stringIdentifier)=>{
+        const {formData:newData} = this.state;
+        let canProceed = true;
+        //If dropdown options is already selected by another dataInstance; shouldn't be able to write
+        for(let prop in newData){
+            if(parseInt(prop) !== parseInt(paramData.dataInstance)){
+                if(newData[prop].constructionSiteId !== "" && newData[prop].constructionSiteId === parseInt(paramData.id))
+                canProceed = false;
+            }
+        }
+        if(canProceed){
+            let item = newData[parseInt(paramData.dataInstance)];
+            if(item.constructionSiteId === parseInt(paramData.id)){
+                item.constructionSiteId = "";
+            }
+            else{
+                item.constructionSiteId = parseInt(paramData.id);
+            }
+            this.setState({formData:newData});
+        }
+        else{
+            console.error("Option already selected by another data instance");
+        }
+
+    }
+
     handleResetSelection=(selection)=>{
        let resetData = [...this.state.data[selection]].map(el=>({...el,isSelected:false}));
     
