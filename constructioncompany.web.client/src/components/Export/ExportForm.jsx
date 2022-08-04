@@ -2,7 +2,7 @@ import Form from "../common/Form";
 import Calendar from "../common/Calendar";
 import ConstructionSiteUsersEditTableCustomBody from "../Dashboard/ConstructionSites/ConstructionSiteUsersEditTableCustomBody"
 import Table from "../common/Table/Table";
-import {headersForConstructionSiteUsersEditTableCustomBody} from "../common/utils";
+import {equalDates, headersForConstructionSiteUsersEditTableCustomBody} from "../common/utils";
 import usersClient from "../http/usersClient";
 import miscClient from "../http/miscClient";
 import GroupDescribeForm from "../common/GroupDescribeForm";
@@ -71,7 +71,7 @@ class ExportForm extends Form{
             users.find(user=>user.userId === userId).isSelected = true;
         }
 
-        this.setState({selectedWorkers:selectedWorkers, data:{users:users}});
+        this.setState({selectedWorkers:selectedWorkers, data:{...this.state.data,users:users}});
     }
 
     chooseStep=(step)=>{
@@ -126,23 +126,25 @@ class ExportForm extends Form{
     renderWorkerDescribeStep(){
         const {constructionSiteOptions, users} = this.state.data;
         const {selectedDays} = this.state;
-        const items = users;
-        const options = constructionSiteOptions;
+        const items = users.filter(user=>this.state.selectedWorkers.some(s=>s === user.userId));
+        
         return <GroupDescribeForm
                 items={items}
                 displayField={["name","nickname","surname"]}
                 selectedDays={selectedDays}
-                options={options}
+                options={constructionSiteOptions}
                 />;
     }
 
-    selectDay = (day)=>{
+    selectDay = (data)=>{
+         console.log(data);
+        //data => {date, day, month, year}
         let days = [...this.state.selectedDays];
-        if(days.some(el=>el===day))
-            days = days.filter(el=>el !== day);
-        else
-            days.push(day);
-
+        if(days.some(el=>equalDates(el, data.date))){
+            days = days.filter(el=>!equalDates(el,data.date));
+        }else{
+            days.push(data.date);
+        }
         this.setState({selectedDays:days});
     }
 

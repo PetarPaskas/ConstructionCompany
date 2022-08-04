@@ -3,7 +3,7 @@ export function shortenText(text,maxLength){
 }
 
 export function processFinalDataForAddEditUserForm(finalData, hasUser){
-    console.log(finalData);
+    
     if(hasUser){
         let hasConstructionSite = false;
 
@@ -243,9 +243,12 @@ export function generateSchemaConstructionSite(){
 
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
-export function getFullCurrentMonth(){
-    const today = new Date();
-    const datum = new Date(today.getFullYear(),today.getMonth()+1,0);
+export function getFullCurrentMonth(data){
+
+    if(!data){
+        data = new Date();
+    }
+    const datum = new Date(data.getFullYear(),data.getMonth()+1,0);
     return datum;
 }
 const datumBase = [ "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sept", "Okt", "Nov", "Dec"]
@@ -284,6 +287,9 @@ export function headersForConstructionSiteUsersEditTableCustomBody(){
 }
 
 export function getDisplayFieldForItem(displayField){
+    if(this === undefined)
+    return null;
+
     if(Array.isArray(displayField)){
         let finalName = "";
         for(let element of displayField){
@@ -296,6 +302,13 @@ export function getDisplayFieldForItem(displayField){
     return this[displayField];
 }
 
+export function equalDates(date1, date2){
+    return (date1.getDate() === date2.getDate() && 
+    date1.getMonth() === date2.getMonth() && 
+    date1.getFullYear() === date2.getFullYear());
+
+}
+
 export function decideDayClassName(day, isToday, isSelected){
     const sunday = day%7 === 0 ? "day-sunday" : "";
     const today = isToday ? 'today' : "";
@@ -304,17 +317,20 @@ export function decideDayClassName(day, isToday, isSelected){
     return `day ${sunday} ${today} ${selectedDay}`;
 }
 
+//data => state
 export function generateFinalDataItemForGroupDescribeForm(data){
-
+    return ({
+        userId: data.item.currentItemId, 
+        date: data.date.currentDay,
+        formData: data.formData
+    });
 }
 
 export function validateGroupDescribeFormData(data){
-    
-}
-
-export function modifyExistingForGroupDescribeForm(data){
-
-}
+    //check if date is selected
+    //check if formData is valid(each object entries have populated constructionSiteId and hoursDone)
+    //check if there is an userId
+}   
 
 // export function createFakeDataForTableConstructionSite(){
 //     return ({

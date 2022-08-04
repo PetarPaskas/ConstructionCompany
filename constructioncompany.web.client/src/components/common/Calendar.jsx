@@ -1,5 +1,5 @@
 import { Component } from "react";
-import {getFullCurrentMonth, getDateMonthSrb, decideDayClassName} from "../common/utils";
+import {getFullCurrentMonth, getDateMonthSrb, decideDayClassName, equalDates} from "../common/utils";
 
 /*
     props => date[] selectedDays 
@@ -11,6 +11,16 @@ class Calendar extends Component{
         currDate: this.props.date || getFullCurrentMonth()
     }
 
+    changeCurrDate=(e)=>{
+        const {currDate} = this.state;
+        const newCurrDate = getFullCurrentMonth(new Date(e.target.value));
+
+        if(!equalDates(newCurrDate,currDate)){
+            
+            this.setState({currDate:newCurrDate});
+        }
+    }
+
     renderCalendarDays=()=>{
         let {currDate} = this.state;
         let weeks = Math.ceil(currDate.getDate()/7);
@@ -20,18 +30,18 @@ class Calendar extends Component{
         for(let i = 1; i<=currDate.getDate();i++){
             let isToday = false;
             let isAlreadySelected = false;
-            //if day is today
-            if(i === today.getDate() && currDate.getMonth() === today.getMonth() && today.getFullYear() === currDate.getFullYear())
+            let date = new Date(currDate.getFullYear(), currDate.getMonth(),i);
+
+            if(equalDates(date,today))
             {
                 isToday = true;
             }
-            //if day is selected
-            if(this.props.selectedDays && this.props.selectedDays.some(sel=>sel === i)){
+            if(this.props.selectedDays && this.props.selectedDays.some(sel=>equalDates(sel,date))){
                 isAlreadySelected = true;
             }
             kalendarDays.push(
                 (<div key={`$day__${i}`} 
-                 onClick={(e)=>this.handleCalendarClick(e,{day:i})}
+                 onClick={(e)=>this.handleCalendarClick(e,{date:date, day:i, month:date.getMonth()+1, year:date.getFullYear()})}
                 className={decideDayClassName(i, isToday, isAlreadySelected)}>
                     {i}
                 </div>));
@@ -44,7 +54,7 @@ class Calendar extends Component{
        //e.target.classList.toggle("day--selected");
         if(this.props.onCalendarClick)
         {
-            this.props.onCalendarClick(data.day);
+            this.props.onCalendarClick(data);
         }
         else
         {
@@ -67,10 +77,29 @@ class Calendar extends Component{
         return retData;
     }
 
+    renderDateChooser(){
+        const currMonthString = `${this.state.currDate.getFullYear()}-${(this.state.currDate.getMonth()+1) < 10 ? "0"+(this.state.currDate.getMonth()+1): (this.state.currDate.getMonth()+1)}`;
+        const input = <input type="month" 
+        id="calendar__month-chooser" 
+        name="calendar__month-chooser"
+        className="calendar__month-chooser"
+        onChange={this.changeCurrDate}
+        value={currMonthString}
+        />;
+
+        return (<label 
+        className="calendar__month-chooser--label"
+        htmlFor="calendar__month-chooser">
+            {input}
+        </label>
+        );
+    }
+
     render(){
         return <div className="calendar-wrapper">
             <div className="calendar-header">
                     <h2>{getDateMonthSrb(this.state.currDate)}</h2>
+                    {this.renderDateChooser()}
             </div>
             <div className="calendar">
                 {this.renderDayNames()}

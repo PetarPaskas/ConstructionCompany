@@ -51,13 +51,45 @@
             }
         }
 
+        &__month-chooser{
+            &,
+            &:link{
+                display:inline-block;
+                color:$text-light;
+                border-radius: .3rem;
+                border:none;
+                background-color: transparent;
+                outline:.5px solid lighten($text-light,30%);
+                padding:0 .5rem;
+            }
+            &:hover{
+                cursor:pointer;
+            }
+            &:active,
+            &:visited
+            &:focus-visible{
+                outline:none !important;
+                border:none;
+            }
+
+            &--label{
+                position:absolute;
+                top:50%;
+                right:4%;
+                transform:translate(0%,-50%);
+                display:inline-block;
+            }
+        }
+
         &-header, &-footer{
+            position:relative;
             width:66rem;
             margin:0 auto;
             text-align: center;
             background-color: $green-color-medium;
             border-radius:20px;
             color:$text-light;
+            padding:.8rem 0rem;
         }
         &-footer{
             height: 1.5rem;

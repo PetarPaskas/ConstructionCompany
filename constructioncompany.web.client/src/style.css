@@ -878,6 +878,8 @@ body {
     position: relative; }
     .export .group-describe-form .describe-form-header {
       padding-bottom: 1rem; }
+    .export .group-describe-form .container {
+      min-height: 8rem; }
     .export .group-describe-form .btn-success {
       background-color: #00AA67; }
       .export .group-describe-form .btn-success:hover {
@@ -924,13 +926,25 @@ body {
       left: 50%;
       transform: translate(-50%, -100%); }
       .export .group-describe-form .btn--top.date-info {
-        background-color: #00AA67;
         text-align: center;
-        color: #dfdfdf;
+        color: #f7f7f7;
         font-size: 1.4rem;
         font-weight: 600;
         padding: .5rem 3rem;
         letter-spacing: .4px; }
+        .export .group-describe-form .btn--top.date-info--primary {
+          background-color: #00AA67; }
+        .export .group-describe-form .btn--top.date-info--secondary {
+          background-color: #188314; }
+  .export .error-text {
+    color: #ec5914;
+    font-weight: 600; }
+    .export .error-text--s {
+      font-size: .8rem; }
+    .export .error-text--m {
+      font-size: 1.4rem; }
+    .export .error-text--l {
+      font-size: 1.8rem; }
 
 .calendar-wrapper {
   margin-top: 6rem; }
@@ -973,13 +987,35 @@ body {
           background-color: #ff8d7a; }
       .calendar-wrapper .calendar .day.today {
         border: 1px solid #ec5914; }
+    .calendar-wrapper .calendar__month-chooser, .calendar-wrapper .calendar__month-chooser:link {
+      display: inline-block;
+      color: #f7f7f7;
+      border-radius: .3rem;
+      border: none;
+      background-color: transparent;
+      outline: 0.5px solid white;
+      padding: 0 .5rem; }
+    .calendar-wrapper .calendar__month-chooser:hover {
+      cursor: pointer; }
+    .calendar-wrapper .calendar__month-chooser:active,
+    .calendar-wrapper .calendar__month-chooser:visited .calendar-wrapper .calendar__month-chooser:focus-visible {
+      outline: none !important;
+      border: none; }
+    .calendar-wrapper .calendar__month-chooser--label {
+      position: absolute;
+      top: 50%;
+      right: 4%;
+      transform: translate(0%, -50%);
+      display: inline-block; }
     .calendar-wrapper .calendar-header, .calendar-wrapper .calendar-footer {
+      position: relative;
       width: 66rem;
       margin: 0 auto;
       text-align: center;
       background-color: #00AA67;
       border-radius: 20px;
-      color: #f7f7f7; }
+      color: #f7f7f7;
+      padding: .8rem 0rem; }
     .calendar-wrapper .calendar-footer {
       height: 1.5rem;
       margin-top: 2rem; }
