@@ -97,10 +97,12 @@ class GroupDescribeForm extends Form
         let {shouldRenderLeftNav, shouldRenderRightNav, colorTheme} = this.state.ui;
         const finalData = this.state.finalData.map(el=>({...el,formData:{...el.formData}}));
         let {currentItemId, currentItemIndex,items} = this.state.item;
-        let existingItem = null;
+        let existingItem, item = null;
         let shouldUpdate = true;
         let dateIndex = selectedDays.findIndex(day=>equalDates(day,currentDay));
 
+        let formData = this.setDefault();
+        let dataInstances = 1;
         shouldRenderLeftNav = true;
         shouldRenderRightNav = true;
 
@@ -156,6 +158,13 @@ class GroupDescribeForm extends Form
             colorTheme = describeFormColorThemes.colorSecondary;
         else
             colorTheme = describeFormColorThemes.colorPrimary;
+
+        if(item = finalData.find(el=>el.userId === currentItemId && equalDates(el.date,currentDay)))
+        {
+            const data = Object.keys(item.formData);
+            dataInstances = data[data.length-1]+1;
+            formData = item.formData;
+        }
         
         if(shouldUpdate){
             this.setState({
@@ -173,6 +182,8 @@ class GroupDescribeForm extends Form
                     shouldRenderRightNav,
                     colorTheme
                 },
+                dataInstances,
+                formData,
                 finalData
             });
         }else{
@@ -187,8 +198,6 @@ class GroupDescribeForm extends Form
         }
 
         function setData(that){
-            const isValid = validateGroupDescribeFormData(null);
-
             if(existingItem = finalData.find(d=>d.userId === currentItemId && equalDates(currentDay, d.date))){
                 existingItem = generateFinalDataItemForGroupDescribeForm(that.state);
             }else{
@@ -206,6 +215,7 @@ class GroupDescribeForm extends Form
     //This is what happens when you submit the data from GroupDescribeForm
     submit(){
         //Validate if all user data is filled
+        const isValid = validateGroupDescribeFormData(null);
 
         //convert {userId, date, formData} object
         //to {date, data:[{userId, wages:[{constructionSiteId, hoursDone}]}]}
@@ -311,10 +321,6 @@ class GroupDescribeForm extends Form
     }
 
     renderDefaultBody(){
-        //also load data instances from finalData if there is any data for the current instance
-        
-        //set the dataInstances = data[data.length-1]+1
-        //data = Object.keys(finalData.formData);
         return (<div className="container">
             {this.renderHeader()}
             {this.renderDataInstances()}
