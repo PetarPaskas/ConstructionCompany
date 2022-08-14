@@ -12,7 +12,7 @@ namespace ConstructionCompany.EntityModels
         public int UserId { get; set; }
         public int ConstructionSiteId { get; set; }
         public DateTime WorkDay { get; set; }
-        public int HoursDone { get; set; }
+        public double HoursDone { get; set; }
         public int HoursRequired { get; set; }
         public User User { get; set; }
         public ConstructionSite ConstructionSite { get; set; }

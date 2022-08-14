@@ -34,6 +34,13 @@ namespace ConstructionCompany.DataContext.Repositories
             return entities;
         }
 
+        public async Task<IEnumerable<T>> AddRangeAndSaveAsync(IEnumerable<T> entities)
+        {
+            _context.Set<T>().AddRange(entities);
+            await _context.SaveChangesAsync();
+            return entities;
+        }
+
         public T Find(int id)
         {
             return _context.Set<T>().Find(id);

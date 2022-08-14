@@ -10,7 +10,7 @@ namespace ConstructionCompany.Common
     {
         public int WageId { get; set; }
         public DateTime WorkDay { get; set; }
-        public int HoursDone { get; set; }
+        public double HoursDone { get; set; }
         public int HoursRequired { get; set; }
         public StrippedConstructionSiteModel ConstructionSite { get; set; }
 

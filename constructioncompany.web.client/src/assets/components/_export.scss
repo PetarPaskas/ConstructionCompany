@@ -1,7 +1,171 @@
 .export{
     height: 100vh;
-    background-image:url("../public/img/under-construction.png") ;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
+    // background-image:url("../public/img/under-construction.png") ;
+    // background-position: center;
+    // background-repeat: no-repeat;
+    // background-size: contain;
+    .step-buttons{
+        padding-top:2rem;
+        margin:0 auto;
+        width:20%;
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &--element{
+            text-align: center;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        &--header-text{
+            font-weight: 600;
+            color:$gradiliste-tab-text-dark;
+            font-size:1.6rem;
+        }
+        .step-button{
+            border-radius:50%;
+            padding:.5rem 1rem;
+            font-size:1.5rem;
+            font-weight: 600;
+            cursor:pointer;
+            color:$text-gray;
+            border:.5px solid $blue-color-base-mid-light;
+            outline:none;
+            &:hover{
+                background-color: $blue-color-light;
+            }
+        }
+    }
+
+    .users-table{
+        width:60%;
+        margin:0 auto;
+        margin-top:6rem;
+    }
+
+    .group-describe-form{
+        max-width:45rem;
+        margin:0 auto;
+        margin-top:6rem;
+        padding:1.3rem 2rem;
+        border:.5px solid $mute-color-light;
+        box-shadow:0px 2px 4px 0px $mute-color-light;
+        border-radius:20px; 
+        position:relative;
+         
+        & .describe-form-header{
+            padding-bottom:1rem;
+        }
+
+        & .container{
+            min-height:8rem;
+        }
+        
+        .btn-success{
+            background-color: $green-color-medium;
+            &:hover{
+                border:1px solid $green-color-medium;
+                background-color: darken($green-color-medium,5%);
+            }
+        }
+
+        .btn-danger{
+            &,
+            &:visited,
+            &:link{
+                background-color: $red-color-base;
+                color:$white-color;
+                border:none;
+                outline:none;
+            }
+
+            &:hover,&:visited{
+                background-color: darken($red-color-base,8%);
+                cursor:pointer;
+                outline:none;
+            }
+        }
+
+        & .btn--left{
+            position:absolute;
+            top:20%;
+            left:0%;
+            transform:translate(-100%,-20%);
+            border-bottom-left-radius: 10px;
+            border-top-left-radius: 10px;
+        }
+
+        & .btn--right{
+            position:absolute;
+            top:20%;
+            right:0%;
+            transform:translate(100%,-20%);
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        & .btn{
+            &--left,
+            &--right{
+                &.choose-item-btn{
+                    font-weight: 600;
+                    background-color: $blue-color-base;
+                    color:$cream-white;
+                    padding:.5rem;
+                    font-size:1.6rem;
+                    cursor:pointer;
+                    transition:background-color .15s;
+                    &:hover{
+                        background-color: darken($blue-color-base,7%);
+                    }
+                }
+            }
+        }
+
+        & .btn--top{
+            //width:100px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+           // height:2rem;
+            position:absolute;
+            top:0;
+            left:50%;
+            transform:translate(-50%,-100%);
+
+            &.date-info{
+                text-align:center;
+                color:$text-light;
+                font-size:1.4rem;
+                font-weight: 600;
+                padding:.5rem 3rem;
+                letter-spacing: .4px;
+
+                &--primary{
+                    background-color: $green-color-medium;
+                }
+                &--secondary{
+                    background-color: lighten($green-color-dark,5%);
+                }
+            }
+        }
+
+    }
+
+    .error-text{
+        color:$red-color-base;
+        font-weight: 600;
+
+        &--s{
+            font-size: .8rem;
+        }
+        &--m{
+            font-size: 1.4rem;
+        }
+        &--l{
+            font-size:1.8rem;
+        }
+    }
+
 }

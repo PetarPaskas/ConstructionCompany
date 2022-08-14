@@ -117,8 +117,21 @@ class NoteForm extends Form{
 
         if(Object.keys(errors).length > 0)
         {
-            alert("Nije moguće obraditi zahtev, razreši greške.");
-            return;
+            if((function (){
+                let shouldError = false;
+                for(let key in errors)
+                {
+                    if(errors[key] !== ""){
+                        shouldError = true;
+                        break;
+                    }
+                }
+                return shouldError;
+            })()){
+                alert("Nije moguće obraditi zahtev, razreši greške.");
+                return;
+            }
+
         }
 
         const newData = {

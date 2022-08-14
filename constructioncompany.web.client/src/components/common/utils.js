@@ -2,9 +2,8 @@ export function shortenText(text,maxLength){
     return text.slice(0,maxLength-3)+"...";
 }
 
-
 export function processFinalDataForAddEditUserForm(finalData, hasUser){
-    console.log(finalData);
+    
     if(hasUser){
         let hasConstructionSite = false;
 
@@ -27,7 +26,6 @@ export function processFinalDataForAddEditUserForm(finalData, hasUser){
 
     }
 }
-
 
 export function createDashboardOption(id,name,path,popoutPath=""){
     return {
@@ -245,6 +243,37 @@ export function generateSchemaConstructionSite(){
 
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
+export function getFullCurrentMonth(data){
+
+    if(!data){
+        data = new Date();
+    }
+    const datum = new Date(data.getFullYear(),data.getMonth()+1,0);
+    return datum;
+}
+const datumBase = [ "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sept", "Okt", "Nov", "Dec"]
+
+const datumSrb = {
+    "Jan":"Januar",
+    "Feb":"Februar",
+    "Mar":"Mart",
+    "Apr":"April",
+    "Maj":"Maj",
+    "Jun":"Jun",
+    "Jul":"Jul",
+    "Avg":"Avgust",
+    "Sept":"Septembar",
+    "Okt":"Oktobar",
+    "Nov":"Novembar",
+    "Dec":"Decembar"
+}
+
+
+export function getDateMonthSrb(date, withYear = false){
+    const month = datumSrb[datumBase[date.getMonth()]];
+    return withYear ? `${month} ${date.getFullYear()}` : month;
+}
+
 export function createHeadersDataForUsersTable(){
     return[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:4,name:"Radi Od"},{id:5,name:"Satnica"},{id:6,name:"Trenutno"}];
 }
@@ -256,115 +285,254 @@ function wrapInHourly(num){
 export function headersForConstructionSiteUsersEditTableCustomBody(){
  return [{id:1, name:"Ime"},{id:2, name:"Prezime"},{id:3, name:"Profesija"},{id:5, name:"Satnica"}];
 }
-export function createFakeDataForTableConstructionSite(){
+
+export function getDisplayFieldForItem(displayField){
+    if(this === undefined)
+    return null;
+
+    if(Array.isArray(displayField)){
+        let finalName = "";
+        for(let element of displayField){
+            if(this[element])
+            finalName = `${finalName} ${this[element]}`;
+        }
+        return finalName;
+    }
+
+    return this[displayField];
+}
+
+export function equalDates(date1, date2){
+    return (date1.getDate() === date2.getDate() && 
+    date1.getMonth() === date2.getMonth() && 
+    date1.getFullYear() === date2.getFullYear());
+
+}
+
+export function decideDayClassName(day, isToday, isSelected){
+    const sunday = day%7 === 0 ? "day-sunday" : "";
+    const today = isToday ? 'today' : "";
+    const selectedDay = isSelected ? "day--selected" : "";
+
+    return `day ${sunday} ${today} ${selectedDay}`;
+}
+
+//data => state
+export function generateFinalDataItemForGroupDescribeForm(data){
     return ({
-        header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],
-        body:[
-            {id:1,ime:"AJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(500)},
-            {id:2,ime:"BJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(600)},
-            {id:3,ime:"Janko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(700)},
-            {id:4,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(800)},
-            {id:5,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(900)},
-            {id:6,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(1000)}
-        ]
+        userId: data.item.currentItemId, 
+        date: data.date.currentDay,
+        formData: data.formData
     });
 }
 
-export function createFakeDataForConstructionSite(){
-    return ([
-        {
-            ConstructionSiteId:1,
-            Name:"Gradiliste 1",
-            Address:"Milosa Perica 7",
-            CityName: "Beograd",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:2,
-            Name:"Gradiliste 2",
-            Address:"Milosa Perica 7",
-            CityName: "Beograd",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:3,
-            Name:"Gradiliste 3",
-            Address:"Urosa Jovanovica 27",
-            CityName: "Slankamen",
-            Client:{
-                Id:13,
-                Name:"Mokri Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:4,
-            Name:"Gradiliste 4",
-            Address:"Milosa Perica 7",
-            CityName: "Beograd",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
-        },
-        {
-            ConstructionSiteId:5,
-            Name:"Gradiliste 5",
-            Address:"Milosa Perica 27",
-            CityName: "Zrenjanin",
-            Client:{
-                Id:12,
-                Name:"Plavi Snovi D.O.O"
-            }
+export function validateGroupDescribeFormData(data){
+    //{userId, date, formData}
+    const returnDataObj = {
+        userId:data.userId,
+        date:data.date,
+        formData: data.formData
+    };
+
+    const {formData} = data; 
+    let validEntries = [];
+    let isInvalid = false;
+
+    const formDataKeys = Object.keys(formData);
+
+    let allEntriesAreEmpty = true;
+
+    for(let i = 0; i<formDataKeys.length; i++){
+        if(isInvalid){
+            validEntries = [];
+            break;
         }
-    ]);
+        const entry = formData[formDataKeys[i]];
+        //empty entry; doesn't matter if both are set to empty strings
+        if(entry.constructionSiteId === "" && entry.hoursDone === ""){
+            continue;
+        }
+        if((entry.constructionSiteId === "" && entry.hoursDone !== "") ||
+           (entry.constructionSiteId !== "" && entry.hoursDone === "")){
+                //if one is empty but not the other
+            isInvalid = true;
+            allEntriesAreEmpty = false;
+        }else{
+            allEntriesAreEmpty = false;
+            validEntries.push(entry);
+        }
+    }
+    
+    if(allEntriesAreEmpty) isInvalid = true;
+
+    if(!isInvalid)
+     returnDataObj.formData = validEntries;
+     else
+     delete returnDataObj.formData 
+
+    return [
+        isInvalid,
+        returnDataObj
+    ];
+    //check if date is selected
+    //check if formData is valid(each object entries have populated constructionSiteId and hoursDone)
+    //check if there is an userId
+}   
+
+// [
+//     date:
+//     data:[
+//         userId:
+//         wages:[{
+//             constructionSiteId,
+//             hoursDone
+//         }]
+//     ]
+// ]
+export function formatSubmitItemsForWagesEndpoint(selectedDays, data){
+    const returnItems = [];
+  for(let i = 0; i<selectedDays.length;i++){
+    const currentDay = selectedDays[i]
+    const dataForDay = data
+    .filter(el=> equalDates(el.date,currentDay))
+    .map(el=>{
+        return {
+            userId:el.userId,
+            wages:produceWagesArray(el)
+        }
+    });
+
+    returnItems.push({
+        date:currentDay,
+        data:dataForDay
+    });
+  }
+
+  return returnItems;
 }
 
-
-export function createFakeDataForNotes(){
-    return [{
-        noteId:1,
-        dateCreated:"2020-08-08",
-        description:"Njansjfnajksnf",
-        title:"Naslov",
-        user:{userId:1,name:"John"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
-    },
-    {
-        noteId:2,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"Mike"},
-        constructionSite:{constructionSiteId:2, name:"Gradiliste 222"}
-    },
-    {
-        noteId:3,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"Mike"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
-    },
-    {
-        noteId:4,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"John"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
-    },
-    {
-        noteId:5,
-        dateCreated:"2020-08-08",
-        description:"Lalalala",
-        title:"Naslov",
-        user:{userId:1,name:"John"},
-        constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
-    }]
+function produceWagesArray(data){
+   const objKeys = Object.keys(data.formData)
+   const finalData = [];
+    for(let i = 0;i<objKeys.length;i++){
+       const entry = data.formData[objKeys[i]];
+       finalData.push({
+        constructionSiteId: entry.constructionSiteId,
+        hoursDone: entry.hoursDone
+       });
+    }
+    return finalData;
 }
+
+// export function createFakeDataForTableConstructionSite(){
+//     return ({
+//         header:[{id:1,name:"Ime"},{id:2,name:"Prezime"},{id:3,name:"Profesija"},{id:5,name:"Satnica"}],
+//         body:[
+//             {id:1,ime:"AJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(500)},
+//             {id:2,ime:"BJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(600)},
+//             {id:3,ime:"Janko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(700)},
+//             {id:4,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(800)},
+//             {id:5,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(900)},
+//             {id:6,ime:"CJanko",prezime:"Jankovic",profesija:"Maler", satnica:wrapInHourly(1000)}
+//         ]
+//     });
+// }
+
+// export function createFakeDataForConstructionSite(){
+//     return ([
+//         {
+//             ConstructionSiteId:1,
+//             Name:"Gradiliste 1",
+//             Address:"Milosa Perica 7",
+//             CityName: "Beograd",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:2,
+//             Name:"Gradiliste 2",
+//             Address:"Milosa Perica 7",
+//             CityName: "Beograd",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:3,
+//             Name:"Gradiliste 3",
+//             Address:"Urosa Jovanovica 27",
+//             CityName: "Slankamen",
+//             Client:{
+//                 Id:13,
+//                 Name:"Mokri Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:4,
+//             Name:"Gradiliste 4",
+//             Address:"Milosa Perica 7",
+//             CityName: "Beograd",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         },
+//         {
+//             ConstructionSiteId:5,
+//             Name:"Gradiliste 5",
+//             Address:"Milosa Perica 27",
+//             CityName: "Zrenjanin",
+//             Client:{
+//                 Id:12,
+//                 Name:"Plavi Snovi D.O.O"
+//             }
+//         }
+//     ]);
+// }
+
+
+// export function createFakeDataForNotes(){
+//     return [{
+//         noteId:1,
+//         dateCreated:"2020-08-08",
+//         description:"Njansjfnajksnf",
+//         title:"Naslov",
+//         user:{userId:1,name:"John"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+//     },
+//     {
+//         noteId:2,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"Mike"},
+//         constructionSite:{constructionSiteId:2, name:"Gradiliste 222"}
+//     },
+//     {
+//         noteId:3,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"Mike"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
+//     },
+//     {
+//         noteId:4,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"John"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 12"}
+//     },
+//     {
+//         noteId:5,
+//         dateCreated:"2020-08-08",
+//         description:"Lalalala",
+//         title:"Naslov",
+//         user:{userId:1,name:"John"},
+//         constructionSite:{constructionSiteId:1, name:"Gradiliste 22"}
+//     }]
+// }

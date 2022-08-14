@@ -834,8 +834,188 @@ body {
     border-radius: 10px; }
 
 .export {
-  height: 100vh;
-  background-image: url("../public/img/under-construction.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain; }
+  height: 100vh; }
+  .export .step-buttons {
+    padding-top: 2rem;
+    margin: 0 auto;
+    width: 20%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; }
+    .export .step-buttons--element {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; }
+    .export .step-buttons--header-text {
+      font-weight: 600;
+      color: #0c1807bb;
+      font-size: 1.6rem; }
+    .export .step-buttons .step-button {
+      border-radius: 50%;
+      padding: .5rem 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #4e4e4e;
+      border: 0.5px solid #9ee2fd;
+      outline: none; }
+      .export .step-buttons .step-button:hover {
+        background-color: #D4F4FF; }
+  .export .users-table {
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 6rem; }
+  .export .group-describe-form {
+    max-width: 45rem;
+    margin: 0 auto;
+    margin-top: 6rem;
+    padding: 1.3rem 2rem;
+    border: 0.5px solid #A2AF9F;
+    box-shadow: 0px 2px 4px 0px #A2AF9F;
+    border-radius: 20px;
+    position: relative; }
+    .export .group-describe-form .describe-form-header {
+      padding-bottom: 1rem; }
+    .export .group-describe-form .container {
+      min-height: 8rem; }
+    .export .group-describe-form .btn-success {
+      background-color: #00AA67; }
+      .export .group-describe-form .btn-success:hover {
+        border: 1px solid #00AA67;
+        background-color: #009158; }
+    .export .group-describe-form .btn-danger, .export .group-describe-form .btn-danger:visited, .export .group-describe-form .btn-danger:link {
+      background-color: #ec5914;
+      color: #fff;
+      border: none;
+      outline: none; }
+    .export .group-describe-form .btn-danger:hover, .export .group-describe-form .btn-danger:visited {
+      background-color: #c74b10;
+      cursor: pointer;
+      outline: none; }
+    .export .group-describe-form .btn--left {
+      position: absolute;
+      top: 20%;
+      left: 0%;
+      transform: translate(-100%, -20%);
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px; }
+    .export .group-describe-form .btn--right {
+      position: absolute;
+      top: 20%;
+      right: 0%;
+      transform: translate(100%, -20%);
+      border-bottom-right-radius: 10px;
+      border-top-right-radius: 10px; }
+    .export .group-describe-form .btn--left.choose-item-btn, .export .group-describe-form .btn--right.choose-item-btn {
+      font-weight: 600;
+      background-color: #00B8FF;
+      color: #F2F2F2;
+      padding: .5rem;
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: background-color .15s; }
+      .export .group-describe-form .btn--left.choose-item-btn:hover, .export .group-describe-form .btn--right.choose-item-btn:hover {
+        background-color: #009edb; }
+    .export .group-describe-form .btn--top {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -100%); }
+      .export .group-describe-form .btn--top.date-info {
+        text-align: center;
+        color: #f7f7f7;
+        font-size: 1.4rem;
+        font-weight: 600;
+        padding: .5rem 3rem;
+        letter-spacing: .4px; }
+        .export .group-describe-form .btn--top.date-info--primary {
+          background-color: #00AA67; }
+        .export .group-describe-form .btn--top.date-info--secondary {
+          background-color: #188314; }
+  .export .error-text {
+    color: #ec5914;
+    font-weight: 600; }
+    .export .error-text--s {
+      font-size: .8rem; }
+    .export .error-text--m {
+      font-size: 1.4rem; }
+    .export .error-text--l {
+      font-size: 1.8rem; }
+
+.calendar-wrapper {
+  margin-top: 6rem; }
+  .calendar-wrapper .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 8rem);
+    grid-row-gap: 10px;
+    grid-column-gap: 10px;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 2rem;
+    width: 58rem; }
+    .calendar-wrapper .calendar .day-in-week {
+      width: 5rem;
+      text-align: center;
+      font-weight: 600; }
+    .calendar-wrapper .calendar .day {
+      width: 5rem;
+      height: 5rem;
+      padding: .8rem 0rem 0rem .8rem;
+      border-radius: 5px;
+      box-sizing: border-box;
+      background-color: #9ee2fd;
+      color: #4e4e4e;
+      font-weight: 600;
+      transition: background-color .15s;
+      border: .5px solid transparent;
+      cursor: pointer; }
+      .calendar-wrapper .calendar .day--selected {
+        background-color: #53ccfb;
+        border: 0.5px solid #0492cb; }
+      .calendar-wrapper .calendar .day:hover {
+        background-color: #85dbfc; }
+      .calendar-wrapper .calendar .day-sunday {
+        background-color: #ffa393; }
+        .calendar-wrapper .calendar .day-sunday.day--selected {
+          background-color: #ff6247;
+          border: 0.5px solid #c61d00; }
+        .calendar-wrapper .calendar .day-sunday:hover {
+          background-color: #ff8d7a; }
+      .calendar-wrapper .calendar .day.today {
+        border: 1px solid #ec5914; }
+    .calendar-wrapper .calendar__month-chooser, .calendar-wrapper .calendar__month-chooser:link {
+      display: inline-block;
+      color: #f7f7f7;
+      border-radius: .3rem;
+      border: none;
+      background-color: transparent;
+      outline: 0.5px solid white;
+      padding: 0 .5rem; }
+    .calendar-wrapper .calendar__month-chooser:hover {
+      cursor: pointer; }
+    .calendar-wrapper .calendar__month-chooser:active,
+    .calendar-wrapper .calendar__month-chooser:visited .calendar-wrapper .calendar__month-chooser:focus-visible {
+      outline: none !important;
+      border: none; }
+    .calendar-wrapper .calendar__month-chooser--label {
+      position: absolute;
+      top: 50%;
+      right: 4%;
+      transform: translate(0%, -50%);
+      display: inline-block; }
+    .calendar-wrapper .calendar-header, .calendar-wrapper .calendar-footer {
+      position: relative;
+      width: 66rem;
+      margin: 0 auto;
+      text-align: center;
+      background-color: #00AA67;
+      border-radius: 20px;
+      color: #f7f7f7;
+      padding: .8rem 0rem; }
+    .calendar-wrapper .calendar-footer {
+      height: 1.5rem;
+      margin-top: 2rem; }

@@ -1,0 +1,100 @@
+.calendar-wrapper{
+    margin-top:6rem;
+
+    .calendar{
+        display:grid;
+        grid-template-columns: repeat(7,8rem);
+        grid-row-gap:10px;
+        grid-column-gap:10px;
+        justify-content: center;
+        margin:0 auto;
+        margin-top:2rem;
+        width:58rem;
+
+        .day-in-week{
+            width:5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .day{
+            width:5rem;
+            height:5rem;
+            padding:.8rem 0rem 0rem .8rem;
+            border-radius:5px;
+            box-sizing: border-box;
+            background-color: $blue-color-base-mid-light;
+            color:$text-gray;
+            font-weight: 600;
+            transition: background-color .15s;
+            border:.5px solid transparent;
+            cursor: pointer;
+            &--selected{
+                background-color: darken($blue-color-base-mid-light,15%);
+                border:.5px solid darken($blue-color-base-mid-light,40%);
+            }
+            &:hover{
+                background-color: darken($blue-color-base-mid-light,5%);
+            }
+            &-sunday{
+                background-color: $red-color-mild;
+                &.day--selected{
+                    background-color: darken($red-color-mild,15%);
+                    border:.5px solid darken($red-color-mild,40%);
+                }
+                &:hover{
+                    background-color: darken($red-color-mild,5%);
+                }
+            }
+            &.today{
+                border:1px solid $red-color-base;
+            }
+        }
+
+        &__month-chooser{
+            &,
+            &:link{
+                display:inline-block;
+                color:$text-light;
+                border-radius: .3rem;
+                border:none;
+                background-color: transparent;
+                outline:.5px solid lighten($text-light,30%);
+                padding:0 .5rem;
+            }
+            &:hover{
+                cursor:pointer;
+            }
+            &:active,
+            &:visited
+            &:focus-visible{
+                outline:none !important;
+                border:none;
+            }
+
+            &--label{
+                position:absolute;
+                top:50%;
+                right:4%;
+                transform:translate(0%,-50%);
+                display:inline-block;
+            }
+        }
+
+        &-header, &-footer{
+            position:relative;
+            width:66rem;
+            margin:0 auto;
+            text-align: center;
+            background-color: $green-color-medium;
+            border-radius:20px;
+            color:$text-light;
+            padding:.8rem 0rem;
+        }
+        &-footer{
+            height: 1.5rem;
+            margin-top:2rem;
+        }
+    }
+
+}
