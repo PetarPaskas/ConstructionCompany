@@ -10,6 +10,7 @@ namespace ConstructionCompany.DataContext.Interfaces
     {
         public T Add(T entity);
         public IEnumerable<T> AddRange(IEnumerable<T> entities);
+        public Task<IEnumerable<T>> AddRangeAndSaveAsync(IEnumerable<T> entities);
         public void Remove(T entity);
         public void RemoveRange(IEnumerable<T> entities);
         public T Find(int id);

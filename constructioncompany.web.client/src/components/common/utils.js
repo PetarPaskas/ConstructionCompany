@@ -3,7 +3,7 @@ export function shortenText(text,maxLength){
 }
 
 export function processFinalDataForAddEditUserForm(finalData, hasUser){
-    console.log(finalData);
+    
     if(hasUser){
         let hasConstructionSite = false;
 
@@ -243,9 +243,12 @@ export function generateSchemaConstructionSite(){
 
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
-export function getFullCurrentMonth(){
-    const today = new Date();
-    const datum = new Date(today.getFullYear(),today.getMonth()+1,0);
+export function getFullCurrentMonth(data){
+
+    if(!data){
+        data = new Date();
+    }
+    const datum = new Date(data.getFullYear(),data.getMonth()+1,0);
     return datum;
 }
 const datumBase = [ "Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Avg", "Sept", "Okt", "Nov", "Dec"]
@@ -284,6 +287,9 @@ export function headersForConstructionSiteUsersEditTableCustomBody(){
 }
 
 export function getDisplayFieldForItem(displayField){
+    if(this === undefined)
+    return null;
+
     if(Array.isArray(displayField)){
         let finalName = "";
         for(let element of displayField){
@@ -296,6 +302,13 @@ export function getDisplayFieldForItem(displayField){
     return this[displayField];
 }
 
+export function equalDates(date1, date2){
+    return (date1.getDate() === date2.getDate() && 
+    date1.getMonth() === date2.getMonth() && 
+    date1.getFullYear() === date2.getFullYear());
+
+}
+
 export function decideDayClassName(day, isToday, isSelected){
     const sunday = day%7 === 0 ? "day-sunday" : "";
     const today = isToday ? 'today' : "";
@@ -304,16 +317,111 @@ export function decideDayClassName(day, isToday, isSelected){
     return `day ${sunday} ${today} ${selectedDay}`;
 }
 
+//data => state
 export function generateFinalDataItemForGroupDescribeForm(data){
-
+    return ({
+        userId: data.item.currentItemId, 
+        date: data.date.currentDay,
+        formData: data.formData
+    });
 }
 
 export function validateGroupDescribeFormData(data){
+    //{userId, date, formData}
+    const returnDataObj = {
+        userId:data.userId,
+        date:data.date,
+        formData: data.formData
+    };
+
+    const {formData} = data; 
+    let validEntries = [];
+    let isInvalid = false;
+
+    const formDataKeys = Object.keys(formData);
+
+    let allEntriesAreEmpty = true;
+
+    for(let i = 0; i<formDataKeys.length; i++){
+        if(isInvalid){
+            validEntries = [];
+            break;
+        }
+        const entry = formData[formDataKeys[i]];
+        //empty entry; doesn't matter if both are set to empty strings
+        if(entry.constructionSiteId === "" && entry.hoursDone === ""){
+            continue;
+        }
+        if((entry.constructionSiteId === "" && entry.hoursDone !== "") ||
+           (entry.constructionSiteId !== "" && entry.hoursDone === "")){
+                //if one is empty but not the other
+            isInvalid = true;
+            allEntriesAreEmpty = false;
+        }else{
+            allEntriesAreEmpty = false;
+            validEntries.push(entry);
+        }
+    }
     
+    if(allEntriesAreEmpty) isInvalid = true;
+
+    if(!isInvalid)
+     returnDataObj.formData = validEntries;
+     else
+     delete returnDataObj.formData 
+
+    return [
+        isInvalid,
+        returnDataObj
+    ];
+    //check if date is selected
+    //check if formData is valid(each object entries have populated constructionSiteId and hoursDone)
+    //check if there is an userId
+}   
+
+// [
+//     date:
+//     data:[
+//         userId:
+//         wages:[{
+//             constructionSiteId,
+//             hoursDone
+//         }]
+//     ]
+// ]
+export function formatSubmitItemsForWagesEndpoint(selectedDays, data){
+    const returnItems = [];
+  for(let i = 0; i<selectedDays.length;i++){
+    const currentDay = selectedDays[i]
+    const dataForDay = data
+    .filter(el=> equalDates(el.date,currentDay))
+    .map(el=>{
+        return {
+            userId:el.userId,
+            wages:produceWagesArray(el)
+        }
+    });
+
+    returnItems.push({
+        date:currentDay,
+        data:dataForDay
+    });
+  }
+
+  return returnItems;
 }
 
-export function modifyExistingForGroupDescribeForm(data){
-
+function produceWagesArray(data){
+   const objKeys = Object.keys(data.formData)
+   const finalData = [];
+    for(let i = 0;i<objKeys.length;i++){
+       const entry = data.formData[objKeys[i]];
+       finalData.push({
+        constructionSiteId: entry.constructionSiteId,
+        hoursDone: entry.hoursDone
+       });
+    }
+    return finalData;
 }
 
 // export function createFakeDataForTableConstructionSite(){
