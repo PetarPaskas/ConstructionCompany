@@ -1,6 +1,7 @@
 import Form from "./Form";
-import {dateToString, getDisplayFieldForItem, generateFinalDataItemForGroupDescribeForm, validateGroupDescribeFormData, equalDates} from "../common/utils";
+import {dateToString, formatSubmitItemsForWagesEndpoint, getDisplayFieldForItem, generateFinalDataItemForGroupDescribeForm, validateGroupDescribeFormData, equalDates} from "../common/utils";
 import React from "react";
+import wagesClient from "../http/wagesClient";
 
 /*
 props:{
@@ -107,7 +108,7 @@ class GroupDescribeForm extends Form
         shouldRenderRightNav = true;
 
         if(status === "next"){
-            setData(this);
+            this.setData(existingItem, finalData);
             currentItemIndex += 1;
             if(currentItemIndex >= 0){
                 if(currentItemIndex < items.length){
@@ -130,7 +131,7 @@ class GroupDescribeForm extends Form
 
         if(status === "previous"){
             console.log("Previous");
-            setData(this);
+            this.setData(existingItem, finalData);
             currentItemIndex = currentItemIndex - 1;
             if(currentItemIndex < 0){
                 currentItemIndex = items.length-1;
@@ -196,30 +197,119 @@ class GroupDescribeForm extends Form
                 finalData
             });
         }
+    }
 
-        function setData(that){
-            if(existingItem = finalData.find(d=>d.userId === currentItemId && equalDates(currentDay, d.date))){
-                existingItem = generateFinalDataItemForGroupDescribeForm(that.state);
-            }else{
-            //if current user doesn't exist in final data
-            //Generate final data item 
-            //generateFinaldataItemForGroupDescribeForm() :{userId, date, formData}
-            //Takav vid return data da bi se mogao lakse ucitati pri previous; unique(userId, date)
-            const finalItem = generateFinalDataItemForGroupDescribeForm(that.state);
-            //If worker doesn't exist in finalData; append
-            finalData.push(finalItem);
-            }
+    setData=(existingItem, finalData)=>{
+        //item.currentItemId -> userId
+        //date.currentDay -> current day you're filling the data for
+        const {currentDay} = this.state.date;
+        const {currentItemId} = this.state.item;
+
+        if(existingItem = finalData.find(d=>d.userId === currentItemId && equalDates(currentDay, d.date))){
+            existingItem = generateFinalDataItemForGroupDescribeForm(this.state);
+        }else{
+        //if current user doesn't exist in final data
+        //Generate final data item 
+        //generateFinaldataItemForGroupDescribeForm() :{userId, date, formData}
+        //Takav vid return data da bi se mogao lakse ucitati pri previous; unique(userId, date)
+        const finalItem = generateFinalDataItemForGroupDescribeForm(this.state);
+        //If worker doesn't exist in finalData; append
+        finalData.push(finalItem);
         }
     }
 
     //This is what happens when you submit the data from GroupDescribeForm
-    submit(){
-        //Validate if all user data is filled
-        const isValid = validateGroupDescribeFormData(null);
+    submit=async ()=>{
+        //Append current formData into finalItem; make it up to date
+        const {finalData} = this.state;
+        let invalidUserInput = null //[{userId, date}]
+        let submitItems = [];
+        let existingItem = null
 
-        //convert {userId, date, formData} object
-        //to {date, data:[{userId, wages:[{constructionSiteId, hoursDone}]}]}
+        this.setData(existingItem, finalData);
+
+        if(finalData.length>0)
+        {
+            for(let item of finalData){
+                //Validate if all user data is filled correctly
+               const [isInvalid, submitItem] = validateGroupDescribeFormData(item);
+               if(isInvalid){
+                invalidUserInput = submitItem;
+                submitItems = [];
+                alert("Nije dobro popunjen item, console za vise info");
+                console.log("Submit item => ",submitItem);
+                break;
+               }
+               else{
+                submitItems.push(submitItem);
+               }
+            }
+
+        }else
+        {
+            //No user data filled; throw an error
+            alert("Nema popunjenih podataka o korisniku, vise info u konzoli");
+            console.log("Form Data => ", this.state.formData);
+            console.log("Final Data => ", this.state.finalData);
+            return;
+        }
+
+        if(invalidUserInput !== null){
+            //set state to invalid user input & show a message
+            const userIndex = finalData.findIndex(el=>el.userId === invalidUserInput.userId && equalDates(el.date,invalidUserInput.date));
+            const userForSelection = finalData[userIndex];
+            const formDataKeys = Object.keys(userForSelection.formData);
+            const dataInstances = formDataKeys[formDataKeys.length-1]+1;
+            let shouldRenderLeftNav = true;
+            let shouldRenderRightNav = true;
+            let colorTheme = describeFormColorThemes.colorPrimary;
+            
+            if(userIndex !== -1){
+                if(userIndex === 0) shouldRenderLeftNav = false;
+                if(userIndex >= (finalData.length-1)) shouldRenderRightNav = false;
+            }
+            if(this.state.ui.colorTheme === describeFormColorThemes.colorPrimary)
+            colorTheme = describeFormColorThemes.colorSecondary;
+            alert("You are seeing the user with an invalid input");
+            this.setState((prevState)=>({
+                date:{
+                    currentDay:userForSelection.date,
+                    selectedDays:prevState.date.selectedDays
+                },
+                item:{
+                    currentItemIndex:userIndex,
+                    currentItemId:userForSelection.userId,
+                    items:prevState.item.items
+                },
+                ui:{
+                    shouldRenderLeftNav,
+                    shouldRenderRightNav,
+                    colorTheme:colorTheme
+                },
+                dataInstances,
+                formData:userForSelection.formData,
+                finalData
+            }));
+        }
+        else
+        {
+            const {selectedDays} = this.state.date;
+            //This means everything's fine; submit
+            alert("Submitting");
+            const finalSubmitData = formatSubmitItemsForWagesEndpoint(selectedDays, submitItems);
+            console.log("Final Data for submittion => ");
+            console.log(finalSubmitData);
+
+            this.setState({
+                finalData
+            });
+
+            await wagesClient.submitWages(finalSubmitData);
+
+        }
     }   
+
+    
 
     renderHeader(){
         const {item} = this.state;
@@ -313,10 +403,17 @@ class GroupDescribeForm extends Form
             &gt;
         </div>;
 
+        const submitButton = <div 
+        className="btn--right choose-item-btn" 
+        onClick={this.submit}>
+            Posalji
+        </div>;
+
         return <React.Fragment>
             {dateInfo}
             {shouldRenderLeftNav && leftNav}
             {shouldRenderRightNav && rightNav}
+            {!shouldRenderRightNav && submitButton}
             </React.Fragment>;
     }
 
