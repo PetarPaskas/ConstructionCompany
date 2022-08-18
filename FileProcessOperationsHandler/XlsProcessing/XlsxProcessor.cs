@@ -13,7 +13,7 @@ namespace FileProcessOperationsHandler.XlsProcessing
             _xlsxProcessorHelper = xlsxProcessorHelper;
         }
 
-        public async Task Process(XlsxProcessData data, XlsxProcessorOptions options)
+        public async Task<byte[]> Process(XlsxProcessData data, XlsxProcessorOptions options)
         {
             if (options == null)
                 options = XlsxProcessorOptions.Default;
@@ -36,8 +36,8 @@ namespace FileProcessOperationsHandler.XlsProcessing
 
                 await _xlsxProcessorHelper.SaveChangesAsync();
             };
-             
 
+            return await _xlsxProcessorHelper.GetBytes();
         }
     }
 }

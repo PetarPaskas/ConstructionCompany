@@ -28,6 +28,7 @@
     <ProjectReference Include="..\ConstructionCompany.Common\ConstructionCompany.Common.csproj" />
     <ProjectReference Include="..\ConstructionCompany.DataContext\ConstructionCompany.DataContext.csproj" />
     <ProjectReference Include="..\ConstructionCompany.EntityModels\ConstructionCompany.EntityModels.csproj" />
+    <ProjectReference Include="..\FileProcessOperationsHandler\FileProcessOperationsHandler.csproj" />
   </ItemGroup>
 
   <ItemGroup>

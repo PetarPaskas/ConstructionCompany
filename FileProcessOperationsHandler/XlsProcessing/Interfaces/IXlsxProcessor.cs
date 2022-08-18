@@ -9,6 +9,6 @@ namespace FileProcessOperationsHandler.XlsProcessing.Interfaces
 {
     public interface IXlsxProcessor
     {
-        Task Process(XlsxProcessData data, XlsxProcessorOptions options);
+        Task<byte[]> Process(XlsxProcessData data, XlsxProcessorOptions options);
     }
 }

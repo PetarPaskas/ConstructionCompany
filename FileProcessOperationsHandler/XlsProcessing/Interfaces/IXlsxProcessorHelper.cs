@@ -17,5 +17,6 @@ namespace FileProcessOperationsHandler.XlsProcessing.Interfaces
         void ApplyStylesToWorksheet(ExcelWorksheet ws, XlsxProcessorOptions options);
         Task<bool> SaveChangesAsync();
         string GenerateRandomName(int size);
+        Task<byte[]> GetBytes();
     }
 }

@@ -2,6 +2,8 @@
 using ConstructionCompany.Common.DTOs.WagesDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
+using FileProcessOperationsHandler.ProcessTypes;
+using FileProcessOperationsHandler.XlsProcessing.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -16,16 +18,19 @@ namespace ConstructionCompany.WebAPI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IConstructionSiteRepository _constructionSiteRepository;
         private readonly IWageRepository _wageRepository;
+        private readonly IXlsxProcessor _xlsxProcessor;
         public WagesController
             (
             IUserRepository userRepository,
             IConstructionSiteRepository constructionSiteRepository,
-            IWageRepository wageRepository
+            IWageRepository wageRepository,
+            IXlsxProcessor xlsxProcessor
             )
         {
             _userRepository = userRepository;
             _constructionSiteRepository = constructionSiteRepository;
             _wageRepository = wageRepository;
+            _xlsxProcessor = xlsxProcessor;
         }
 
         [HttpPost]
@@ -36,12 +41,84 @@ namespace ConstructionCompany.WebAPI.Controllers
 
             var data = await _wageRepository.GetAllForDateAsync(request.Date);
             //Format data
+            XlsxProcessData processData = FormatData(data);
+            processData.Header.Data = $"Izveštaj za ${request.Date.Month} - ${request.Date.Year}";
+            processData.FileName = $"Izveštaj {request.Date.Month}-{request.Date.Year}";
 
             //Generate a file
+            byte[] xlsxFile = await _xlsxProcessor.Process(processData, null);
+            string xlsxContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            string fileDownloadName = $"{processData.FileName}.{(processData.IsXlsType ? "xls" : "xslx")}";
 
-            //Return data
-            return Ok();
+            return File(xlsxFile, xlsxContentType, fileDownloadName);
         }
+
+        #region Request-file-private
+        private XlsxProcessData FormatData(IEnumerable<Wage> wages)
+        {
+
+           var users = wages.Select(w => w.User);
+
+            var finalBody = new List<List<string>>();
+
+            var firstRow = new List<string>();
+            var footerRow = new List<string>();
+
+            footerRow.Add("Ukupno: ");
+            firstRow.Add("");
+
+            finalBody.Add(firstRow);
+
+
+            foreach (var workDay in wages.Select(w => w.WorkDay).OrderBy(day=>day.Day))
+            {
+                //On each new day, create a new row of data
+                List<string> data = new();
+                finalBody.Add(data);
+
+                data.Add($"{workDay.Day}");
+
+                foreach(var user in users)
+                {
+                    //Fill body
+                    firstRow.Add($"{user.FullName}");
+                    var hoursDoneOnDay = user.Wages.Where(w => w.WorkDay == workDay).Sum(w => w.HoursDone);
+                    double income = hoursDoneOnDay * user.HourlyRate;
+                    data.Add($"{income}");
+
+                    //Fill footer
+                    var hoursDoneInTotal = user.Wages.Sum(w => w.HoursDone);
+                    var totalForUser = hoursDoneInTotal * user.HourlyRate;
+                    footerRow.Add($"{totalForUser}");
+                }
+            }
+
+            XlsxProcessData processData = new()
+            {
+                Footer = new()
+                {
+                    Data = new List<XlsxRowItem>()
+                    {
+                        new XlsxRowItem()
+                        {
+                            RowItems = footerRow
+                        }
+                    }
+                },
+                Body = new()
+                {
+                    Data = finalBody.Select(row => new XlsxRowItem() { RowItems = row })
+                },
+                Header = new() 
+                {
+                    Data = ""
+                },
+                IsXlsType = false
+            };
+
+            return processData;
+        }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> RegisterWage([FromBody] IEnumerable<PutWagesDto> newWages)

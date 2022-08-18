@@ -58,6 +58,25 @@ namespace FileProcessOperationsHandler.XlsProcessing
 
             return name;
         }
+
+        public async Task<byte[]> GetBytes()
+        {
+            byte[] bytes = null;
+
+            _file.Refresh();
+
+            using (FileStream fileStream = _file.OpenRead())
+            {
+                using(MemoryStream memStream = new())
+                {
+                    await fileStream.CopyToAsync(memStream);
+                    bytes = memStream.ToArray();
+                }
+            }
+
+            return bytes;
+        }
+
         #endregion
 
         #region data_styling
