@@ -8,10 +8,35 @@ namespace ConstructionCompany.DataContext.Repositories
 {
     public class WageRepository : Repository<Wage>, IWageRepository
     {
+        private readonly ConstructionCompanyContext _context;
         public WageRepository(ConstructionCompanyContext ctx)
             :base(ctx)
         {
+            _context = ctx;
+        }
 
+        public async Task<IEnumerable<Wage>> GetAllForDateAsync(DateTime date)
+        {
+            return await GetAllForDate(date);
+        }
+
+        public async Task<IEnumerable<Wage>> GetAllForDateAsync(DateOnly date)
+        {
+            return await GetAllForDate(new DateTime(date.Year, date.Month, date.Day));
+        }
+
+        private async Task<List<Wage>> GetAllForDate(DateTime date)
+        {
+            var startDate = DateOnly.FromDateTime(new DateTime(date.Year, date.Month, 1));
+            var endDate = DateOnly.FromDateTime(date);
+
+            var data = await _context.Wages.Where(wage =>
+            (DateOnly.FromDateTime(wage.WorkDay) >= startDate) && 
+            (DateOnly.FromDateTime(wage.WorkDay) <= endDate)
+            ).Include(w=>w.User)
+            .ToListAsync();
+
+            return data;
         }
     }
 }
