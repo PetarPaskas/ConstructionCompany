@@ -84,12 +84,12 @@ namespace ConstructionCompany.WebAPI.Controllers
                     firstRow.Add($"{user.FullName}");
                     var hoursDoneOnDay = user.Wages.Where(w => w.WorkDay == workDay).Sum(w => w.HoursDone);
                     double income = hoursDoneOnDay * user.HourlyRate;
-                    data.Add($"{income}");
+                    data.Add($"{Math.Round(income, 2)} ${user.Currency.DisplayName}");
 
                     //Fill footer
                     var hoursDoneInTotal = user.Wages.Sum(w => w.HoursDone);
                     var totalForUser = hoursDoneInTotal * user.HourlyRate;
-                    footerRow.Add($"{totalForUser}");
+                    footerRow.Add($"{Math.Round(totalForUser, 2)} ${user.Currency.DisplayName}");
                 }
             }
 
