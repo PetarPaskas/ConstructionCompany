@@ -1,0 +1,12 @@
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\bin\Debug\net6.0\FileProcessOperationsHandler.deps.json
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\bin\Debug\net6.0\FileProcessOperationsHandler.dll
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\bin\Debug\net6.0\FileProcessOperationsHandler.pdb
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.csproj.AssemblyReference.cache
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.GeneratedMSBuildEditorConfig.editorconfig
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.AssemblyInfoInputs.cache
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.AssemblyInfo.cs
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.csproj.CoreCompileInputs.cache
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.dll
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\refint\FileProcessOperationsHandler.dll
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\FileProcessOperationsHandler.pdb
+C:\Misc\TestsAndProj\Maturski\ConstructionCompany\ConstructionCompany\FileProcessOperationsHandler\obj\Debug\net6.0\ref\FileProcessOperationsHandler.dll

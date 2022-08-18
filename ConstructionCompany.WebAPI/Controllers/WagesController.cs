@@ -29,6 +29,21 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> RequestFile(FileRequestData request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var data = await _wageRepository.GetAllForDateAsync(request.Date);
+            //Format data
+
+            //Generate a file
+
+            //Return data
+            return Ok();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> RegisterWage([FromBody] IEnumerable<PutWagesDto> newWages)
         {
             if (!ModelState.IsValid)
@@ -48,13 +63,14 @@ namespace ConstructionCompany.WebAPI.Controllers
             }
             catch(Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, "Error while saving wages");
+                return StatusCode((int)HttpStatusCode.InternalServerError, $"Error while saving wages - {ex.Message}");
             }
 
 
             return Ok();
         }
 
+        #region private_methods
         private string CheckForDates(IEnumerable<PutWagesDto> newWages)
         {
 
@@ -133,5 +149,6 @@ namespace ConstructionCompany.WebAPI.Controllers
 
             return wagesForInsetion;
         }
+        #endregion
     }
 }
