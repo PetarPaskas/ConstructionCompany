@@ -83,7 +83,18 @@ namespace ConstructionCompany.WebAPI.Controllers
             var body = new List<List<string>>();
             body.Add(firstRow);
 
-            var endDate = new DateTime(request.Date.Year, request.Date.Month + 1, 1).AddDays(-1);
+            DateTime? tryEndDate = null;
+
+            if(request.Date.Month == 12)
+            {
+                tryEndDate = new DateTime(request.Date.Year + 1, 1, 1).AddDays(-1);
+            }
+            else
+            {
+                tryEndDate = new DateTime(request.Date.Year, request.Date.Month + 1, 1).AddDays(-1);
+            }
+
+            var endDate = tryEndDate.Value;
             var startDate = new DateTime(request.Date.Year, request.Date.Month, 1);
           
             for (int currDay = startDate.Day; currDay <= endDate.Day; currDay++)
