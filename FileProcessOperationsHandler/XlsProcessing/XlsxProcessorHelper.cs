@@ -45,7 +45,7 @@ namespace FileProcessOperationsHandler.XlsProcessing
             return await Task.FromResult(true);
         }
 
-        public string GenerateRandomName(int size)
+        public string GenerateRandomFolder(string rootPath, int size)
         {
             string name = "";
             Random random = new();
@@ -56,7 +56,12 @@ namespace FileProcessOperationsHandler.XlsProcessing
                name = name + character;
             }
 
-            return name;
+            string path = $@"{rootPath}/${name}";
+
+            if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+            return path;
         }
 
         public async Task<byte[]> GetBytes()
@@ -192,8 +197,11 @@ namespace FileProcessOperationsHandler.XlsProcessing
                 if(data.Header?.Data != null && data.Header?.Data.Length > 0)
                     AppendHeaderData(worksheet, data.Header);
 
+
+
                 if (data.Body.Data != null && data.Body.Data.Any())
                     AppendBodyData(worksheet, data.Body);
+
 
                 if (data.Footer.Data != null && data.Footer.Data.Any())
                     AppendFooterData(worksheet, data.Footer);
@@ -214,14 +222,22 @@ namespace FileProcessOperationsHandler.XlsProcessing
 
         private void AppendBodyData(ExcelWorksheet worksheet, XlsxProcessBody body)
         {
-                WriteRowData(worksheet, body.Data);
+            _documentState.SetBodyStartData();
+
+            WriteRowData(worksheet, body.Data);
+
+            _documentState.SetBodyEndData();
         }
 
         private void AppendFooterData(ExcelWorksheet worksheet, XlsxProcessFooter footer)
         {
             _documentState.CurrentRow += 2;
 
+            _documentState.SetFooterStartData();
+
             WriteRowData(worksheet, footer.Data);
+
+            _documentState.SetFooterEndData();
         }
 
         #endregion
@@ -231,12 +247,14 @@ namespace FileProcessOperationsHandler.XlsProcessing
         {
             foreach (var row in rows)
             {
+                _documentState.CurrentCol = 1;
                 foreach (var item in row.RowItems)
                 {
                     worksheet.Cells[_documentState.CurrentRow, _documentState.CurrentCol].Value = item;
+                    ++_documentState.CurrentCol;
                 }
                 _documentState.CurrentRow++;
-                _documentState.CurrentCol = 1;
+                
             }
         }
         private class XlsxIdentificationHelper

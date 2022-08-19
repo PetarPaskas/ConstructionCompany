@@ -33,17 +33,15 @@ namespace ConstructionCompany.WebAPI.Controllers
             _xlsxProcessor = xlsxProcessor;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RequestFile(FileRequestData request)
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RequestFile([FromBody] FileRequestData request)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var data = await _wageRepository.GetAllForDateAsync(request.Date);
+            var data = (await _wageRepository.GetAllForDateAsync(request.Date)) as List<Wage>;
             //Format data
-            XlsxProcessData processData = FormatData(data);
-            processData.Header.Data = $"Izveštaj za ${request.Date.Month} - ${request.Date.Year}";
-            processData.FileName = $"Izveštaj {request.Date.Month}-{request.Date.Year}";
+            XlsxProcessData processData = FormatData(data, request);
 
             //Generate a file
             byte[] xlsxFile = await _xlsxProcessor.Process(processData, null);
@@ -54,43 +52,85 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         #region Request-file-private
-        private XlsxProcessData FormatData(IEnumerable<Wage> wages)
+        private XlsxProcessData FormatData(ICollection<Wage> wages, FileRequestData request)
         {
+            /*----------FOOTER SUMMARY---------*/
+            Dictionary<int, double> footerValues = new Dictionary<int, double>();
+            //key => userId
+            //value => sum of earnings
 
-           var users = wages.Select(w => w.User);
+            /*----------BODY SUMMARY---------*/
+            var wagesOrdered = wages.OrderBy(w => w.WorkDay);
+            var usersInWages = new List<User>(); 
+            foreach(var user in wagesOrdered.Select(w => w.User))
+            {
+                if(!usersInWages.Exists(u=>u.UserId==user.UserId))
+                    usersInWages.Add(user);
+            }
 
-            var finalBody = new List<List<string>>();
-
-            var firstRow = new List<string>();
-            var footerRow = new List<string>();
-
-            footerRow.Add("Ukupno: ");
+            List<string> firstRow = new();
             firstRow.Add("");
 
-            finalBody.Add(firstRow);
+            if (usersInWages is null)
+                throw new ArgumentNullException("Users in wages collection is empty");
 
-
-            foreach (var workDay in wages.Select(w => w.WorkDay).OrderBy(day=>day.Day))
+            for (int i = 0; i < usersInWages.Count; i++)
             {
-                //On each new day, create a new row of data
-                List<string> data = new();
-                finalBody.Add(data);
+                var user = usersInWages[i];
+                firstRow.Add(user.FullName);
+            }
 
-                data.Add($"{workDay.Day}");
+            var body = new List<List<string>>();
+            body.Add(firstRow);
 
-                foreach(var user in users)
+            var endDate = new DateTime(request.Date.Year, request.Date.Month + 1, 1).AddDays(-1);
+            var startDate = new DateTime(request.Date.Year, request.Date.Month, 1);
+          
+            for (int currDay = startDate.Day; currDay <= endDate.Day; currDay++)
+            {
+                List<string> row = new();
+                row.Add($"{currDay}");
+
+                foreach (var user in usersInWages)
                 {
-                    //Fill body
-                    firstRow.Add($"{user.FullName}");
-                    var hoursDoneOnDay = user.Wages.Where(w => w.WorkDay == workDay).Sum(w => w.HoursDone);
-                    double income = hoursDoneOnDay * user.HourlyRate;
-                    data.Add($"{Math.Round(income, 2)} ${user.Currency.DisplayName}");
+                    var dateNow = new DateTime(request.Date.Year, request.Date.Month, currDay);
 
-                    //Fill footer
-                    var hoursDoneInTotal = user.Wages.Sum(w => w.HoursDone);
-                    var totalForUser = hoursDoneInTotal * user.HourlyRate;
-                    footerRow.Add($"{Math.Round(totalForUser, 2)} ${user.Currency.DisplayName}");
+                    var todaysWagesForUser = wagesOrdered.Where(w => 
+                                                                (DateOnly.FromDateTime(w.WorkDay) == DateOnly.FromDateTime(dateNow))
+                                                                && w.UserId == user.UserId);
+
+                    var hoursDone = todaysWagesForUser.Sum(wage => wage.HoursDone);
+                    var moneyEarned = Math.Round(hoursDone * user.HourlyRate,2);
+
+                    row.Add($"{moneyEarned} {user.Currency.DisplayName}");
+
+                    //calculate footer sumamry
+                    if (!footerValues.ContainsKey(user.UserId))
+                    {
+                        footerValues.Add(user.UserId, moneyEarned);
+                    }
+                    else
+                    {
+                        footerValues[user.UserId] = footerValues[user.UserId] + moneyEarned;
+                    }
                 }
+
+                body.Add(row);
+            }
+
+            List<XlsxRowItem> FormatBody = new();
+            foreach(var item in body)
+            {
+                FormatBody.Add(new XlsxRowItem() { RowItems = item});
+            }
+
+            /*------------------ FOOTER CALCULATIONS -------------------*/
+            List<string> footer = new();
+            footer.Add("Ukupno: ");
+
+            foreach(var user in usersInWages)
+            {
+                footer.Add(footerValues[user.UserId].ToString());
             }
 
             XlsxProcessData processData = new()
@@ -101,20 +141,25 @@ namespace ConstructionCompany.WebAPI.Controllers
                     {
                         new XlsxRowItem()
                         {
-                            RowItems = footerRow
+                            RowItems = footer
                         }
                     }
                 },
                 Body = new()
                 {
-                    Data = finalBody.Select(row => new XlsxRowItem() { RowItems = row })
+                    Data = FormatBody
                 },
-                Header = new() 
+                Header = new()
                 {
-                    Data = ""
+                    Data = $"Izveštaj za {request.Date.Month}-{request.Date.Year}"
                 },
-                IsXlsType = false
+                FileName = $"Izveštaj {request.Date.Month}-{request.Date.Year}"
             };
+
+            if (request.FileType == FileTypeEnum.XlsFile)
+                processData.IsXlsType = true;
+            else
+                processData.IsXlsType = false;
 
             return processData;
         }

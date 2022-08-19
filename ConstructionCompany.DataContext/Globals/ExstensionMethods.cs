@@ -1,4 +1,6 @@
 ﻿using ConstructionCompany.DataContext.Repositories;
+using FileProcessOperationsHandler.XlsProcessing;
+using FileProcessOperationsHandler.XlsProcessing.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -35,6 +37,8 @@ namespace ConstructionCompany.DataContext.Globals
             services.AddScoped<IUserRoleRepository,UserRoleRepository>();
             services.AddScoped<IWageRepository, WageRepository>();
             services.AddScoped<IWorkTypeRepository, WorkTypeRepository>();
+            services.AddScoped<IXlsxProcessor, XlsxProcessor>();
+            services.AddScoped<IXlsxProcessorHelper, XlsxProcessorHelper>();
 
             if(!(AppendInjection is null))
             AppendInjection(services);

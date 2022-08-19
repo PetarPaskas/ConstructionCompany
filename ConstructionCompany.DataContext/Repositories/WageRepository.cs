@@ -30,9 +30,7 @@ namespace ConstructionCompany.DataContext.Repositories
             var startDate = DateOnly.FromDateTime(new DateTime(date.Year, date.Month, 1));
             var endDate = DateOnly.FromDateTime(date);
 
-            var data = await _context.Wages.Where(wage =>
-            (DateOnly.FromDateTime(wage.WorkDay) >= startDate) && 
-            (DateOnly.FromDateTime(wage.WorkDay) <= endDate))
+            var data = await _context.Wages.Where(wage => wage.WorkDay.Month == date.Month)
             .Include(w=>w.User)
             .ThenInclude(u=>u.Currency)
             .ToListAsync();

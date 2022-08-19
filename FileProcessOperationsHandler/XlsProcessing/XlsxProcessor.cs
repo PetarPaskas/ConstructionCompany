@@ -10,17 +10,21 @@ namespace FileProcessOperationsHandler.XlsProcessing
         private readonly IXlsxProcessorHelper _xlsxProcessorHelper;
         public XlsxProcessor(IXlsxProcessorHelper xlsxProcessorHelper)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             _xlsxProcessorHelper = xlsxProcessorHelper;
         }
 
         public async Task<byte[]> Process(XlsxProcessData data, XlsxProcessorOptions options)
         {
+           
             if (options == null)
                 options = XlsxProcessorOptions.Default;
 
+            string rootPath = @$"{Directory.GetCurrentDirectory()}\Files";
+
             //GeneratePath
-            string randomFolderName = _xlsxProcessorHelper.GenerateRandomName(8);
-            string path = @$"{Directory.GetCurrentDirectory()}\{randomFolderName}\{data.FileName}.{(data.IsXlsType ? "xls" : "xlsx")}";
+            string randomFolderName = _xlsxProcessorHelper.GenerateRandomFolder(rootPath, 8);
+            string path = @$"{randomFolderName}\{data.FileName}.{(data.IsXlsType ? "xls" : "xlsx")}";
             string defaultWorksheetName = "Data";
 
             using (ExcelPackage package = _xlsxProcessorHelper.CreateXlsxFilePackage(path))
