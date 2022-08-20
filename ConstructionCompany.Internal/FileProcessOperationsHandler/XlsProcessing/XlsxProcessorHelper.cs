@@ -45,7 +45,7 @@ namespace FileProcessOperationsHandler.XlsProcessing
             return await Task.FromResult(true);
         }
 
-        public string GenerateRandomName(int size)
+        public string GenerateRandomFolder(string rootPath, int size)
         {
             string name = "";
             Random random = new();
@@ -56,8 +56,32 @@ namespace FileProcessOperationsHandler.XlsProcessing
                name = name + character;
             }
 
-            return name;
+            string path = Path.Combine(rootPath, name);
+
+            if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+            return path;
         }
+
+        public async Task<byte[]> GetBytes()
+        {
+            byte[] bytes = null;
+
+            _file.Refresh();
+
+            using (FileStream fileStream = _file.OpenRead())
+            {
+                using(MemoryStream memStream = new())
+                {
+                    await fileStream.CopyToAsync(memStream);
+                    bytes = memStream.ToArray();
+                }
+            }
+
+            return bytes;
+        }
+
         #endregion
 
         #region data_styling
@@ -67,20 +91,30 @@ namespace FileProcessOperationsHandler.XlsProcessing
             StyleBodyData(ws, options);
             StyleFooterData(ws, options);
 
+            if (options.ColumnWidth > 0)
+            {
+                for (int i = 1; i <= _documentState.BodyEndColumn - 1; i++)
+                {
+                    ws.Column(i).Width = options.ColumnWidth;
+                }
+            }
+
         }
         private void StyleBodyData(ExcelWorksheet ws, XlsxProcessorOptions options)
         {
             int startRow = _documentState.BodyStartRow;
-            int endRow = _documentState.BodyEndRow;
+            int endRow = _documentState.BodyEndRow-1;
 
             int startColumn = _documentState.BodyStartColumn;
-            int endColumn = _documentState.BodyEndColumn;
+            int endColumn = _documentState.BodyEndColumn-1;
 
             for (int row = startRow; row <= endRow; row++)
             {
                 for (int col = startColumn; col <= endColumn; col++)
                 {
                     ExcelRange cell = ws.Cells[row, col];
+
+                    ws.Column(col).Width = options.ColumnWidth;
 
                     //setting fill
                     if (!options.HaveIndifferentBodyColumns)
@@ -173,8 +207,11 @@ namespace FileProcessOperationsHandler.XlsProcessing
                 if(data.Header?.Data != null && data.Header?.Data.Length > 0)
                     AppendHeaderData(worksheet, data.Header);
 
+
+
                 if (data.Body.Data != null && data.Body.Data.Any())
                     AppendBodyData(worksheet, data.Body);
+
 
                 if (data.Footer.Data != null && data.Footer.Data.Any())
                     AppendFooterData(worksheet, data.Footer);
@@ -195,14 +232,24 @@ namespace FileProcessOperationsHandler.XlsProcessing
 
         private void AppendBodyData(ExcelWorksheet worksheet, XlsxProcessBody body)
         {
-                WriteRowData(worksheet, body.Data);
+            _documentState.SetBodyStartData();
+
+            WriteRowData(worksheet, body.Data);
+
+            //It will write one extra row and column upon writing
+
+            _documentState.SetBodyEndData();
         }
 
         private void AppendFooterData(ExcelWorksheet worksheet, XlsxProcessFooter footer)
         {
             _documentState.CurrentRow += 2;
 
+            _documentState.SetFooterStartData();
+
             WriteRowData(worksheet, footer.Data);
+
+            _documentState.SetFooterEndData();
         }
 
         #endregion
@@ -212,12 +259,26 @@ namespace FileProcessOperationsHandler.XlsProcessing
         {
             foreach (var row in rows)
             {
+                _documentState.CurrentCol = 1;
                 foreach (var item in row.RowItems)
                 {
-                    worksheet.Cells[_documentState.CurrentRow, _documentState.CurrentCol].Value = item;
+                    var cell = worksheet.Cells[_documentState.CurrentRow, _documentState.CurrentCol];
+                    cell.Value = item.CellText;
+
+                    if(item.Comments != null && item.Comments.Any())
+                    {
+                        StringBuilder commentGroup = new();
+                        foreach (var comment in item.Comments)
+                        {
+                            commentGroup.Append(comment);
+                        }
+                        cell.AddComment(commentGroup.ToString());
+                    }
+
+                    ++_documentState.CurrentCol;
                 }
                 _documentState.CurrentRow++;
-                _documentState.CurrentCol = 1;
+                
             }
         }
         private class XlsxIdentificationHelper

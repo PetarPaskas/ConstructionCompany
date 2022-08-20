@@ -2,10 +2,13 @@
 using ConstructionCompany.Common.DTOs.WagesDto;
 using ConstructionCompany.DataContext.Interfaces;
 using ConstructionCompany.EntityModels;
+using FileProcessOperationsHandler.ProcessTypes;
+using FileProcessOperationsHandler.XlsProcessing.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 
 namespace ConstructionCompany.WebAPI.Controllers
 {
@@ -16,32 +19,199 @@ namespace ConstructionCompany.WebAPI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IConstructionSiteRepository _constructionSiteRepository;
         private readonly IWageRepository _wageRepository;
+        private readonly IXlsxProcessor _xlsxProcessor;
         public WagesController
             (
             IUserRepository userRepository,
             IConstructionSiteRepository constructionSiteRepository,
-            IWageRepository wageRepository
+            IWageRepository wageRepository,
+            IXlsxProcessor xlsxProcessor
             )
         {
             _userRepository = userRepository;
             _constructionSiteRepository = constructionSiteRepository;
             _wageRepository = wageRepository;
+            _xlsxProcessor = xlsxProcessor;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> RequestFile(FileRequestData request)
+        //?Date={Date}&FileType={FileType}
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RequestFile(DateTime date, FileTypeEnum fileType)
         {
+            FileRequestData request = new()
+            {
+                Date = date,
+                FileType = fileType
+            };
+
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var data = await _wageRepository.GetAllForDateAsync(request.Date);
+            var data = (await _wageRepository.GetAllForDateAsync(request.Date)) as List<Wage>;
             //Format data
+            XlsxProcessData processData = FormatData(data, request);
 
             //Generate a file
+            byte[] xlsxFile = await _xlsxProcessor.Process(processData, null);
+            string xlsxContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            string fileDownloadName = $"{processData.FileName}.{(processData.IsXlsType ? "xls" : "xslx")}";
 
-            //Return data
-            return Ok();
+            return File(xlsxFile, xlsxContentType, fileDownloadName);
         }
+
+        #region Request-file-private
+        private XlsxProcessData FormatData(ICollection<Wage> wages, FileRequestData request)
+        {
+            /*----------FOOTER SUMMARY---------*/
+            Dictionary<int, double> footerValues = new Dictionary<int, double>();
+            //key => userId
+            //value => sum of earnings
+
+            /*----------BODY SUMMARY---------*/
+            var wagesOrdered = wages.OrderBy(w => w.WorkDay);
+            var usersInWages = new List<User>(); 
+            foreach(var user in wagesOrdered.Select(w => w.User))
+            {
+                if(!usersInWages.Exists(u=>u.UserId==user.UserId))
+                    usersInWages.Add(user);
+            }
+
+            List<CellItem> firstRow = new();
+            firstRow.Add(new CellItem() { CellText="",Comments=null});
+
+            if (usersInWages is null)
+                throw new ArgumentNullException("Users in wages collection is empty");
+
+            for (int i = 0; i < usersInWages.Count; i++)
+            {
+                var user = usersInWages[i];
+                firstRow.Add(new CellItem()
+                {
+                    Comments = null,
+                    CellText = user.FullName
+                });
+            }
+
+            var body = new List<List<CellItem>>();
+            body.Add(firstRow);
+
+            DateTime? tryEndDate = null;
+
+            if(request.Date.Month == 12)
+            {
+                tryEndDate = new DateTime(request.Date.Year + 1, 1, 1).AddDays(-1);
+            }
+            else
+            {
+                tryEndDate = new DateTime(request.Date.Year, request.Date.Month + 1, 1).AddDays(-1);
+            }
+
+            var endDate = tryEndDate.Value;
+            var startDate = new DateTime(request.Date.Year, request.Date.Month, 1);
+          
+            for (int currDay = startDate.Day; currDay <= endDate.Day; currDay++)
+            {
+                List<CellItem> row = new();
+
+                CellItem cellItem = new()
+                {
+                    Comments = null,
+                    CellText = $"{currDay}"
+                };
+                row.Add(cellItem);
+
+                foreach (var user in usersInWages)
+                {
+                    var dateNow = new DateTime(request.Date.Year, request.Date.Month, currDay);
+
+                    var todaysWagesForUser = wagesOrdered.Where(w => 
+                                                                (DateOnly.FromDateTime(w.WorkDay) == DateOnly.FromDateTime(dateNow))
+                                                                && w.UserId == user.UserId);
+
+                    var hoursDone = todaysWagesForUser.Sum(wage => wage.HoursDone);
+                    var moneyEarned = Math.Round(hoursDone * user.HourlyRate,2);
+
+                   
+                    //Get comment => 
+                    List<string> comments = new();
+                    if (todaysWagesForUser.Any())
+                    {
+                        foreach (var wageForUser in todaysWagesForUser)
+                        {
+                            string constructionSiteinfo = $"{wageForUser.ConstructionSite.DisplayName}, {wageForUser.ConstructionSite.Address}, {wageForUser.ConstructionSite.City.DisplayName}";
+                            string comment = $"--{constructionSiteinfo}; Odrađeno {wageForUser.HoursDone}hr.--\n";
+                            comments.Add(comment);
+                        }
+                    }
+
+                    //Add body item
+                    CellItem bodyCellItem = new()
+                    {
+                        Comments = comments,
+                        CellText = $"{moneyEarned} {user.Currency.DisplayName}"
+                    };
+                    row.Add(bodyCellItem);
+
+                    //calculate footer sumamry
+                    if (!footerValues.ContainsKey(user.UserId))
+                    {
+                        footerValues.Add(user.UserId, moneyEarned);
+                    }
+                    else
+                    {
+                        footerValues[user.UserId] = footerValues[user.UserId] + moneyEarned;
+                    }
+                }
+
+                body.Add(row);
+            }
+
+            List<XlsxRowItem> FormatBody = new();
+            foreach(var item in body)
+            {
+                FormatBody.Add(new XlsxRowItem() { RowItems = item});
+            }
+
+            /*------------------ FOOTER CALCULATIONS -------------------*/
+            List<CellItem> footer = new();
+            footer.Add(new CellItem { CellText = "Ukupno: " });
+
+            foreach(var user in usersInWages)
+            {
+                footer.Add(new CellItem { CellText = footerValues[user.UserId].ToString() });
+            }
+
+            XlsxProcessData processData = new()
+            {
+                Footer = new()
+                {
+                    Data = new List<XlsxRowItem>()
+                    {
+                        new XlsxRowItem()
+                        {
+                            RowItems = footer
+                        }
+                    }
+                },
+                Body = new()
+                {
+                    Data = FormatBody
+                },
+                Header = new()
+                {
+                    Data = $"Izveštaj za {request.Date.Month}-{request.Date.Year}"
+                },
+                FileName = $"Izveštaj {request.Date.Month}-{request.Date.Year}"
+            };
+
+            if (request.FileType == FileTypeEnum.XlsFile)
+                processData.IsXlsType = true;
+            else
+                processData.IsXlsType = false;
+
+            return processData;
+        }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> RegisterWage([FromBody] IEnumerable<PutWagesDto> newWages)
@@ -49,10 +219,10 @@ namespace ConstructionCompany.WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid object");
 
-            string message = CheckForDates(newWages);
+            object failMessage = CheckForDates(newWages);
 
-            if(!String.IsNullOrEmpty(message.Trim()))
-                return BadRequest(message);
+            if(failMessage != null)
+                return BadRequest(failMessage);
 
             ICollection<Wage> wagesForInsertion = ReadWages(newWages);
 
@@ -71,7 +241,7 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         #region private_methods
-        private string CheckForDates(IEnumerable<PutWagesDto> newWages)
+        private object CheckForDates(IEnumerable<PutWagesDto> newWages)
         {
 
             IEnumerable<int> userIds = newWages.SelectMany(el => el.Data.Select(d => d.UserId)).Distinct();
@@ -109,7 +279,13 @@ namespace ConstructionCompany.WebAPI.Controllers
                             {
                                 if (data.CsIds.Contains(csId))
                                 {
-                                    return $"User(id->${data.UserId}) already has an entry for a construction site(id->${csId})";
+                                    return new
+                                    {
+                                        UserId = data.UserId,
+                                        ConstructionSiteId = csId,
+                                        Date = data.Date,
+                                        Message = $"Korisnik je već imao unos na tom gradilištu za taj dan"
+                                    };
                                 }
                             }
                         }
@@ -118,7 +294,7 @@ namespace ConstructionCompany.WebAPI.Controllers
 
             }
 
-            return String.Empty;
+            return null;
         }
 
         private ICollection<Wage> ReadWages(IEnumerable<PutWagesDto> newWages)

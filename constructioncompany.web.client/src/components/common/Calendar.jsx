@@ -3,26 +3,24 @@ import {getFullCurrentMonth, getDateMonthSrb, decideDayClassName, equalDates} fr
 
 /*
     props => date[] selectedDays 
+            renderCalendarExtras(function)
+            onCalendarClick
 */
 
 class Calendar extends Component{
 
-    state={
-        currDate: this.props.date || getFullCurrentMonth()
-    }
+    // state={
+    //     currDate: this.props.date || getFullCurrentMonth()
+    // }
 
-    changeCurrDate=(e)=>{
-        const {currDate} = this.state;
-        const newCurrDate = getFullCurrentMonth(new Date(e.target.value));
-
-        if(!equalDates(newCurrDate,currDate)){
-            
-            this.setState({currDate:newCurrDate});
+    onSelectNewDate=(e)=>{
+        if(this.props.onSelectNewDate){
+            this.props.onSelectNewDate(e);
         }
     }
 
     renderCalendarDays=()=>{
-        let {currDate} = this.state;
+        let {date:currDate} = this.props;
         let weeks = Math.ceil(currDate.getDate()/7);
         let today = new Date();
         let kalendarDays = [];
@@ -78,12 +76,12 @@ class Calendar extends Component{
     }
 
     renderDateChooser(){
-        const currMonthString = `${this.state.currDate.getFullYear()}-${(this.state.currDate.getMonth()+1) < 10 ? "0"+(this.state.currDate.getMonth()+1): (this.state.currDate.getMonth()+1)}`;
+        const currMonthString = `${this.props.date.getFullYear()}-${(this.props.date.getMonth()+1) < 10 ? "0"+(this.props.date.getMonth()+1): (this.props.date.getMonth()+1)}`;
         const input = <input type="month" 
         id="calendar__month-chooser" 
         name="calendar__month-chooser"
         className="calendar__month-chooser"
-        onChange={this.changeCurrDate}
+        onChange={this.onSelectNewDate}
         value={currMonthString}
         />;
 
@@ -95,10 +93,16 @@ class Calendar extends Component{
         );
     }
 
+    doExtras=()=>{
+        if(this.props.renderCalendarExtras)
+            return this.props.renderCalendarExtras();
+    }
+
     render(){
         return <div className="calendar-wrapper">
+                    {this.doExtras()}
             <div className="calendar-header">
-                    <h2>{getDateMonthSrb(this.state.currDate)}</h2>
+                    <h2>{getDateMonthSrb(this.props.date)}</h2>
                     {this.renderDateChooser()}
             </div>
             <div className="calendar">

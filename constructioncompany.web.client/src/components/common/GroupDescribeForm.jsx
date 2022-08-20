@@ -236,7 +236,7 @@ class GroupDescribeForm extends Form
                if(isInvalid){
                 invalidUserInput = submitItem;
                 submitItems = [];
-                alert("Nije dobro popunjen item, console za vise info");
+                alert("Nije dobro popunjen korisnik, prebacivanje na datog korisnika...");
                 console.log("Submit item => ",submitItem);
                 break;
                }
@@ -255,7 +255,62 @@ class GroupDescribeForm extends Form
         }
 
         if(invalidUserInput !== null){
+            //(invalidUserInput) => {userId, date}
             //set state to invalid user input & show a message
+           setToInvalidUser.call(this, invalidUserInput);
+        }
+        else
+        {
+            const {selectedDays} = this.state.date;
+            //This means everything's fine; submit
+            //alert("Submitting");
+            const finalSubmitData = formatSubmitItemsForWagesEndpoint(selectedDays, submitItems);
+            console.log("Final Data for submittion => ");
+            console.log(finalSubmitData);
+
+            this.setState({
+                finalData
+            });
+            try{
+                const response = await wagesClient.submitWages(finalSubmitData);
+                console.log("Response =>", response);
+                alert("Zahtev uspesno obrađen!");
+                window.location = "/Export";
+            }
+            catch(ex){
+                console.log("Response => ", ex.response);
+                console.log("Response data =>", ex.response.data);
+                const {data} = ex.response;
+                let errorMessage = "Unos neuspešan."
+                if(typeof(data) != 'string' && ex.response.status == 400){
+                    errorMessage = `${errorMessage}\nRazlog: ${data.message}`;
+
+                    const {userId, constructionSiteId, date} = data;
+                    if(userId != undefined && 
+                        constructionSiteId != undefined && 
+                        date != undefined){
+                        //find construction site
+                        const constrSite = this.state.data.options.find(cs=>
+                            cs.id === constructionSiteId);
+                        if(constrSite != undefined)
+                        {
+                            errorMessage = `${errorMessage}\nGradilište: ${constrSite.value}`;
+                        }
+                        const dateTime = new Date(date);
+                        setToInvalidUser.call(this,{
+                            userId,
+                            date:dateTime
+                        });
+                        alert(errorMessage);
+
+                    }else{
+                        alert(errorMessage);
+                    }
+                }
+            }
+        }
+
+        function setToInvalidUser(invalidUserInput){
             const userIndex = finalData.findIndex(el=>el.userId === invalidUserInput.userId && equalDates(el.date,invalidUserInput.date));
             const userForSelection = finalData[userIndex];
             const formDataKeys = Object.keys(userForSelection.formData);
@@ -270,7 +325,7 @@ class GroupDescribeForm extends Form
             }
             if(this.state.ui.colorTheme === describeFormColorThemes.colorPrimary)
             colorTheme = describeFormColorThemes.colorSecondary;
-            alert("You are seeing the user with an invalid input");
+            //alert("You are seeing the user with an invalid input");
             this.setState((prevState)=>({
                 date:{
                     currentDay:userForSelection.date,
@@ -290,22 +345,6 @@ class GroupDescribeForm extends Form
                 formData:userForSelection.formData,
                 finalData
             }));
-        }
-        else
-        {
-            const {selectedDays} = this.state.date;
-            //This means everything's fine; submit
-            alert("Submitting");
-            const finalSubmitData = formatSubmitItemsForWagesEndpoint(selectedDays, submitItems);
-            console.log("Final Data for submittion => ");
-            console.log(finalSubmitData);
-
-            this.setState({
-                finalData
-            });
-
-            await wagesClient.submitWages(finalSubmitData);
-
         }
     }   
 
@@ -403,17 +442,12 @@ class GroupDescribeForm extends Form
             &gt;
         </div>;
 
-        const submitButton = <div 
-        className="btn--right choose-item-btn" 
-        onClick={this.submit}>
-            Posalji
-        </div>;
+
 
         return <React.Fragment>
             {dateInfo}
             {shouldRenderLeftNav && leftNav}
             {shouldRenderRightNav && rightNav}
-            {!shouldRenderRightNav && submitButton}
             </React.Fragment>;
     }
 
@@ -426,6 +460,23 @@ class GroupDescribeForm extends Form
             </div>
         </div>)
     }
+
+    renderSubmitButton=()=>{
+        if(Object.keys(this.state.errors).length > 0)
+        return;
+
+        const { shouldRenderRightNav } = this.state.ui;
+        const submitButton = <div 
+        className="btn btn-success bottom-center" 
+        onClick={this.submit}>
+            Prihvati
+        </div>;
+
+        return(<React.Fragment>
+            {!shouldRenderRightNav && submitButton}
+        </React.Fragment>);
+
+    }
     
     render(){
         return (<div className="group-describe-form">
@@ -434,6 +485,7 @@ class GroupDescribeForm extends Form
              {this.renderNavigation()} 
              {this.renderDefaultBody()}
             </React.Fragment>}
+            {this.renderSubmitButton()}
         </div>)
     }
 
