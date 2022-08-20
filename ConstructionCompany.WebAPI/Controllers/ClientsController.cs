@@ -34,7 +34,7 @@ namespace ConstructionCompany.WebAPI.Controllers
         {
             var client = await _clientRepository.Add(newClient);
 
-            return CreatedAtRoute(routeName: nameof(Post), 
+            return CreatedAtRoute(routeName: "", 
                 routeValues: new { clientId = client.ClientId }, 
                 value: client.AsDto());
         }

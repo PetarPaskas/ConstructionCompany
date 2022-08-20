@@ -23,13 +23,16 @@ namespace ConstructionCompany.DataContext.Repositories
                             ClientAddress = newClient.ClientAddress,
                             ClientName = newClient.ClientName,
                             IsDisabled = false,
-                            ConstructionSites = null
+                            ConstructionSites = new List<ConstructionSite>()
                         };
 
             await _constructionCompanyContext.Clients.AddAsync(client);
             await _constructionCompanyContext.SaveChangesAsync();
 
-            await _constructionCompanyContext.ConstructionSites.Include(cs => cs.City).LoadAsync();
+            await _constructionCompanyContext.ConstructionSites
+                .Include(cs => cs.City)
+                .ThenInclude(c => c.Municipality)
+                .LoadAsync();
 
             return client;
         }
@@ -46,33 +49,25 @@ namespace ConstructionCompany.DataContext.Repositories
         {
             return await _constructionCompanyContext.Clients
                 .Include(c => c.ConstructionSites)
-                .Include(c => c.ConstructionSites.Select(c => c.City))
+                .ThenInclude(cs=>cs.City)
+                .ThenInclude(c=>c.Municipality)
                 .SingleOrDefaultAsync(c => c.ClientId == clientId);
 
         }
 
-        public async Task<IEnumerable<Client>> GetAllAsync()
+        public async Task<IEnumerable<Client>> GetAllAsync(bool withDisabled = true)
         {
-            return await _constructionCompanyContext.Clients
-                .Include(c => c.ConstructionSites)
-                .ThenInclude(cs=>cs.City)
-                .ToListAsync();
-        }
 
-        public async Task<IEnumerable<Client>> GetAllAsync(bool withDisabled)
-        {
-            if(withDisabled)
-            return await GetAllAsync();
-
-            return await _constructionCompanyContext.Clients.Where(c => c.IsDisabled == true)
+            return await _constructionCompanyContext.Clients.Where(c => c.IsDisabled == withDisabled)
                 .Include(c=>c.ConstructionSites)
                 .ThenInclude(cs=>cs.City)
+                .ThenInclude(c=>c.Municipality)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Client>> GetAllForOptions()
         {
-            return await _constructionCompanyContext.Clients.ToListAsync();
+            return await _constructionCompanyContext.Clients.Where(c=>!c.IsDisabled).ToListAsync();
         }
     }
 }
