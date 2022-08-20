@@ -12,8 +12,9 @@ ConstructionCompany.WebAPI/obj/
 constructioncompany.web.client/node_modules
 constructioncompany.web.client/.pnp
 constructioncompany.web.client/.pnp.js
-FileProcessOperationsHandler/bin/
-FileProcessOperationsHandler/obj/
+ConstructionCompany.Internal/FileProcessOperationsHandler/bin/
+ConstructionCompany.Internal/FileProcessOperationsHandler/obj/
+FileProcessOperationsHandler/
 
 # testing
 constructioncompany.web.client/coverage
@@ -31,3 +32,6 @@ constructioncompany.web.client/.env.production.local
 constructioncompany.web.client/npm-debug.log*
 constructioncompany.web.client/yarn-debug.log*
 constructioncompany.web.client/yarn-error.log*
+
+*.rar
+*.zip
