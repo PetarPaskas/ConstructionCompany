@@ -24,6 +24,20 @@ namespace ConstructionCompany.Common.DTOs.ConstructionSiteDto
             };
         }
 
+        public static GetConstructionSiteBaseDto AsDtoBase(this ConstructionSite constructionSite)
+        {
+            return new GetConstructionSiteBaseDto()
+            {
+                ConstructionSiteId = constructionSite.ConstructionSiteId,
+                Address = constructionSite.Address,
+                ExpectedEndDate = constructionSite.DateFinished,
+                DateStarted = constructionSite.DateStarted,
+                DisplayName = constructionSite.DisplayName,
+                IsFinished = constructionSite.IsFinished,
+                City = new StrippedCityModel(constructionSite),
+            };
+        }
+
         public static Option AsOption(this ConstructionSite site)
         {
             return new Option()

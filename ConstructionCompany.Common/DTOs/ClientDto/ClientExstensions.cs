@@ -1,4 +1,5 @@
-﻿using ConstructionCompany.EntityModels;
+﻿using ConstructionCompany.Common.DTOs.ConstructionSiteDto;
+using ConstructionCompany.EntityModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,16 @@ namespace ConstructionCompany.Common.DTOs.ClientDto
                 Value = client.ClientName,
                 IsSelected = false,
                 Name = $"{client.ClientName}-{client.ClientId}"
+            };
+
+        public static GetClientDto AsDto(this Client client)
+            =>
+            new GetClientDto()
+            {
+                ClientId = client.ClientId,
+                ClientAddress = client.ClientAddress,
+                ClientName = client.ClientName,
+                ConstructionSites = client.ConstructionSites.Select(cs=>cs.AsDtoBase())
             };
     }
 }
