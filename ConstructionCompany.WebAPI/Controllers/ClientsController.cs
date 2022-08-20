@@ -32,6 +32,9 @@ namespace ConstructionCompany.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AddClientDto newClient)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var client = await _clientRepository.Add(newClient);
 
             return CreatedAtRoute(routeName: "", 
