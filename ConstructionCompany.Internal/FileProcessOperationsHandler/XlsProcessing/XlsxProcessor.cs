@@ -20,12 +20,12 @@ namespace FileProcessOperationsHandler.XlsProcessing
             if (options == null)
                 options = XlsxProcessorOptions.Default;
 
-            string rootPath = @$"{Directory.GetCurrentDirectory()}\Files";
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(),"Files");
 
             //GeneratePath
             string randomFolderName = _xlsxProcessorHelper.GenerateRandomFolder(rootPath, 8);
-            string path = @$"{randomFolderName}\{data.FileName}.{(data.IsXlsType ? "xls" : "xlsx")}";
-            string defaultWorksheetName = "Data";
+            var path = Path.Combine(randomFolderName, $"{data.FileName}.{(data.IsXlsType ? "xls" : "xlsx")}");
+            string defaultWorksheetName = "Podaci";
 
             using (ExcelPackage package = _xlsxProcessorHelper.CreateXlsxFilePackage(path))
             {

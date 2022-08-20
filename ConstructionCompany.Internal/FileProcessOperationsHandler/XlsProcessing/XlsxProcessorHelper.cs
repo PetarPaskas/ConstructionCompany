@@ -56,7 +56,7 @@ namespace FileProcessOperationsHandler.XlsProcessing
                name = name + character;
             }
 
-            string path = $@"{rootPath}/${name}";
+            string path = Path.Combine(rootPath, name);
 
             if(!Directory.Exists(path))
             Directory.CreateDirectory(path);

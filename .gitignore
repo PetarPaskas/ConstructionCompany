@@ -9,6 +9,7 @@ ConstructionCompany.WebAPI.Test/bin/
 ConstructionCompany.WebAPI.Test/obj/
 ConstructionCompany.WebAPI/bin/
 ConstructionCompany.WebAPI/obj/
+ConstructionCompany.WebAPI/Files/
 constructioncompany.web.client/node_modules
 constructioncompany.web.client/.pnp
 constructioncompany.web.client/.pnp.js
