@@ -18,10 +18,4 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="FileProcessOperationsHandler">
-      <HintPath>..\ConstructionCompany.Internal\FileProcessOperationsHandler\bin\Debug\net6.0\FileProcessOperationsHandler.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
