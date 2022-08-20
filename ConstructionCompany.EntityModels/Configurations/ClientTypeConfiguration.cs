@@ -16,6 +16,9 @@ namespace ConstructionCompany.EntityModels.Configurations
 
             builder.Property(c => c.ClientName)
                 .IsRequired();
+
+            builder.Property(c => c.IsDisabled)
+                .HasDefaultValue(false);
         }
     }
 }
