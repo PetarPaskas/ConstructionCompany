@@ -12,6 +12,8 @@ ConstructionCompany.WebAPI/obj/
 constructioncompany.web.client/node_modules
 constructioncompany.web.client/.pnp
 constructioncompany.web.client/.pnp.js
+FileProcessOperationsHandler/bin/
+FileProcessOperationsHandler/obj/
 
 # testing
 constructioncompany.web.client/coverage

@@ -2,14 +2,16 @@ import Form from "../common/Form";
 import Calendar from "../common/Calendar";
 import ConstructionSiteUsersEditTableCustomBody from "../Dashboard/ConstructionSites/ConstructionSiteUsersEditTableCustomBody"
 import Table from "../common/Table/Table";
-import {equalDates, headersForConstructionSiteUsersEditTableCustomBody} from "../common/utils";
+import {equalDates, headersForConstructionSiteUsersEditTableCustomBody, getFullCurrentMonth} from "../common/utils";
 import usersClient from "../http/usersClient";
 import miscClient from "../http/miscClient";
+import wagesClient from "../http/wagesClient";
 import GroupDescribeForm from "../common/GroupDescribeForm";
+import { createElement } from "react";
 
 class ExportForm extends Form{
     state={
-        date:new Date(),
+        date:getFullCurrentMonth(),
         selectedDays:[],
         selectedWorkers:[],
         data:{
@@ -20,6 +22,16 @@ class ExportForm extends Form{
             calendarSelectorStep:true,
             workerSelectorStep:false,
             workerDescribeStep:false
+        }
+    }
+
+    changeCurrDate=(e)=>{
+        const {date} = this.state;
+        const newCurrDate = getFullCurrentMonth(new Date(e.target.value));
+
+        if(!equalDates(newCurrDate,date)){
+            
+            this.setState({date:newCurrDate});
         }
     }
 
@@ -34,11 +46,14 @@ class ExportForm extends Form{
         this.setState({data});
     }
 
-    renderCalendarSelectorStep(){
+
+    renderCalendarSelectorStep=()=>{
         return <Calendar
-            selectedDays={this.state.selectedDays}
-            onCalendarClick={this.selectDay}
-            />
+                selectedDays={this.state.selectedDays}
+                date={this.state.date}
+                onSelectNewDate={this.changeCurrDate}
+                onCalendarClick={this.selectDay}
+                />;
     }
 
     renderWorkerSelectorStep(){
@@ -109,8 +124,9 @@ class ExportForm extends Form{
             currentStep = "[2/3] Izaberi radnike";
         if(steps.workerDescribeStep)
             currentStep = "[3/3] Opisi radnike";
-
-        return <div className="step-buttons">
+            
+        return <>
+            <div className="step-buttons">
                 <div className="step-buttons--element">
                     <button className="step-button" onClick={(e)=>this.chooseStep('previous')}>&lt;</button>
                 </div>
@@ -121,6 +137,8 @@ class ExportForm extends Form{
                     <button className="step-button" onClick={(e)=>this.chooseStep('next')}>&gt;</button>
                 </div>
             </div>
+            {steps.calendarSelectorStep && this.downloadReportButton()}
+            </>
     }
 
     renderWorkerDescribeStep(){
@@ -146,6 +164,31 @@ class ExportForm extends Form{
             days.push(data.date);
         }
         this.setState({selectedDays:days});
+    }
+
+    downloadReport= async ()=>{
+        const data = {
+            date: this.state.date,
+            fileType: 2
+        };
+        try{
+            console.log(this.props);
+            await wagesClient.requestFile(data);
+        }
+        catch(ex){
+            console.log("Error", ex);
+        }
+    }
+
+    downloadReportButton=()=>{
+        return <div className="export__extras">
+            <button 
+            className="btn btn-primary" 
+            onClick={this.downloadReport}
+            >
+                Preuzmi izveštaj za trenutni mesec
+            </button>
+        </div>
     }
 
     decideRenderStep(){

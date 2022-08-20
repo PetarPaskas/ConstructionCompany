@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 
 namespace ConstructionCompany.WebAPI.Controllers
 {
@@ -33,9 +34,16 @@ namespace ConstructionCompany.WebAPI.Controllers
             _xlsxProcessor = xlsxProcessor;
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> RequestFile([FromBody] FileRequestData request)
+        //?Date={Date}&FileType={FileType}
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RequestFile(DateTime date, FileTypeEnum fileType)
         {
+            FileRequestData request = new()
+            {
+                Date = date,
+                FileType = fileType
+            };
+
             if (!ModelState.IsValid)
                 return BadRequest();
 
@@ -68,8 +76,8 @@ namespace ConstructionCompany.WebAPI.Controllers
                     usersInWages.Add(user);
             }
 
-            List<string> firstRow = new();
-            firstRow.Add("");
+            List<CellItem> firstRow = new();
+            firstRow.Add(new CellItem() { CellText="",Comments=null});
 
             if (usersInWages is null)
                 throw new ArgumentNullException("Users in wages collection is empty");
@@ -77,10 +85,14 @@ namespace ConstructionCompany.WebAPI.Controllers
             for (int i = 0; i < usersInWages.Count; i++)
             {
                 var user = usersInWages[i];
-                firstRow.Add(user.FullName);
+                firstRow.Add(new CellItem()
+                {
+                    Comments = null,
+                    CellText = user.FullName
+                });
             }
 
-            var body = new List<List<string>>();
+            var body = new List<List<CellItem>>();
             body.Add(firstRow);
 
             DateTime? tryEndDate = null;
@@ -99,8 +111,14 @@ namespace ConstructionCompany.WebAPI.Controllers
           
             for (int currDay = startDate.Day; currDay <= endDate.Day; currDay++)
             {
-                List<string> row = new();
-                row.Add($"{currDay}");
+                List<CellItem> row = new();
+
+                CellItem cellItem = new()
+                {
+                    Comments = null,
+                    CellText = $"{currDay}"
+                };
+                row.Add(cellItem);
 
                 foreach (var user in usersInWages)
                 {
@@ -113,7 +131,26 @@ namespace ConstructionCompany.WebAPI.Controllers
                     var hoursDone = todaysWagesForUser.Sum(wage => wage.HoursDone);
                     var moneyEarned = Math.Round(hoursDone * user.HourlyRate,2);
 
-                    row.Add($"{moneyEarned} {user.Currency.DisplayName}");
+                   
+                    //Get comment => 
+                    List<string> comments = new();
+                    if (todaysWagesForUser.Any())
+                    {
+                        foreach (var wageForUser in todaysWagesForUser)
+                        {
+                            string constructionSiteinfo = $"{wageForUser.ConstructionSite.DisplayName}, {wageForUser.ConstructionSite.Address}, {wageForUser.ConstructionSite.City.DisplayName}";
+                            string comment = $"--{constructionSiteinfo}; Odrađeno {wageForUser.HoursDone}hr.--\n";
+                            comments.Add(comment);
+                        }
+                    }
+
+                    //Add body item
+                    CellItem bodyCellItem = new()
+                    {
+                        Comments = comments,
+                        CellText = $"{moneyEarned} {user.Currency.DisplayName}"
+                    };
+                    row.Add(bodyCellItem);
 
                     //calculate footer sumamry
                     if (!footerValues.ContainsKey(user.UserId))
@@ -136,12 +173,12 @@ namespace ConstructionCompany.WebAPI.Controllers
             }
 
             /*------------------ FOOTER CALCULATIONS -------------------*/
-            List<string> footer = new();
-            footer.Add("Ukupno: ");
+            List<CellItem> footer = new();
+            footer.Add(new CellItem { CellText = "Ukupno: " });
 
             foreach(var user in usersInWages)
             {
-                footer.Add(footerValues[user.UserId].ToString());
+                footer.Add(new CellItem { CellText = footerValues[user.UserId].ToString() });
             }
 
             XlsxProcessData processData = new()
@@ -182,10 +219,10 @@ namespace ConstructionCompany.WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid object");
 
-            string message = CheckForDates(newWages);
+            object failMessage = CheckForDates(newWages);
 
-            if(!String.IsNullOrEmpty(message.Trim()))
-                return BadRequest(message);
+            if(failMessage != null)
+                return BadRequest(failMessage);
 
             ICollection<Wage> wagesForInsertion = ReadWages(newWages);
 
@@ -204,7 +241,7 @@ namespace ConstructionCompany.WebAPI.Controllers
         }
 
         #region private_methods
-        private string CheckForDates(IEnumerable<PutWagesDto> newWages)
+        private object CheckForDates(IEnumerable<PutWagesDto> newWages)
         {
 
             IEnumerable<int> userIds = newWages.SelectMany(el => el.Data.Select(d => d.UserId)).Distinct();
@@ -242,7 +279,13 @@ namespace ConstructionCompany.WebAPI.Controllers
                             {
                                 if (data.CsIds.Contains(csId))
                                 {
-                                    return $"User(id->${data.UserId}) already has an entry for a construction site(id->${csId})";
+                                    return new
+                                    {
+                                        UserId = data.UserId,
+                                        ConstructionSiteId = csId,
+                                        Date = data.Date,
+                                        Message = $"Korisnik je već imao unos na tom gradilištu za taj dan"
+                                    };
                                 }
                             }
                         }
@@ -251,7 +294,7 @@ namespace ConstructionCompany.WebAPI.Controllers
 
             }
 
-            return String.Empty;
+            return null;
         }
 
         private ICollection<Wage> ReadWages(IEnumerable<PutWagesDto> newWages)

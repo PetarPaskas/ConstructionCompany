@@ -91,20 +91,30 @@ namespace FileProcessOperationsHandler.XlsProcessing
             StyleBodyData(ws, options);
             StyleFooterData(ws, options);
 
+            if (options.ColumnWidth > 0)
+            {
+                for (int i = 1; i <= _documentState.BodyEndColumn - 1; i++)
+                {
+                    ws.Column(i).Width = options.ColumnWidth;
+                }
+            }
+
         }
         private void StyleBodyData(ExcelWorksheet ws, XlsxProcessorOptions options)
         {
             int startRow = _documentState.BodyStartRow;
-            int endRow = _documentState.BodyEndRow;
+            int endRow = _documentState.BodyEndRow-1;
 
             int startColumn = _documentState.BodyStartColumn;
-            int endColumn = _documentState.BodyEndColumn;
+            int endColumn = _documentState.BodyEndColumn-1;
 
             for (int row = startRow; row <= endRow; row++)
             {
                 for (int col = startColumn; col <= endColumn; col++)
                 {
                     ExcelRange cell = ws.Cells[row, col];
+
+                    ws.Column(col).Width = options.ColumnWidth;
 
                     //setting fill
                     if (!options.HaveIndifferentBodyColumns)
@@ -226,6 +236,8 @@ namespace FileProcessOperationsHandler.XlsProcessing
 
             WriteRowData(worksheet, body.Data);
 
+            //It will write one extra row and column upon writing
+
             _documentState.SetBodyEndData();
         }
 
@@ -250,7 +262,19 @@ namespace FileProcessOperationsHandler.XlsProcessing
                 _documentState.CurrentCol = 1;
                 foreach (var item in row.RowItems)
                 {
-                    worksheet.Cells[_documentState.CurrentRow, _documentState.CurrentCol].Value = item;
+                    var cell = worksheet.Cells[_documentState.CurrentRow, _documentState.CurrentCol];
+                    cell.Value = item.CellText;
+
+                    if(item.Comments != null && item.Comments.Any())
+                    {
+                        StringBuilder commentGroup = new();
+                        foreach (var comment in item.Comments)
+                        {
+                            commentGroup.Append(comment);
+                        }
+                        cell.AddComment(commentGroup.ToString());
+                    }
+
                     ++_documentState.CurrentCol;
                 }
                 _documentState.CurrentRow++;

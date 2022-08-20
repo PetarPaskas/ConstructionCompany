@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FileProcessOperationsHandler.ProcessTypes
 {
-    public class XlsxRowItem
+    public class CellItem
     {
-        public IEnumerable<CellItem> RowItems { get; set; }
-
+        public string CellText { get; set; }
+        public IEnumerable<string> Comments { get; set; }
     }
 }
