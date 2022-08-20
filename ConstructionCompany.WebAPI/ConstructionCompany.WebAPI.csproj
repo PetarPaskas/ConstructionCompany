@@ -32,12 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FileProcessOperationsHandler">
-      <HintPath>..\ConstructionCompany.Internal\FileProcessOperationsHandler\bin\Debug\net6.0\FileProcessOperationsHandler.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
