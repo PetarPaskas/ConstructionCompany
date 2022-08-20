@@ -24,6 +24,8 @@ namespace FileProcessOperationsHandler.ProcessTypes
         public int FooterFontSize { get; init; }
         public bool FooterBold { get; init; }
 
+        public int ColumnWidth { get; init; }
+
         public static XlsxProcessorOptions Default { get 
             {
                 return new XlsxProcessorOptions()
@@ -46,7 +48,9 @@ namespace FileProcessOperationsHandler.ProcessTypes
 
                     AutoFitFooterCells = true,
                     FooterFontSize = 18,
-                    FooterBold = true
+                    FooterBold = true,
+
+                    ColumnWidth = 20
                 };
             } 
              }

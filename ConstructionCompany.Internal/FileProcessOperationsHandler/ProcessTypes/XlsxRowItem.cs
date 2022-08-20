@@ -8,7 +8,7 @@ namespace FileProcessOperationsHandler.ProcessTypes
 {
     public class XlsxRowItem
     {
-        public IEnumerable<string> RowItems { get; set; }
+        public IEnumerable<CellItem> RowItems { get; set; }
 
     }
 }

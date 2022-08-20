@@ -131,6 +131,7 @@ class NotesSelectionLayout extends Component{
         filters[filterName] = newValue;
 
         this.setState({filters});
+        this.handlePaginate(1);
     }
 
     filterData=()=>{

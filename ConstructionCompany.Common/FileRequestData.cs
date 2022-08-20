@@ -9,7 +9,7 @@ namespace ConstructionCompany.Common
     public enum FileTypeEnum
     {
         XlsFile = 1,
-        XlsxFile = 1
+        XlsxFile = 2
     }
 
     public class FileRequestData

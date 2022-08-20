@@ -10,18 +10,22 @@ namespace FileProcessOperationsHandler.XlsProcessing
         private readonly IXlsxProcessorHelper _xlsxProcessorHelper;
         public XlsxProcessor(IXlsxProcessorHelper xlsxProcessorHelper)
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             _xlsxProcessorHelper = xlsxProcessorHelper;
         }
 
-        public async Task Process(XlsxProcessData data, XlsxProcessorOptions options)
+        public async Task<byte[]> Process(XlsxProcessData data, XlsxProcessorOptions options)
         {
+           
             if (options == null)
                 options = XlsxProcessorOptions.Default;
 
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(),"Files");
+
             //GeneratePath
-            string randomFolderName = _xlsxProcessorHelper.GenerateRandomName(8);
-            string path = @$"{Directory.GetCurrentDirectory()}\{randomFolderName}\{data.FileName}.{(data.IsXlsType ? "xls" : "xlsx")}";
-            string defaultWorksheetName = "Data";
+            string randomFolderName = _xlsxProcessorHelper.GenerateRandomFolder(rootPath, 8);
+            var path = Path.Combine(randomFolderName, $"{data.FileName}.{(data.IsXlsType ? "xls" : "xlsx")}");
+            string defaultWorksheetName = "Podaci";
 
             using (ExcelPackage package = _xlsxProcessorHelper.CreateXlsxFilePackage(path))
             {
@@ -36,8 +40,8 @@ namespace FileProcessOperationsHandler.XlsProcessing
 
                 await _xlsxProcessorHelper.SaveChangesAsync();
             };
-             
 
+            return await _xlsxProcessorHelper.GetBytes();
         }
     }
 }

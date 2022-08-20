@@ -101,6 +101,10 @@ class ConstructionSiteSelectorLayout extends Component{
         filters[filterName] = newValue;
 
         this.setState({filters});
+
+        //Go to first page
+        this.handlePaginate(1);
+
     }
 
     renderFiltersLayout(){
