@@ -13,6 +13,7 @@ namespace ConstructionCompany.Common.DTOs.UserDto
         {
             var newUser = new GetUsersDto()
             {
+                FullName = user.FullName,
                 UserId = user.UserId,
                 Username = user.Username,
                 PhoneNumber = user.PhoneNumber,

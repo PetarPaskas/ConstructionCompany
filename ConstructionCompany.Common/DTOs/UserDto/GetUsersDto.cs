@@ -17,6 +17,7 @@ namespace ConstructionCompany.Common.DTOs.UserDto
         public string Nickname { get; set; }
         public double HourlyRate { get; set; }
         public bool IsDisabled { get; set; }
+        public string FullName { get; set; }
         public DateTime EmploymentStartDate { get; set; }
         public DateTime? EmploymentEndDate { get; set; }
         public StrippedProfessionModel Profession { get; set; }

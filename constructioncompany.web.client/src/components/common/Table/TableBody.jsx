@@ -34,7 +34,12 @@ class TableBody extends Component{
                         );
                     }else{
                         let CustomBodyComponent = this.props.customBodyComponent;
-                        rows.push(<CustomBodyComponent onCustomChange={this.props.onCustomChange} key={`CustomBodyKey__${displayIndex}`} item={item} index={i} itemOrder={displayIndex} />);
+                        rows.push(<CustomBodyComponent 
+                            onCustomChange={this.props.onCustomChange} 
+                            key={`CustomBodyKey__${displayIndex}`} 
+                            item={item} index={i} 
+                            itemOrder={displayIndex} 
+                            />);
                     }
 
                 }

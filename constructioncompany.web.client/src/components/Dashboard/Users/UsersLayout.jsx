@@ -3,6 +3,7 @@ import Table from "../../common/Table/Table";
 import CustomUsersTableBody from "./CustomUsersTableBody";
 import {createHeadersDataForUsersTable} from "../../common/utils";
 import usersClient from "../../http/usersClient";
+import ConstructionSiteFilters from "../ConstructionSites/ConstructionSiteFilters";
 
 class UsersLayout extends Component{
     state={
@@ -26,6 +27,7 @@ class UsersLayout extends Component{
         return (
             <div className="users-table">
                 <Table
+                    targetProperty={"fullName"}
                     data={this.state.data}
                     withRowIndex={false}
                     customBodyComponent={CustomUsersTableBody}

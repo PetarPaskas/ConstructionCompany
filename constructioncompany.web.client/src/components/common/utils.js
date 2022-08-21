@@ -241,6 +241,12 @@ export function generateSchemaConstructionSite(){
     }
 }
 
+export function generateSchemaForTempClientForm(){
+    return {
+        clientName:(newVal)=>commonReqValidate(newVal,"name"),
+        clientAddress:(newVal)=>commonReqValidate(newVal,"address")
+    }
+}
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
 export function getFullCurrentMonth(data){
@@ -266,6 +272,29 @@ const datumSrb = {
     "Okt":"Oktobar",
     "Nov":"Novembar",
     "Dec":"Decembar"
+}
+
+export function dateGetDayToDayString(date){
+   const dan = date.getDay();
+   switch(dan)
+   {
+    case 0:
+        return "Ned";
+    case 1:
+        return "Pon";
+    case 2: 
+        return "Uto";
+    case 3: 
+        return "Sre";
+    case 4: 
+        return "Čet"
+    case 5:
+        return "Pet";
+    case 6:
+        return "Sub";
+    default:
+        return undefined;
+   }
 }
 
 
@@ -309,8 +338,11 @@ export function equalDates(date1, date2){
 
 }
 
-export function decideDayClassName(day, isToday, isSelected){
-    const sunday = day%7 === 0 ? "day-sunday" : "";
+export function decideDayClassName(day, isToday, isSelected, isInvisible){
+    if(isInvisible)
+    return `day day--invisible`;
+
+    const sunday = day === 0 ? "day-sunday" : "";
     const today = isToday ? 'today' : "";
     const selectedDay = isSelected ? "day--selected" : "";
 

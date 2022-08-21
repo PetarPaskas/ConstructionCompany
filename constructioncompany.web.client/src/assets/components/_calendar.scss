@@ -49,6 +49,10 @@
             &.today{
                 border:1px solid $red-color-base;
             }
+
+            &.day--invisible{
+                visibility: hidden;
+            }
         }
 
         &__month-chooser{
