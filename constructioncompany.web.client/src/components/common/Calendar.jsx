@@ -1,5 +1,5 @@
 import { Component } from "react";
-import {getFullCurrentMonth, getDateMonthSrb, decideDayClassName, equalDates} from "../common/utils";
+import {getFullCurrentMonth, dateGetDayToDayString, getDateMonthSrb, decideDayClassName, equalDates} from "../common/utils";
 
 /*
     props => date[] selectedDays 
@@ -24,11 +24,27 @@ class Calendar extends Component{
         let weeks = Math.ceil(currDate.getDate()/7);
         let today = new Date();
         let kalendarDays = [];
+        let firstDayInWeek = null;
 
         for(let i = 1; i<=currDate.getDate();i++){
             let isToday = false;
             let isAlreadySelected = false;
             let date = new Date(currDate.getFullYear(), currDate.getMonth(),i);
+
+            if(i == 1){
+                let placesToFill = date.getDay()-1;
+                if(placesToFill === -1){
+                    placesToFill = 6;
+                }
+    
+                for(let fillCounter = 1; fillCounter <= placesToFill; fillCounter++){
+                    kalendarDays.push(<div 
+                    key={`$day__${fillCounter}-invisible`} 
+                    className={decideDayClassName(1, false, false, true)}>
+                       &nbsp;
+                   </div>);
+                }
+            }
 
             if(equalDates(date,today))
             {
@@ -40,7 +56,7 @@ class Calendar extends Component{
             kalendarDays.push(
                 (<div key={`$day__${i}`} 
                  onClick={(e)=>this.handleCalendarClick(e,{date:date, day:i, month:date.getMonth()+1, year:date.getFullYear()})}
-                className={decideDayClassName(i, isToday, isAlreadySelected)}>
+                className={decideDayClassName(date.getDay(), isToday, isAlreadySelected, false)}>
                     {i}
                 </div>));
         }

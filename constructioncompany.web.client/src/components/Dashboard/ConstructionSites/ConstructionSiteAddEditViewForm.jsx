@@ -8,6 +8,8 @@ import {asDateOnly, dateToString, headersForConstructionSiteUsersEditTableCustom
 import ConstructionSiteUsersTableCustomBody from "./ConstructionSiteUsersTableCustomBody";
 import ConstructionSiteUsersEditTableCustomBody from "./ConstructionSiteUsersEditTableCustomBody";
 
+import {ModalClientForm} from '../../Clients/ClientForm';
+
 const redirectLocation = "http://localhost:3000/Dashboard/Gradilista";
 
 //renderInputField(containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text")
@@ -54,6 +56,9 @@ class ConstructionSiteAddEditViewForm extends Form
         },
         errors:{
         },
+        clientForm:{
+            isOpenModal:false
+        }
     }
 
     handleSubmit= async ()=>{
@@ -136,16 +141,57 @@ class ConstructionSiteAddEditViewForm extends Form
                     <button onClick={()=>{this.openAddEditForm(currentId)}}className="btn btn-warning">{isEditView ? "Odustani" : "Menjaj"}</button>
                     {!isEditView && <button onClick={()=>{this.handleDelete(currentId)}} className="btn btn-danger">Obriši</button>}
                     {isEditView && <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>}
-                    <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>
+                    {!isEditView && <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>}
+                    {this.tempOpenClientFormModalButton(isEditView || false)}
                 </div>);
         }else{
             return (
                 <div className="construction-site__side-options">
                     <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>
+                    {this.tempOpenClientFormModalButton(true)}
                 </div>)
         }
+    }
 
+    tempOpenClientFormModalButton=(isPrimaryColor)=>{
+        const className = isPrimaryColor ? "btn btn-primary" : "btn btn-success";
+        return <button
+        className={className}
+        onClick={this.handleOpenTempClientModal}
+        >
+            Dodaj klijenta
+        </button>
+    }
 
+    handleOpenTempClientModal=()=>{
+        const {clientForm} = this.state;
+
+        clientForm.isOpenModal = !clientForm.isOpenModal;
+
+        this.setState({clientForm});
+    }
+
+    renderTempClientFormModal(){
+        //temporaryDataProps => clients
+        //onAddNewClient => handle adding a new client
+        //shouldReturnAsOption / defaulting to false
+        
+        return <ModalClientForm
+        temporaryDataProps={this.state.data.clientOption}
+        handleClose={this.handleOpenTempClientModal}
+        isOpen={this.state.clientForm.isOpenModal}
+        onAddNewClient={this.handleAddNewClient}
+        shouldReturnAsOption={true}
+        />
+    }
+
+    handleAddNewClient=(data)=>{
+        const options = this.state.data.clientOptions.map(opt=>({...opt}));
+        options.unshift(data);
+
+        this.setState({
+            data:{...this.state.data,clientOptions:options}
+        });
     }
 
     openAddEditForm=(id)=>{
@@ -367,6 +413,7 @@ class ConstructionSiteAddEditViewForm extends Form
             <div className="construction-site__table users-table">
                 {this.state.isEditView ? this.renderEditTable() : this.renderInfoTable()}
             </div>
+            {this.renderTempClientFormModal()}
         </div>);
     }
 }

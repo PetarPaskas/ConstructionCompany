@@ -19,7 +19,9 @@ namespace ConstructionCompany.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<Note> notesDb = await _notesRepository.GetAllNotesWithNavPropertiesAsync();
+            IEnumerable<Note> notesDb = (await _notesRepository
+                .GetAllNotesWithNavPropertiesAsync())
+                .OrderByDescending(note=>note.DateCreated);
 
             IEnumerable<GetNoteDto> notes = notesDb.Select(n => n.AsDto());
 

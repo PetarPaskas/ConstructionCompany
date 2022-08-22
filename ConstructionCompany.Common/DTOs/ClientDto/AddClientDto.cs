@@ -13,5 +13,6 @@ namespace ConstructionCompany.Common.DTOs.ClientDto
         public string ClientName { get; set; }
         [Required]
         public string ClientAddress { get; set; }
+        public bool ReturnAsOption { get; set; }
     }
 }

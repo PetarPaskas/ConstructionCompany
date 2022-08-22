@@ -98,6 +98,31 @@
                 }
             }
         }
+
+        &__search-filter{
+            padding:.2rem 0rem .7rem 0rem;
+            &--input{
+                outline:none;
+                border-radius:1rem;
+                font-size:1.4rem;
+                color:$mute-color-medium;
+                padding:.2rem .4rem;
+                padding-bottom: .3rem;
+                border:2px solid darken($table-color-dark,20%);
+                transition:transform .2s;
+
+                &::placeholder{
+                    color:$mute-color-light;
+                }
+
+                &:focus{
+                    transform:translateY(-.3rem);
+                }
+            }
+            &--label{
+
+            }
+        }
     }
 } 
 

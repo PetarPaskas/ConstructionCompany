@@ -9,8 +9,11 @@ class Table extends Component{
     //                 header:[], //should have a name and an id
     //                 body:[]  //can have anything
     //             }
+    //             filterProp => string; what you're filtering on
     //              customBodyComponent <-- component  <customBodyComponent item={item} index={i} itemOrder={displayIndex}/>
     //              withRowIndex <-- decides if rows should be numbered based on an index
+
+    
 
     state = {
         headerOptions:{
@@ -28,6 +31,11 @@ class Table extends Component{
         pagination:{
             itemsPerPage:4,
             currentPage:1,
+        },
+        filter:{
+            filterType: this.props.filterType || "text",
+            value:"",
+            targetProperty:this.props.targetProperty
         }
     }
 
@@ -90,6 +98,7 @@ class Table extends Component{
         if(this.props.data.body && this.props.data.body.length>0){
 
            let data = this.orderData();
+           data = this.applyFilter(data);
            const withRowIndex = this.props.withRowIndex !== undefined && this.props.withRowIndex !== null ? this.props.withRowIndex : true;
 
             return (<TableBody
@@ -105,7 +114,8 @@ class Table extends Component{
     }
 
     renderFooter(){
-        if(this.props.data.body.length >= this.state.pagination.itemsPerPage){
+        const stateData = this.state.filter.targetProperty !== undefined ? this.applyFilter(this.props.data.body) : this.props.data.body;
+        if(stateData.length > this.state.pagination.itemsPerPage){
             const {pagination} = this.state;
             pagination.pageCount = Math.ceil(this.props.data.body.length / this.state.pagination.itemsPerPage);
             return (
@@ -128,10 +138,53 @@ class Table extends Component{
         
     }
 
+    applyFilter(data){
+        const {targetProperty, value, filterType} = this.state.filter;
+        if(targetProperty === undefined || targetProperty === "") return data;
+        
+        let returnData = null;
+
+        if(filterType === "text")
+        returnData = data.filter(item => item[targetProperty].toLowerCase().includes(value.toLowerCase()));
+        
+        return returnData;
+    }
+
+    handleFilter=(e)=>{
+        const {targetProperty} = this.state.filter;
+
+        const newFilterValue = e.target.value;
+        this.setState({
+            filter:{...this.state.filter, 
+                value: newFilterValue},
+            pagination:{
+                    itemsPerPage:4,
+                    currentPage:1,
+                }
+        });
+    }
+
+    renderSearch(){
+        if(!(this.props.data.body && this.props.data.body.length > 0) || this.state.filter.targetProperty == undefined) return null;
+
+        return <div className="table__search-filter">
+                <input 
+                id="table-filter"
+                type={this.state.filter.filterType}
+                className="table__search-filter--input"
+                name="table-filter"
+                onChange={this.handleFilter}
+                value={this.state.filter.value}
+                placeholder="Pretraži..."
+                />
+            </div>
+    }
+
     render(){
         return (
         <div className="table__wrapper">
             {this.renderDataCounter()}
+            {this.renderSearch()}
         <table className="table">
             {this.renderHeader()}
             {this.renderBody()}

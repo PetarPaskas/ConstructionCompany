@@ -214,10 +214,10 @@ function reqNumValidate(val, prop){
 
 export function generateSchemaForAddEditUserForm(){
     return {
-        name:(newVal)=>commonReqValidate(newVal,"name"),
-        surname:(newVal)=>commonReqValidate(newVal,"surname"),
+        name:(newVal)=>commonReqValidate(formatValue(newVal),"name"),
+        surname:(newVal)=>commonReqValidate(formatValue(newVal),"surname"),
         nickname:(newVal)=>null,
-        phoneNumber:(newVal)=>commonUnreqValidate(newVal,"phoneNumber"),
+        phoneNumber:(newVal)=>commonUnreqValidate(formatValue(newVal),"phoneNumber"),
         employmentStartDate:(newVal)=>commonReqValidate(newVal,"employmentStartDate"),
         employmentEndDate:(newVal)=>commonUnreqValidate(newVal,"employmentEndDate"),
         hourlyRate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("hourlyRate")} ne sme biti prazna` : null)
@@ -226,21 +226,31 @@ export function generateSchemaForAddEditUserForm(){
 
 export function generateSchemaForNoteForm(){
     return {
-        title:(newVal)=>longReqValidate(newVal,"title"),
-        description:(newVal)=>longReqValidate(newVal,"description")
+        title:(newVal)=>longReqValidate(formatValue(newVal),"title"),
+        description:(newVal)=>longReqValidate(formatValue(newVal),"description")
     }
 }
 
 export function generateSchemaConstructionSite(){
     return {
-        displayName:(newVal)=>commonReqValidate(newVal,"title"),
-        address:(newVal)=>commonReqValidate(newVal,"address"),
+        displayName:(newVal)=>commonReqValidate(formatValue(newVal),"title"),
+        address:(newVal)=>commonReqValidate(formatValue(newVal),"address"),
         dateStarted:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("dateStarted")} ne sme biti prazno` : null),
         expectedEndDate:(newVal)=>(isNullOrEmpty(newVal) ? `${translateEngToSrb("expectedEndDate")} ne sme biti prazno` : null),
         cityId:(newVal)=>reqNumValidate(newVal,"cityId"),
     }
 }
 
+export function generateSchemaForTempClientForm(){
+    return {
+        clientName:(newVal)=>commonReqValidate(formatValue(formatValue(newVal)),"name"),
+        clientAddress:(newVal)=>commonReqValidate(formatValue(formatValue(newVal)),"address")
+    }
+}
+
+function formatValue(val){
+    return val.trim();
+}
 //////////////////////////////////    VALIDATION    //////////////////////////////////////
 
 export function getFullCurrentMonth(data){
@@ -266,6 +276,29 @@ const datumSrb = {
     "Okt":"Oktobar",
     "Nov":"Novembar",
     "Dec":"Decembar"
+}
+
+export function dateGetDayToDayString(date){
+   const dan = date.getDay();
+   switch(dan)
+   {
+    case 0:
+        return "Ned";
+    case 1:
+        return "Pon";
+    case 2: 
+        return "Uto";
+    case 3: 
+        return "Sre";
+    case 4: 
+        return "Čet"
+    case 5:
+        return "Pet";
+    case 6:
+        return "Sub";
+    default:
+        return undefined;
+   }
 }
 
 
@@ -309,8 +342,11 @@ export function equalDates(date1, date2){
 
 }
 
-export function decideDayClassName(day, isToday, isSelected){
-    const sunday = day%7 === 0 ? "day-sunday" : "";
+export function decideDayClassName(day, isToday, isSelected, isInvisible){
+    if(isInvisible)
+    return `day day--invisible`;
+
+    const sunday = day === 0 ? "day-sunday" : "";
     const today = isToday ? 'today' : "";
     const selectedDay = isSelected ? "day--selected" : "";
 

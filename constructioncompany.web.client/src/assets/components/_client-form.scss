@@ -1,0 +1,26 @@
+.client-form{
+    &--temp{
+        & .client-form{
+            &--title{
+
+            }
+            &--submit{
+                font-weight: 600;
+                color:$white-color;
+                background-color: $mute-color-light;
+                border-radius:2rem;
+                border:none;
+                padding:.2rem .4rem;
+            }
+        }
+
+        .row .form-input{
+            width:100%;
+        }
+        
+        .row:last-child{
+            padding-top:1rem;
+        }
+    }
+    
+}
