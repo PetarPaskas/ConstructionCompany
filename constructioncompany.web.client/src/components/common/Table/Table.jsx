@@ -115,7 +115,7 @@ class Table extends Component{
 
     renderFooter(){
         const stateData = this.state.filter.targetProperty !== undefined ? this.applyFilter(this.props.data.body) : this.props.data.body;
-        if(stateData.length >= this.state.pagination.itemsPerPage){
+        if(stateData.length > this.state.pagination.itemsPerPage){
             const {pagination} = this.state;
             pagination.pageCount = Math.ceil(this.props.data.body.length / this.state.pagination.itemsPerPage);
             return (

@@ -141,8 +141,8 @@ class ConstructionSiteAddEditViewForm extends Form
                     <button onClick={()=>{this.openAddEditForm(currentId)}}className="btn btn-warning">{isEditView ? "Odustani" : "Menjaj"}</button>
                     {!isEditView && <button onClick={()=>{this.handleDelete(currentId)}} className="btn btn-danger">Obriši</button>}
                     {isEditView && <button onClick={this.handleSubmit} className="btn btn-success">Sačuvaj</button>}
-                    <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>
-                    {this.tempOpenClientFormModalButton(false)}
+                    {!isEditView && <button onClick={()=>{this.handleOpenNotes(currentId)}} className="btn btn-primary">Beleške</button>}
+                    {this.tempOpenClientFormModalButton(isEditView || false)}
                 </div>);
         }else{
             return (
@@ -175,18 +175,23 @@ class ConstructionSiteAddEditViewForm extends Form
         //temporaryDataProps => clients
         //onAddNewClient => handle adding a new client
         //shouldReturnAsOption / defaulting to false
-        const returnNewClientAsOption = true;
-
+        
         return <ModalClientForm
+        temporaryDataProps={this.state.data.clientOption}
         handleClose={this.handleOpenTempClientModal}
         isOpen={this.state.clientForm.isOpenModal}
         onAddNewClient={this.handleAddNewClient}
-        shouldReturnAsOption={returnNewClientAsOption}
+        shouldReturnAsOption={true}
         />
     }
 
     handleAddNewClient=(data)=>{
-        console.log("Newly added client", data);
+        const options = this.state.data.clientOptions.map(opt=>({...opt}));
+        options.unshift(data);
+
+        this.setState({
+            data:{...this.state.data,clientOptions:options}
+        });
     }
 
     openAddEditForm=(id)=>{

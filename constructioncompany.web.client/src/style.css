@@ -1061,3 +1061,17 @@ body {
     .calendar-wrapper .calendar-footer {
       height: 1.5rem;
       margin-top: 2rem; }
+
+.client-form--temp .client-form--submit {
+  font-weight: 600;
+  color: #fff;
+  background-color: #A2AF9F;
+  border-radius: 2rem;
+  border: none;
+  padding: .2rem .4rem; }
+
+.client-form--temp .row .form-input {
+  width: 100%; }
+
+.client-form--temp .row:last-child {
+  padding-top: 1rem; }

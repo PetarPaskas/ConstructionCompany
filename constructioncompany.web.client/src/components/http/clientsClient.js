@@ -8,7 +8,7 @@ async function submitNewClient(data){
     //     clientAddress,
     //     returnAsOption
     // }
-    http.post(baseUri,data);
+    return http.post(baseUri,data);
 }
 
 export default {

@@ -30,11 +30,12 @@ class ClientForm extends Form{
     componentDidMount(){
         const {temporaryDataProps,shouldReturnAsOption} = this.props;
         const newState = {
-            items:temporaryDataProps
-        }
+            items:temporaryDataProps,
+            data:{...this.state.data}
+        };
 
         if(shouldReturnAsOption !== undefined)
-        newState.shouldReturnAsOption = shouldReturnAsOption;
+        newState.data.returnAsOption = shouldReturnAsOption;
 
         this.setState({...this.state, ...newState});
     }
@@ -52,20 +53,35 @@ class ClientForm extends Form{
             returnAsOption
         };
 
+        if(Object.keys(this.state.errors).length === 0){
+            for(let prop in newClient)
+            {
+                if(newClient[prop] === undefined || newClient[prop] === "")
+                {
+                    return;
+                }
+            }
+        }
+
         try{
             let {data:responseClient} = await clientsClient.submitNewClient(newClient);
-
             this.handleAddNewClient(responseClient);
+
+            //Only if the form is open as a modal
+            if(this.props.handleClose)
+                this.props.handleClose();
+
+            alert("Novi klijent uspešno dodat");
         }
         catch(ex){
-            alert("Greška pri slanju novog klijenta");
             console.log("Add new client error/exception =>",ex);
+            alert("Greška pri slanju novog klijenta");
         }
     }
 
     renderSubmitButton(){
         return <button
-        className="client-form--submit"
+        className="btn client-form--submit"
         onClick={this.submit}>
             Prihvati
         </button>
@@ -75,11 +91,19 @@ class ClientForm extends Form{
         const {clientName, clientAddress} = this.state.data;
         const {clientName:clientNameError, clientAddress:clientAddressError} = this.state.errors;
         //containerClassNameAppender, name, value, labelPlaceholder, errorMessage, type = "text", disabled = false
-        return <div className="client-form--temp">
-            <h2 className="client-form--title">Dodaj novog klijenta</h2>
-            {this.renderInputField(null, "clientName", clientName, "*Unesi ime klijenta", clientNameError ?? "")}
-            {this.renderInputField(null, "clientAddress", clientAddress, "*Unesi adresu klijenta", clientAddressError ?? "")}
-            {this.renderSubmitButton()}
+        return <div className="client-form client-form--temp container">
+            <div className="row">
+                <h2 className="client-form--title">Dodaj novog klijenta</h2>
+            </div>
+            <div className="row">
+                {this.renderInputField("", "clientName", clientName, "*Unesi ime klijenta", clientNameError ?? "")}
+            </div>
+            <div className="row">
+                {this.renderInputField("", "clientAddress", clientAddress, "*Unesi adresu klijenta", clientAddressError ?? "")}
+            </div>
+            <div className="row" style={{flexDirection:"row-reverse"}}>
+                {this.renderSubmitButton()}
+            </div>
         </div>;
     }
 
