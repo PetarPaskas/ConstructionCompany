@@ -31,6 +31,14 @@ class AddEditUserForm extends Form{
         },
     }
 
+    componentDidUpdate(){
+        if(this.state.currentId !== this.props.match.params.id){
+            this.setState({
+                currentId: this.props.match.params.id
+            });
+        }
+    }
+
     callApi = async ()=>{
         let finalData = {...this.state.data};
         let hasUser = false;

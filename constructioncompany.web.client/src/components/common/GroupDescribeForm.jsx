@@ -352,7 +352,7 @@ class GroupDescribeForm extends Form
 
     renderHeader(){
         const {item} = this.state;
-        const name = getDisplayFieldForItem.call(item.items[item.currentItemIndex],this.props.displayField);
+        const name = getDisplayFieldForItem.call(item.items.find(u=>u.userId === item.currentItemId),this.props.displayField);
         return <h2 className="describe-form-header">{name}</h2>
     }
 
